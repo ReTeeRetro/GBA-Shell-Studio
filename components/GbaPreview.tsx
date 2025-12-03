@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { ColorOption, RenderMode } from '../types';
 import { ShellPaths, DpadPaths, StartSelectPath, LensPath, BumpersPath, SpeakerGrillPath, PowerLedPath, GbaLogo, DpadEngraving } from './GbaSvgPaths';
 

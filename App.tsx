@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { SHELL_COLORS, LENS_COLORS } from './constants';
 import { ColorOption, RenderMode } from './types';
-import { Palette, Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
+import { Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
 
 function App() {
   const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[0]);
