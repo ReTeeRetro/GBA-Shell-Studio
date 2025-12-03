@@ -3,7 +3,7 @@ import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { SHELL_COLORS, LENS_COLORS } from './constants';
 import { ColorOption, RenderMode } from './types';
-import { Palette, Grid3x3, Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
+import { Palette, Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
 
 function App() {
   const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[0]);
@@ -12,7 +12,6 @@ function App() {
   const [startSelectColor, setStartSelectColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
   const [bumpersColor, setBumpersColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
   const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
-  const [showGrid, setShowGrid] = useState(false);
   const [showButtonEffects, setShowButtonEffects] = useState(true);
   const [renderMode, setRenderMode] = useState<RenderMode>('plastic');
   
@@ -180,19 +179,6 @@ function App() {
               <CircleDashed size={16} />
               <span className="hidden sm:inline">Button Depth</span>
             </button>
-
-            <button
-              onClick={() => setShowGrid(!showGrid)}
-              className={`
-                flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200
-                ${showGrid
-                  ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-inner'
-                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 shadow-sm'}
-              `}
-            >
-              <Grid3x3 size={16} />
-              <span className="hidden sm:inline">Designer Mode</span>
-            </button>
           </div>
         </div>
       </header>
@@ -220,7 +206,6 @@ function App() {
               startSelectColor={startSelectColor}
               bumpersColor={bumpersColor}
               lensColor={lensColor}
-              showGrid={showGrid}
               showButtonEffects={showButtonEffects}
               renderMode={renderMode}
             />
