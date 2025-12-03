@@ -275,7 +275,7 @@ function App() {
                 How it works
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                The app renders a solid base of your chosen color, then overlays the original vector geometry as a normalized 3D texture map to restore details like buttons and shadows.
+                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration. This is a very early version of the tool, and things may change as it improves and gains more features over time.
               </p>
             </div>
           </div>
