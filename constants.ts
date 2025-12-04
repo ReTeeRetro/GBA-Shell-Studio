@@ -22,9 +22,9 @@ export const SHELL_COLORS: ColorOption[] = [
     hex: '#f8fafc', // Very light grey
   },
   {
-    id: 'platinum',
-    name: 'Platinum',
-    hex: '#94a3b8', // Metallic Silver look
+    id: 'grey',
+    name: 'Grey',
+    hex: '#c4bebb', // Metallic Silver look
   },
   {
     id: 'glacier',
