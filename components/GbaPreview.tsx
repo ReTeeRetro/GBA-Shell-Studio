@@ -5,7 +5,8 @@ import { ShellPaths, DpadPaths, StartSelectPath, LensPath, BumpersPath, SpeakerG
 interface GbaPreviewProps {
   selectedColor: ColorOption;
   dpadColor: ColorOption;
-  buttonsColor: ColorOption;
+  aButtonColor: ColorOption;
+  bButtonColor: ColorOption;
   startSelectColor: ColorOption;
   bumpersColor: ColorOption;
   lensColor: ColorOption;
@@ -17,7 +18,8 @@ interface GbaPreviewProps {
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({ 
   selectedColor, 
   dpadColor, 
-  buttonsColor,
+  aButtonColor,
+  bButtonColor,
   startSelectColor,
   bumpersColor,
   lensColor,
@@ -91,17 +93,27 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
 
   // SEPARATION: Define Shapes and Labels separately to prevent ghosting in effect layers
   
-  const BUTTON_SHAPES = (
+  const A_BUTTON_SHAPE = (
     <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
-      {/* A Button Shape */}
       <g transform={`translate(${A_BUTTON_OFFSET_X}, ${A_BUTTON_OFFSET_Y})`}>
         <path d="M700 129 A 26 26 0 1 1 700 181 A 26 26 0 1 1 700 129 Z" />
       </g>
-      {/* B Button Shape */}
+    </g>
+  );
+
+  const B_BUTTON_SHAPE = (
+    <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
       <g transform={`translate(${B_BUTTON_OFFSET_X}, ${B_BUTTON_OFFSET_Y})`}>
         <path d="M615 159 A 26 26 0 1 1 615 211 A 26 26 0 1 1 615 159 Z" />
       </g>
     </g>
+  );
+
+  const BUTTON_SHAPES = (
+    <>
+      {A_BUTTON_SHAPE}
+      {B_BUTTON_SHAPE}
+    </>
   );
 
   const BUTTON_LABELS = (
@@ -271,8 +283,11 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
               #dpad-base-layer path {
                 fill: ${dpadColor.hex} !important;
               }
-              #buttons-base-layer path {
-                fill: ${buttonsColor.hex} !important;
+              #btn-a-base path {
+                fill: ${aButtonColor.hex} !important;
+              }
+              #btn-b-base path {
+                fill: ${bButtonColor.hex} !important;
               }
               #bumpers-layer path, #bumpers-base path {
                 fill: ${bumpersColor.hex} !important;
@@ -409,7 +424,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
           <g>
             {/* A/B Buttons Base + Drop Shadow */}
             <g id="buttons-base-layer" filter={showButtonEffects ? "url(#btnShadow)" : undefined}>
-              {BUTTON_SHAPES}
+              <g id="btn-a-base">{A_BUTTON_SHAPE}</g>
+              <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
               {BUTTON_LABELS}
             </g>
             

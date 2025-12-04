@@ -6,9 +6,10 @@ import { ColorOption, RenderMode } from './types';
 import { Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[0]);
+  const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[1]);
   const [dpadColor, setDpadColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [buttonsColor, setButtonsColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
+  const [aButtonColor, setAButtonColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
+  const [bButtonColor, setBButtonColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
   const [startSelectColor, setStartSelectColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
   const [bumpersColor, setBumpersColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
   const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
@@ -86,7 +87,8 @@ function App() {
       const parts = [
         { label: 'Shell', color: selectedColor },
         { label: 'Lens', color: lensColor },
-        { label: 'Buttons', color: buttonsColor },
+        { label: 'Btn A', color: aButtonColor },
+        { label: 'Btn B', color: bButtonColor },
         { label: 'D-Pad', color: dpadColor },
         { label: 'Start/Select', color: startSelectColor },
         { label: 'Bumpers', color: bumpersColor },
@@ -202,7 +204,8 @@ function App() {
               ref={svgRef}
               selectedColor={selectedColor} 
               dpadColor={dpadColor}
-              buttonsColor={buttonsColor}
+              aButtonColor={aButtonColor}
+              bButtonColor={bButtonColor}
               startSelectColor={startSelectColor}
               bumpersColor={bumpersColor}
               lensColor={lensColor}
@@ -243,8 +246,10 @@ function App() {
               onSelectColor={setSelectedColor}
               dpadColor={dpadColor}
               onSelectDpadColor={setDpadColor}
-              buttonsColor={buttonsColor}
-              onSelectButtonsColor={setButtonsColor}
+              aButtonColor={aButtonColor}
+              onSelectAButtonColor={setAButtonColor}
+              bButtonColor={bButtonColor}
+              onSelectBButtonColor={setBButtonColor}
               startSelectColor={startSelectColor}
               onSelectStartSelectColor={setStartSelectColor}
               bumpersColor={bumpersColor}

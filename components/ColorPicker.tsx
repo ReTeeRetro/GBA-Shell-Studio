@@ -8,8 +8,10 @@ interface ColorPickerProps {
   onSelectColor: (color: ColorOption) => void;
   dpadColor: ColorOption;
   onSelectDpadColor: (color: ColorOption) => void;
-  buttonsColor: ColorOption;
-  onSelectButtonsColor: (color: ColorOption) => void;
+  aButtonColor: ColorOption;
+  onSelectAButtonColor: (color: ColorOption) => void;
+  bButtonColor: ColorOption;
+  onSelectBButtonColor: (color: ColorOption) => void;
   startSelectColor: ColorOption;
   onSelectStartSelectColor: (color: ColorOption) => void;
   bumpersColor: ColorOption;
@@ -117,8 +119,10 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   onSelectColor,
   dpadColor,
   onSelectDpadColor,
-  buttonsColor,
-  onSelectButtonsColor,
+  aButtonColor,
+  onSelectAButtonColor,
+  bButtonColor,
+  onSelectBButtonColor,
   startSelectColor,
   onSelectStartSelectColor,
   bumpersColor,
@@ -130,14 +134,16 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
   // Determine if all controls share the same color for the "Master" selector
   const unifiedControlColor = (
-    areColorsEqual(dpadColor, buttonsColor) &&
-    areColorsEqual(buttonsColor, startSelectColor) &&
+    areColorsEqual(dpadColor, aButtonColor) &&
+    areColorsEqual(aButtonColor, bButtonColor) &&
+    areColorsEqual(bButtonColor, startSelectColor) &&
     areColorsEqual(startSelectColor, bumpersColor)
   ) ? dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
     onSelectDpadColor(color);
-    onSelectButtonsColor(color);
+    onSelectAButtonColor(color);
+    onSelectBButtonColor(color);
     onSelectStartSelectColor(color);
     onSelectBumpersColor(color);
   };
@@ -282,18 +288,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               </div>
             </div>
 
-            {/* Buttons Color Section */}
+            {/* A Button Color Section */}
             <div>
               <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Buttons (A/B)
+                Button A
               </h3>
               <div className="grid grid-cols-6 gap-2">
                  {SHELL_COLORS.map((color) => (
                   <ColorButton 
-                    key={`btn-${color.id}`}
+                    key={`btn-a-${color.id}`}
                     color={color}
-                    isSelected={buttonsColor.id === color.id}
-                    onSelect={onSelectButtonsColor}
+                    isSelected={aButtonColor.id === color.id}
+                    onSelect={onSelectAButtonColor}
                     sizeClass="w-8 h-8"
                     className="!gap-0"
                     showLabel={false}
@@ -301,9 +307,38 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 ))}
                 <ColorButton 
                    isCustom
-                   isSelected={buttonsColor.id === 'custom'}
-                   color={buttonsColor}
-                   onSelect={onSelectButtonsColor}
+                   isSelected={aButtonColor.id === 'custom'}
+                   color={aButtonColor}
+                   onSelect={onSelectAButtonColor}
+                   sizeClass="w-8 h-8"
+                   className="!gap-0"
+                   showLabel={false}
+                />
+              </div>
+            </div>
+
+            {/* B Button Color Section */}
+            <div>
+              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+                Button B
+              </h3>
+              <div className="grid grid-cols-6 gap-2">
+                 {SHELL_COLORS.map((color) => (
+                  <ColorButton 
+                    key={`btn-b-${color.id}`}
+                    color={color}
+                    isSelected={bButtonColor.id === color.id}
+                    onSelect={onSelectBButtonColor}
+                    sizeClass="w-8 h-8"
+                    className="!gap-0"
+                    showLabel={false}
+                  />
+                ))}
+                <ColorButton 
+                   isCustom
+                   isSelected={bButtonColor.id === 'custom'}
+                   color={bButtonColor}
+                   onSelect={onSelectBButtonColor}
                    sizeClass="w-8 h-8"
                    className="!gap-0"
                    showLabel={false}
