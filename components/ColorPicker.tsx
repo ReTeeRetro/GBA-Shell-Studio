@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -18,6 +18,7 @@ interface ColorPickerProps {
   onSelectBumpersColor: (color: ColorOption) => void;
   lensColor: ColorOption;
   onSelectLensColor: (color: ColorOption) => void;
+  onRandomize: () => void;
 }
 
 // Helper to compare if two colors are effectively the same (for UI state)
@@ -128,7 +129,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   bumpersColor,
   onSelectBumpersColor,
   lensColor,
-  onSelectLensColor
+  onSelectLensColor,
+  onRandomize
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
 
@@ -408,7 +410,17 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         )}
       </div>
 
-      <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-100">
+      <div className="pt-6 mt-6 border-t border-slate-100">
+        <button
+          onClick={onRandomize}
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white border-2 border-slate-100 hover:border-blue-200 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold rounded-xl transition-all duration-200 group"
+        >
+          <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
+          Randomize Colors
+        </button>
+      </div>
+
+      <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
         <p className="text-xs text-slate-500 leading-relaxed text-center">
           <strong>Interactive Preview:</strong> The colors are rendered in real-time. 
         </p>

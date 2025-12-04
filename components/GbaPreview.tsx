@@ -227,6 +227,14 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
           </filter>
 
           {/* 
+            Floor Shadow Blur:
+            Softens the shadow underneath the console.
+          */}
+          <filter id="floorShadowBlur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="12" result="blur"/>
+          </filter>
+
+          {/* 
             Sheen Gradient:
             A soft top-down white gradient to simulate lighting/specularity on curved plastic.
           */}
@@ -298,6 +306,22 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
               }
             `}
         </style>
+
+        {/*
+            LAYER -1: FLOOR SHADOW
+            Placed at the bottom to render behind everything
+        */}
+        <g id="floor-shadow-layer" pointerEvents="none">
+           <ellipse 
+             cx="320" 
+             cy="495" 
+             rx="280" 
+             ry="25" 
+             fill="#000000" 
+             opacity="0.2" 
+             filter="url(#floorShadowBlur)" 
+           />
+        </g>
 
         {/*
             LAYER 0: BUMPERS

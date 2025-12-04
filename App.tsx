@@ -19,6 +19,30 @@ function App() {
   
   const svgRef = useRef<SVGSVGElement>(null);
 
+  const handleRandomize = () => {
+    const getRandomHex = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+
+    const getRandomOption = (options: ColorOption[]) => {
+      // 25% chance of a completely custom random color
+      if (Math.random() < 0.25) {
+        return {
+          id: 'custom',
+          name: 'Custom',
+          hex: getRandomHex()
+        };
+      }
+      return options[Math.floor(Math.random() * options.length)];
+    };
+    
+    setSelectedColor(getRandomOption(SHELL_COLORS));
+    setDpadColor(getRandomOption(SHELL_COLORS));
+    setAButtonColor(getRandomOption(SHELL_COLORS));
+    setBButtonColor(getRandomOption(SHELL_COLORS));
+    setStartSelectColor(getRandomOption(SHELL_COLORS));
+    setBumpersColor(getRandomOption(SHELL_COLORS));
+    setLensColor(getRandomOption(LENS_COLORS));
+  };
+
   const handleDownload = () => {
     if (!svgRef.current) return;
     
@@ -261,6 +285,7 @@ function App() {
               onSelectBumpersColor={setBumpersColor}
               lensColor={lensColor}
               onSelectLensColor={setLensColor}
+              onRandomize={handleRandomize}
             />
 
             {/* Step Indicator */}
@@ -280,7 +305,7 @@ function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.52. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.55. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );
