@@ -36,11 +36,17 @@ function App() {
     
     setSelectedColor(getRandomOption(SHELL_COLORS));
     setDpadColor(getRandomOption(SHELL_COLORS));
-    setAButtonColor(getRandomOption(SHELL_COLORS));
-    setBButtonColor(getRandomOption(SHELL_COLORS));
+    
+    // A and B buttons should share the same color for better aesthetics
+    const randomButtonColor = getRandomOption(SHELL_COLORS);
+    setAButtonColor(randomButtonColor);
+    setBButtonColor(randomButtonColor);
+    
     setStartSelectColor(getRandomOption(SHELL_COLORS));
     setBumpersColor(getRandomOption(SHELL_COLORS));
-    setLensColor(getRandomOption(LENS_COLORS));
+    
+    // Lens color should only be one of the presets (Black or White), avoiding custom random colors
+    setLensColor(LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)]);
   };
 
   const handleDownload = () => {
@@ -194,22 +200,6 @@ function App() {
               <Download size={16} />
               <span className="hidden sm:inline">Download</span>
             </button>
-
-            <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block"></div>
-
-            <button
-              onClick={() => setShowButtonEffects(!showButtonEffects)}
-              className={`
-                flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200
-                ${showButtonEffects
-                  ? 'bg-slate-100 border-slate-300 text-slate-800 shadow-inner'
-                  : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50 shadow-sm'}
-              `}
-              title="Toggle Button Shadows & Effects"
-            >
-              <CircleDashed size={16} />
-              <span className="hidden sm:inline">Button Depth</span>
-            </button>
           </div>
         </div>
       </header>
@@ -243,22 +233,36 @@ function App() {
             />
             
             <div className="flex flex-col sm:flex-row justify-between items-center px-1 gap-4">
-              {/* Render Mode Toggle */}
-              <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                 <button 
-                  onClick={() => setRenderMode('plastic')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'plastic' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                 >
-                   <ScanFace size={14} />
-                   Plastic
-                 </button>
-                 <button 
-                  onClick={() => setRenderMode('matte')}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'matte' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                 >
-                   <Layers size={14} />
-                   Matte
-                 </button>
+              <div className="flex items-center gap-2">
+                {/* Render Mode Toggle */}
+                <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                   <button 
+                    onClick={() => setRenderMode('plastic')}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'plastic' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                   >
+                     <ScanFace size={14} />
+                     Plastic
+                   </button>
+                   <button 
+                    onClick={() => setRenderMode('matte')}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'matte' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                   >
+                     <Layers size={14} />
+                     Matte
+                   </button>
+                </div>
+
+                {/* Button Depth Toggle */}
+                <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                  <button
+                    onClick={() => setShowButtonEffects(!showButtonEffects)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${showButtonEffects ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                    title="Toggle Button Depth"
+                  >
+                    <CircleDashed size={14} />
+                    Button Depth
+                  </button>
+                </div>
               </div>
 
               <div className="text-xs text-slate-400 font-mono hidden sm:block">
@@ -305,7 +309,7 @@ function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.55. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.56. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );

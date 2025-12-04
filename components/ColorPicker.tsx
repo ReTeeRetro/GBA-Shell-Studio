@@ -413,7 +413,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       <div className="pt-6 mt-6 border-t border-slate-100">
         <button
           onClick={onRandomize}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white border-2 border-slate-100 hover:border-blue-200 hover:bg-blue-50 text-slate-600 hover:text-blue-600 font-bold rounded-xl transition-all duration-200 group"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-50 border-2 border-green-200 hover:border-green-300 hover:bg-green-100 text-green-700 font-bold rounded-xl transition-all duration-200 group shadow-sm hover:shadow-md"
         >
           <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
           Randomize Colors
