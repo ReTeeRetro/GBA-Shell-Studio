@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
+import { HeaderLogo } from './components/HeaderLogo';
 import { SHELL_COLORS, LENS_COLORS } from './constants';
 import { ColorOption, RenderMode } from './types';
 import { Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
@@ -24,7 +25,7 @@ function App() {
     const w = 900;
     const h = 550;
     const scale = 2; // High res scale
-    const footerHeight = 100; // Extra height for metadata
+    const footerHeight = 160; // Increased height to accommodate 3 rows of metadata
 
     // 1. Clone the SVG to manipulate it safely without affecting the DOM
     const svgClone = svgRef.current.cloneNode(true) as SVGSVGElement;
@@ -84,25 +85,27 @@ function App() {
       // 4. Draw Metadata
       ctx.textBaseline = "middle";
       
+      // Organize parts
       const parts = [
         { label: 'Shell', color: selectedColor },
         { label: 'Lens', color: lensColor },
+        { label: 'D-Pad', color: dpadColor },
         { label: 'Btn A', color: aButtonColor },
         { label: 'Btn B', color: bButtonColor },
-        { label: 'D-Pad', color: dpadColor },
         { label: 'Start/Select', color: startSelectColor },
         { label: 'Bumpers', color: bumpersColor },
       ];
 
       const startX = 60;
-      const colWidth = 500;
+      const colWidth = 530; // Slightly wider columns
+      const itemsPerCol = 3; // Allow up to 3 items per column (creates 3 columns total for 7 items)
       
       parts.forEach((part, index) => {
-         const col = Math.floor(index / 2);
-         const row = index % 2;
+         const col = Math.floor(index / itemsPerCol);
+         const row = index % itemsPerCol;
          
          const x = startX + (col * colWidth);
-         const y = footerY + 65 + (row * 60); // 65px start Y, 60px row gap
+         const y = footerY + 60 + (row * 60); // 60px row gap
 
          // Label
          ctx.textAlign = "left";
@@ -127,7 +130,8 @@ function App() {
       ctx.textAlign = "right";
       ctx.font = "bold 24px sans-serif";
       ctx.fillStyle = "#cbd5e1"; // slate-300
-      ctx.fillText(`GBA Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, footerY + (footerHeight * scale) - 30);
+      // Position relative to the bottom of the canvas
+      ctx.fillText(`GBA Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, canvas.height - 40);
       
       // 6. Save & Download
       const pngUrl = canvas.toDataURL("image/png");
@@ -152,6 +156,7 @@ function App() {
           
           {/* Logo & Title */}
           <div className="flex items-center gap-3">
+            <HeaderLogo />
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">GBA Shell Studio</h1>
           </div>
 
