@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { inject } from '@vercel/analytics';
 import App from './App';
 
 const rootElement = document.getElementById('root');
@@ -13,3 +14,6 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+// Initialize Vercel Web Analytics
+inject();
