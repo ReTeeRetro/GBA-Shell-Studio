@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
@@ -380,7 +381,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
              {/* Bumpers Color Section */}
             <div>
               <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Bumpers / Triggers
+                Bumpers / L + R 
               </h3>
               <div className="grid grid-cols-6 gap-2">
                  {SHELL_COLORS.map((color) => (
@@ -413,7 +414,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       <div className="pt-6 mt-6 border-t border-slate-100">
         <button
           onClick={onRandomize}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-50 border-2 border-green-200 hover:border-green-300 hover:bg-green-100 text-green-700 font-bold rounded-xl transition-all duration-200 group shadow-sm hover:shadow-md"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent"
         >
           <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
           Randomize Colors

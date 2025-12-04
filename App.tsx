@@ -1,10 +1,11 @@
+
 import { useState, useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { SHELL_COLORS, LENS_COLORS } from './constants';
 import { ColorOption, RenderMode } from './types';
-import { Layers, ScanFace, CircleDashed, Download } from 'lucide-react';
+import { Layers, ScanFace, CircleDashed, Download, RotateCcw } from 'lucide-react';
 
 function App() {
   const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[1]);
@@ -47,6 +48,18 @@ function App() {
     
     // Lens color should only be one of the presets (Black or White), avoiding custom random colors
     setLensColor(LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)]);
+  };
+
+  const handleReset = () => {
+    setSelectedColor(SHELL_COLORS[1]);
+    setDpadColor(SHELL_COLORS[4]);
+    setAButtonColor(SHELL_COLORS[4]);
+    setBButtonColor(SHELL_COLORS[4]);
+    setStartSelectColor(SHELL_COLORS[4]);
+    setBumpersColor(SHELL_COLORS[4]);
+    setLensColor(LENS_COLORS[0]);
+    setShowButtonEffects(true);
+    setRenderMode('plastic');
   };
 
   const handleDownload = () => {
@@ -200,6 +213,15 @@ function App() {
               <Download size={16} />
               <span className="hidden sm:inline">Download</span>
             </button>
+
+            <button
+              onClick={handleReset}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
+              title="Reset to Default"
+            >
+              <RotateCcw size={16} />
+              <span className="hidden sm:inline">Reset</span>
+            </button>
           </div>
         </div>
       </header>
@@ -309,7 +331,7 @@ function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.56. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.57. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );
