@@ -395,7 +395,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.6. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.61. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );

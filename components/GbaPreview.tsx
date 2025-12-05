@@ -29,7 +29,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
 }, ref) => {
   // Expanded VIEWBOX to accommodate Bumpers (approx 802px wide)
   // Original: 0 0 783 452
-  // New: 0 0 900 500
+  // New: 0 0 900 550
   const VIEWBOX = "0 0 900 550";
 
   // MAIN CONTENT OFFSET
@@ -219,11 +219,16 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
           </filter>
 
           {/* 
-            Button Drop Shadow:
-            Adds a shadow to buttons so they appear to stick out from the shell.
+            Button Drop Shadows:
+            Right Shadow for D-Pad and Start/Select
+            Left Shadow for A/B Buttons
           */}
-          <filter id="btnShadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="1" dy="2" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.35" />
+          <filter id="btnShadowRight" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="2" dy="2" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.35" />
+          </filter>
+
+          <filter id="btnShadowLeft" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="-2" dy="2" stdDeviation="1.5" floodColor="#000000" floodOpacity="0.35" />
           </filter>
 
           {/* 
@@ -414,8 +419,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
               LAYER 3: D-PAD
           */}
           <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
-            {/* Base Layer + Drop Shadow */}
-            <g id="dpad-base-layer" filter={showButtonEffects ? "url(#btnShadow)" : undefined}>
+            {/* Base Layer + Drop Shadow (Right) */}
+            <g id="dpad-base-layer" filter={showButtonEffects ? "url(#btnShadowRight)" : undefined}>
               <DpadPaths />
             </g>
 
@@ -446,8 +451,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
               LAYER 4: BUTTONS (A/B and Start/Select)
           */}
           <g>
-            {/* A/B Buttons Base + Drop Shadow */}
-            <g id="buttons-base-layer" filter={showButtonEffects ? "url(#btnShadow)" : undefined}>
+            {/* A/B Buttons Base + Drop Shadow (Left) */}
+            <g id="buttons-base-layer" filter={showButtonEffects ? "url(#btnShadowLeft)" : undefined}>
               <g id="btn-a-base">{A_BUTTON_SHAPE}</g>
               <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
               {BUTTON_LABELS}
@@ -472,8 +477,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(({
               </g>
             )}
   
-            {/* Start/Select Buttons (Rubber Texture) */}
-            <g fill={startSelectColor.hex} filter={showButtonEffects ? "url(#btnShadow)" : undefined}>
+            {/* Start/Select Buttons (Rubber Texture) + Drop Shadow (Right) */}
+            <g fill={startSelectColor.hex} filter={showButtonEffects ? "url(#btnShadowRight)" : undefined}>
               <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
                 <StartSelectPath />
               </g>
