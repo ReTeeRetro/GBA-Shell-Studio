@@ -202,8 +202,14 @@ The render should look like a real product photo of a Game Boy Advance.`;
       ctx.fillStyle = "#cbd5e1"; // slate-300
       // Position relative to the bottom of the canvas
       ctx.fillText(`GBA Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, canvas.height - 40);
+
+      // 6. Draw URL
+      ctx.textAlign = "left";
+      ctx.font = "24px sans-serif";
+      ctx.fillStyle = "#94a3b8"; // slate-400
+      ctx.fillText("https://gba-shell-studio.vercel.app/", startX, canvas.height - 40);
       
-      // 6. Save & Download
+      // 7. Save & Download
       const pngUrl = canvas.toDataURL("image/png");
       const downloadLink = document.createElement("a");
       downloadLink.href = pngUrl;
@@ -378,7 +384,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
                 How it works
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration. This is a very early version of the tool, and things may change as it improves and gains more features over time.
+                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration or why not prompt ChatGPT with it. This is a very early version of the tool, and things will change as it improves and gains more features over time.
               </p>
             </div>
 
