@@ -1,11 +1,10 @@
-
 import { useState, useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { SHELL_COLORS, LENS_COLORS } from './constants';
 import { ColorOption, RenderMode } from './types';
-import { Layers, ScanFace, CircleDashed, Download, RotateCcw } from 'lucide-react';
+import { Layers, ScanFace, CircleDashed, Download, RotateCcw, Sparkles, Bot, ExternalLink } from 'lucide-react';
 
 function App() {
   const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[1]);
@@ -60,6 +59,34 @@ function App() {
     setLensColor(LENS_COLORS[0]);
     setShowButtonEffects(true);
     setRenderMode('plastic');
+  };
+
+  const generateAiPrompt = () => {
+    return `Create a realistic high-resolution render of a Game Boy Advance.
+Follow these exact colors from the provided design:
+
+Shell: ${selectedColor.name} (Hex: ${selectedColor.hex})
+Lens: ${lensColor.name} (Hex: ${lensColor.hex})
+D-Pad: ${dpadColor.name} (Hex: ${dpadColor.hex})
+Buttons A/B: ${aButtonColor.name} (Hex: ${aButtonColor.hex})
+Start/Select: ${startSelectColor.name} (Hex: ${startSelectColor.hex})
+Bumpers: ${bumpersColor.name} (Hex: ${bumpersColor.hex})
+
+The render should look like a real product photo of a Game Boy Advance.`;
+  };
+
+  const handleOpenAi = (tool: 'chatgpt' | 'gemini') => {
+    const prompt = generateAiPrompt();
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    let url = '';
+    if (tool === 'chatgpt') {
+      url = `https://chat.openai.com/?q=${encodedPrompt}`;
+    } else {
+      url = `https://gemini.google.com/app?prompt=${encodedPrompt}`;
+    }
+    
+    window.open(url, '_blank');
   };
 
   const handleDownload = () => {
@@ -292,6 +319,36 @@ function App() {
                  {renderMode === 'matte' && 'RENDER: Clean Vector Shading'}
               </div>
             </div>
+
+            {/* AI Visualization */}
+            <div className="bg-gradient-to-br from-indigo-50 to-white rounded-xl p-6 border border-indigo-100 shadow-sm relative overflow-hidden mt-6">
+              <div className="absolute top-0 right-0 p-3 opacity-10">
+                <Sparkles size={64} />
+              </div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-indigo-900 mb-2 uppercase tracking-wide flex items-center gap-2">
+                    <Sparkles size={16} className="text-indigo-600" />
+                    AI Visualization
+                  </h3>
+                  <p className="text-sm text-indigo-700/80 leading-relaxed">
+                    Want to see a photorealistic render? Generate a prompt for your ChatGPT to visualize this design (opens in new tab).
+                  </p>
+                </div>
+                
+                <div className="w-full md:w-auto shrink-0">
+                  <button 
+                    onClick={() => handleOpenAi('chatgpt')}
+                    className="w-full md:w-auto flex items-center justify-center gap-2 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold uppercase tracking-wider rounded-xl shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <Bot size={18} className="text-indigo-200" />
+                    ChatGPT
+                    <ExternalLink size={12} className="text-indigo-300 ml-0.5 opacity-70" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right: Controls */}
@@ -314,7 +371,7 @@ function App() {
               onRandomize={handleRandomize}
             />
 
-            {/* Step Indicator */}
+            {/* How it works */}
             <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wide flex items-center gap-2">
                 <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-600 text-white text-[10px]">i</span>
@@ -324,6 +381,7 @@ function App() {
                 Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration. This is a very early version of the tool, and things may change as it improves and gains more features over time.
               </p>
             </div>
+
           </div>
           
         </div>
@@ -331,7 +389,7 @@ function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.57. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.6. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );
