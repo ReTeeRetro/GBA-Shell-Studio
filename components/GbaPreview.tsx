@@ -14,7 +14,6 @@ import {
   ABMembraneBase,
   ClearShellInternals,
 } from './GbaSvgPaths';
-import { GbaTextureOverlay } from './GbaTextureOverlay';
 
 interface GbaPreviewProps {
   selectedColor: ColorOption;
@@ -697,26 +696,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
             </g>
           </g>
-
-          {/* 
-              LAYER 4.5: TEXTURE OVERLAY
-              Added from user request. Scaled to fit the viewbox width.
-              Using 0.473 scale (900/1903) and clipped to shell.
-              Translating Y slightly to center vertically in the viewbox if needed, 
-              but scaling from top-left (0,0) with 0.473 fills most of the width.
-              We align it approximately by translating slightly down.
-          */}
-          {showTexture && (
-            <g
-              id="texture-overlay-layer"
-              transform="translate(0, 27) scale(0.473)"
-              pointerEvents="none"
-              clipPath="url(#shell-clip)"
-              style={{ mixBlendMode: 'overlay', opacity: 0.4 }}
-            >
-              <GbaTextureOverlay />
-            </g>
-          )}
 
           {/* 
               LAYER 5: DESIGNER OVERLAY
