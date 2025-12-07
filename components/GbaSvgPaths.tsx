@@ -504,5 +504,5 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
     opacity={0.9}
   />
 </g>
-
+</g>
 );
