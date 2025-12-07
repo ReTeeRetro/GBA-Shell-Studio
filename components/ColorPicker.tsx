@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -20,6 +20,8 @@ interface ColorPickerProps {
   lensColor: ColorOption;
   onSelectLensColor: (color: ColorOption) => void;
   onRandomize: () => void;
+  isClearShell: boolean;
+  onToggleClearShell: () => void;
 }
 
 // Helper to compare if two colors are effectively the same (for UI state)
@@ -131,7 +133,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   onSelectBumpersColor,
   lensColor,
   onSelectLensColor,
-  onRandomize
+  onRandomize,
+  isClearShell,
+  onToggleClearShell
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
 
@@ -156,10 +160,20 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       
       {/* Shell Color Section */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <span className="w-1 h-6 bg-blue-600 rounded-full inline-block"></span>
-          Shell Color
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+            <span className="w-1 h-6 bg-blue-600 rounded-full inline-block"></span>
+            Shell Color
+            </h2>
+            <button
+                onClick={onToggleClearShell}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                title="Toggle Clear/Transparent Shell"
+            >
+                {isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                Clear Shell
+            </button>
+        </div>
         
         <div className="grid grid-cols-5 gap-4">
           {SHELL_COLORS.map((color) => (

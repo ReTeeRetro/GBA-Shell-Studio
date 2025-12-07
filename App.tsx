@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
@@ -16,6 +17,7 @@ function App() {
   const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
   const [showButtonEffects, setShowButtonEffects] = useState(true);
   const [renderMode, setRenderMode] = useState<RenderMode>('plastic');
+  const [isClearShell, setIsClearShell] = useState(false);
   
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -59,6 +61,7 @@ function App() {
     setLensColor(LENS_COLORS[0]);
     setShowButtonEffects(true);
     setRenderMode('plastic');
+    setIsClearShell(false);
   };
 
   const generateAiPrompt = () => {
@@ -68,9 +71,11 @@ Follow these exact colors from the provided design:
 Shell: ${selectedColor.name} (Hex: ${selectedColor.hex})
 Lens: ${lensColor.name} (Hex: ${lensColor.hex})
 D-Pad: ${dpadColor.name} (Hex: ${dpadColor.hex})
-Buttons A/B: ${aButtonColor.name} (Hex: ${aButtonColor.hex})
+Button A: ${aButtonColor.name} (Hex: ${aButtonColor.hex})
+Button B: ${bButtonColor.name} (Hex: ${bButtonColor.hex})
 Start/Select: ${startSelectColor.name} (Hex: ${startSelectColor.hex})
 Bumpers: ${bumpersColor.name} (Hex: ${bumpersColor.hex})
+Shell Type: ${isClearShell ? 'Transparent/Clear Plastic' : 'Solid Plastic'}
 
 The render should look like a real product photo of a Game Boy Advance.`;
   };
@@ -157,7 +162,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
       
       // Organize parts
       const parts = [
-        { label: 'Shell', color: selectedColor },
+        { label: 'Shell', color: selectedColor, detail: isClearShell ? '(Clear)' : '' },
         { label: 'Lens', color: lensColor },
         { label: 'D-Pad', color: dpadColor },
         { label: 'Btn A', color: aButtonColor },
@@ -187,10 +192,14 @@ The render should look like a real product photo of a Game Boy Advance.`;
          const labelWidth = ctx.measureText(part.label + ":").width;
          ctx.font = "bold 24px sans-serif";
          ctx.fillStyle = "#0f172a"; // slate-900
-         ctx.fillText(part.color.name, x + labelWidth + 12, y);
+         let nameText = part.color.name;
+         if ('detail' in part && part.detail) {
+            nameText += ` ${part.detail}`;
+         }
+         ctx.fillText(nameText, x + labelWidth + 12, y);
 
          // Hex Code
-         const nameWidth = ctx.measureText(part.color.name).width;
+         const nameWidth = ctx.measureText(nameText).width;
          ctx.font = "20px monospace";
          ctx.fillStyle = "#94a3b8"; // slate-400
          ctx.fillText(part.color.hex.toUpperCase(), x + labelWidth + 12 + nameWidth + 12, y);
@@ -213,7 +222,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
       const pngUrl = canvas.toDataURL("image/png");
       const downloadLink = document.createElement("a");
       downloadLink.href = pngUrl;
-      downloadLink.download = `gba-shell-${selectedColor.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+      downloadLink.download = `gba-shell-${selectedColor.name.toLowerCase().replace(/\s+/g, '-')}${isClearShell ? '-clear' : ''}.png`;
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
@@ -285,6 +294,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
               lensColor={lensColor}
               showButtonEffects={showButtonEffects}
               renderMode={renderMode}
+              isClearShell={isClearShell}
             />
             
             <div className="flex flex-col sm:flex-row justify-between items-center px-1 gap-4">
@@ -375,6 +385,8 @@ The render should look like a real product photo of a Game Boy Advance.`;
               lensColor={lensColor}
               onSelectLensColor={setLensColor}
               onRandomize={handleRandomize}
+              isClearShell={isClearShell}
+              onToggleClearShell={() => setIsClearShell(!isClearShell)}
             />
 
             {/* How it works */}
@@ -395,7 +407,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
 
       {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.61. Not affiliated with Nintendo.</p>
+        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.67. Not affiliated with Nintendo.</p>
       </footer>
     </div>
   );
