@@ -275,9 +275,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
     {/* SPEAKER – circular molded support ring */}
     <g transform="translate(680, 310) rotate(-10)">
       <circle
-        cx="0"
-        cy="0"
-        r="50"
+        cx={0}
+        cy={0}
+        r={50}
         fill="none"
         stroke="#cfd3d9"
         strokeWidth={6}
@@ -285,8 +285,8 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       />
     </g>
 
-        {/* INNER SHELL TRACE – scaled inward by ~1.5% */}
-        <g
+    {/* INNER SHELL TRACE – scaled inward slightly */}
+    <g
       transform="
         translate(503, 225)
         scale(0.985)
@@ -294,215 +294,215 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       "
       opacity={0.75}
     >
-    <path
-      d="M0 0 C1.518 -0.003 3.035 -0.007 4.553 -0.012 C8.693 -0.022 12.832 -0.02 16.972 -0.015 C21.449 -0.013 25.925 -0.022 30.402 -0.029 C39.16 -0.042 47.919 -0.044 56.677 -0.042 C63.8 -0.04 70.922 -0.042 78.045 -0.046 C79.568 -0.047 79.568 -0.047 81.122 -0.048 C83.185 -0.049 85.248 -0.05 87.311 -0.051 C106.64 -0.062 125.969 -0.06 145.298 -0.054 C162.96 -0.049 180.622 -0.06 198.284 -0.079 C216.443 -0.098 234.601 -0.107 252.76 -0.103 C262.945 -0.101 273.131 -0.103 283.316 -0.118 C291.987 -0.13 300.658 -0.131 309.329 -0.119 C313.748 -0.113 318.167 -0.112 322.586 -0.124 C326.641 -0.135 330.696 -0.132 334.75 -0.118 C336.208 -0.115 337.665 -0.117 339.123 -0.125 C365.423 -0.261 386.942 10.53 410.281 21.477 C438.464 34.67 467.184 44.22 498.012 48.59 C523.486 52.232 523.486 52.232 531.115 61.123 C537.054 69.2 539.121 78.992 541.062 88.636 C541.205 89.329 541.349 90.022 541.496 90.737 C549.585 129.989 554.456 169.816 557.375 209.761 C557.436 210.586 557.497 211.411 557.56 212.262 C559.548 239.591 559.899 266.932 559.927 294.321 C559.933 298.895 559.957 303.469 559.985 308.043 C560.004 311.624 560.009 315.205 560.011 318.786 C560.014 320.473 560.022 322.16 560.035 323.847 C560.169 342.144 556.694 355.388 543.898 369.14 C530.713 381.789 514.658 387.286 497.465 391.948 C495.629 392.458 493.793 392.969 491.958 393.482 C487.158 394.82 482.353 396.142 477.547 397.459 C469.884 399.562 462.226 401.688 454.57 403.817 C451.937 404.546 449.302 405.268 446.667 405.988 C437.832 408.419 429.079 411.031 420.379 413.909 C419.084 414.335 419.084 414.335 417.763 414.77 C410.559 417.193 403.928 420.306 397.187 423.823 C386.671 429.084 376.451 433.026 365.012 435.714 C362.871 436.217 360.747 436.763 358.621 437.323 C329.43 444.712 298.504 446.714 268.582 449.034 C265.755 449.255 262.929 449.488 260.104 449.723 C198.779 454.732 135.823 454.601 74.511 449.495 C71.598 449.253 68.683 449.021 65.769 448.79 C-23.949 441.626 -23.949 441.626 -58.188 424.511 C-88.919 409.252 -123.438 401.897 -156.382 392.871 C-159.996 391.88 -163.606 390.875 -167.213 389.858 C-169.036 389.348 -170.863 388.856 -172.69 388.364 C-189.25 383.674 -206.204 373.594 -215.366 358.529 C-221.73 347.132 -222.608 337.398 -222.938 324.573 C-222.96 323.729 -222.982 322.884 -223.005 322.014 C-223.581 298.754 -223.047 275.512 -222.313 252.261 C-222.283 251.301 -222.252 250.341 -222.221 249.353 C-220.536 197.35 -215.843 144.742 -204.858 93.815 C-204.308 91.24 -203.798 88.658 -203.293 86.073 C-200.777 73.491 -197.541 62.704 -186.578 55.05 C-178.296 50.342 -168.197 49.484 -158.901 48.24 C-124.762 43.672 -94.051 31.199 -63.063 16.573 C-54.589 12.588 -46.103 8.812 -37.313 5.573 C-36.052 5.101 -36.052 5.101 -34.765 4.619 C-23.352 0.569 -12.021 -0.034 0 0 Z"
-      transform="translate(223.3128204345703,-0.2606964111328125)"
-      fill="none"
-      stroke="#cfd3d9"
-      strokeWidth={8}
-      opacity={0.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+      <path
+        d="M0 0 C1.518 -0.003 3.035 -0.007 4.553 -0.012 C8.693 -0.022 12.832 -0.02 16.972 -0.015 C21.449 -0.013 25.925 -0.022 30.402 -0.029 C39.16 -0.042 47.919 -0.044 56.677 -0.042 C63.8 -0.04 70.922 -0.042 78.045 -0.046 C79.568 -0.047 79.568 -0.047 81.122 -0.048 C83.185 -0.049 85.248 -0.05 87.311 -0.051 C106.64 -0.062 125.969 -0.06 145.298 -0.054 C162.96 -0.049 180.622 -0.06 198.284 -0.079 C216.443 -0.098 234.601 -0.107 252.76 -0.103 C262.945 -0.101 273.131 -0.103 283.316 -0.118 C291.987 -0.13 300.658 -0.131 309.329 -0.119 C313.748 -0.113 318.167 -0.112 322.586 -0.124 C326.641 -0.135 330.696 -0.132 334.75 -0.118 C336.208 -0.115 337.665 -0.117 339.123 -0.125 C365.423 -0.261 386.942 10.53 410.281 21.477 C438.464 34.67 467.184 44.22 498.012 48.59 C523.486 52.232 523.486 52.232 531.115 61.123 C537.054 69.2 539.121 78.992 541.062 88.636 C541.205 89.329 541.349 90.022 541.496 90.737 C549.585 129.989 554.456 169.816 557.375 209.761 C557.436 210.586 557.497 211.411 557.56 212.262 C559.548 239.591 559.899 266.932 559.927 294.321 C559.933 298.895 559.957 303.469 559.985 308.043 C560.004 311.624 560.009 315.205 560.011 318.786 C560.014 320.473 560.022 322.16 560.035 323.847 C560.169 342.144 556.694 355.388 543.898 369.14 C530.713 381.789 514.658 387.286 497.465 391.948 C495.629 392.458 493.793 392.969 491.958 393.482 C487.158 394.82 482.353 396.142 477.547 397.459 C469.884 399.562 462.226 401.688 454.57 403.817 C451.937 404.546 449.302 405.268 446.667 405.988 C437.832 408.419 429.079 411.031 420.379 413.909 C419.084 414.335 419.084 414.335 417.763 414.77 C410.559 417.193 403.928 420.306 397.187 423.823 C386.671 429.084 376.451 433.026 365.012 435.714 C362.871 436.217 360.747 436.763 358.621 437.323 C329.43 444.712 298.504 446.714 268.582 449.034 C265.755 449.255 262.929 449.488 260.104 449.723 C198.779 454.732 135.823 454.601 74.511 449.495 C71.598 449.253 68.683 449.021 65.769 448.79 C-23.949 441.626 -23.949 441.626 -58.188 424.511 C-88.919 409.252 -123.438 401.897 -156.382 392.871 C-159.996 391.88 -163.606 390.875 -167.213 389.858 C-169.036 389.348 -170.863 388.856 -172.69 388.364 C-189.25 383.674 -206.204 373.594 -215.366 358.529 C-221.73 347.132 -222.608 337.398 -222.938 324.573 C-222.96 323.729 -222.982 322.884 -223.005 322.014 C-223.581 298.754 -223.047 275.512 -222.313 252.261 C-222.283 251.301 -222.252 250.341 -222.221 249.353 C-220.536 197.35 -215.843 144.742 -204.858 93.815 C-204.308 91.24 -203.798 88.658 -203.293 86.073 C-200.777 73.491 -197.541 62.704 -186.578 55.05 C-178.296 50.342 -168.197 49.484 -158.901 48.24 C-124.762 43.672 -94.051 31.199 -63.063 16.573 C-54.589 12.588 -46.103 8.812 -37.313 5.573 C-36.052 5.101 -36.052 5.101 -34.765 4.619 C-23.352 0.569 -12.021 -0.034 0 0 Z"
+        transform="translate(223.3128204345703,-0.2606964111328125)"
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={8}
+        opacity={0.7}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+
+    {/* D-PAD MOLDED SUPPORT RING */}
+    <g transform="translate(46, 133)">
+      <circle
+        cx={53}
+        cy={54}
+        r={58}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+      />
+    </g>
+
+    {/* SPEAKER → SHELL SUPPORT RIBS (shorter so they don’t enter the ring) */}
+    <g transform="translate(680, 310) rotate(-10)">
+      {/* Left Rib */}
+      <line
+        x1={-10}
+        y1={46}   // moved down so it doesn't enter the ring
+        x2={-14}
+        y2={83}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+
+      {/* Right Rib */}
+      <line
+        x1={10}
+        y1={46}
+        x2={14}
+        y2={83}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+
+    {/* Thick vertical rib */}
+    <g transform="translate(550, 400)">
+      <line
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={30}
+        stroke="#cfd3d9"
+        strokeWidth={12}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+
+    {/* Long angled rib */}
+    <g transform="translate(615, 370) rotate(-30)">
+      <line
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={45}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+
+    {/* SCREW POSTS */}
+    {/* Right of speaker ring */}
+    <g transform="translate(740, 350)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Right & above speaker */}
+    <g transform="translate(730, 255)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Center below lens */}
+    <g transform="translate(390, 435)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Bottom-left */}
+    <g transform="translate(50, 350)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Left under d-pad */}
+    <g transform="translate(60, 255)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Left next to lens */}
+    <g transform="translate(160, 250)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Above d-pad */}
+    <g transform="translate(150, 120)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Above B+A */}
+    <g transform="translate(640, 120)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Top left */}
+    <g transform="translate(200, 25)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
+
+    {/* Top right */}
+    <g transform="translate(580, 25)">
+      <circle
+        cx={0}
+        cy={0}
+        r={6}
+        fill="none"
+        stroke="#cfd3d9"
+        strokeWidth={5}
+        opacity={0.9}
+      />
+    </g>
   </g>
-
-{/* D-PAD MOLDED SUPPORT RING */}
-<g transform="translate(46, 133)">
-  <circle
-    cx="53"
-    cy="54"
-    r="58"
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={6}
-    opacity={0.85}
-  />
-</g>
-
-{/* SPEAKER → SHELL SUPPORT RIBS (shorter so they don’t enter the ring) */}
-<g transform="translate(680, 310) rotate(-10)">
-  {/* Left Rib */}
-  <line
-    x1="-10"
-    y1="46"   // moved down 3px → no longer inside ring
-    x2="-14"
-    y2="83"
-    stroke="#cfd3d9"
-    strokeWidth={6}
-    opacity={0.85}
-    strokeLinecap="round"
-  />
-
-  {/* Right Rib */}
-  <line
-    x1="10"
-    y1="46"   // same adjustment
-    x2="14"
-    y2="83"
-    stroke="#cfd3d9"
-    strokeWidth={6}
-    opacity={0.85}
-    strokeLinecap="round"
-  />
-</g>
-
-  {/* Thick Rib */}
-<g transform="translate(550, 400)">
-  <line
-    x1={0}
-    y1={0}
-    x2={0}
-    y2={30}
-    stroke="#cfd3d9"
-    strokeWidth={12}
-    opacity={0.85}
-    strokeLinecap="round"
-  />
-</g>
-
-  {/* Long Rib */}
-
-<g transform="translate(615, 370) rotate(-30)">
-  <line
-    x1={0}
-    y1={0}
-    x2={0}
-    y2={45}
-    stroke="#cfd3d9"
-    strokeWidth={6}
-    opacity={0.85}
-    strokeLinecap="round"
-  />
-</g>
-
-{/* SCREW POST – right of the speaker ring */}
-<g transform="translate(740, 350)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – right and above of the speaker ring */}
-<g transform="translate(730, 255)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – center below lens */}
-<g transform="translate(390, 435)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – down left */}
-<g transform="translate(50, 350)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – left under dpad */}
-<g transform="translate(60, 255)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – left next to lens */}
-<g transform="translate(160, 250)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – above dpad */}
-<g transform="translate(150, 120)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – above B+A */}
-<g transform="translate(640, 120)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – top left */}
-<g transform="translate(200, 25)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-
-{/* SCREW POST – top right */}
-<g transform="translate(580, 25)">
-  <circle
-    cx={0}
-    cy={0}
-    r={6}
-    fill="none"
-    stroke="#cfd3d9"
-    strokeWidth={5}
-    opacity={0.9}
-  />
-</g>
-</g>
 );
