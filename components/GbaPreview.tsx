@@ -5,7 +5,6 @@ import {
   DpadPaths,
   StartSelectPath,
   LensPath,
-  BumpersPath,
   SpeakerGrillPath,
   PowerLedPath,
   GbaLogo,
@@ -13,6 +12,10 @@ import {
   StartSelectMembraneBase,
   ABMembraneBase,
   ClearShellInternals,
+  LeftBumperPath,
+  RightBumperPath,
+  LButtonPath,
+  RButtonPath,
 } from './GbaSvgPaths';
 
 interface GbaPreviewProps {
@@ -61,6 +64,29 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     // Aligned to match the shell's position.
     const BUMPERS_X = 48;
     const BUMPERS_Y = 50;
+
+    // Bumper placement & angle tuning
+const LEFT_BUMPER_OFFSET_X = 28;
+const LEFT_BUMPER_OFFSET_Y = 75;
+const LEFT_BUMPER_SCALE = 0.47;
+const LEFT_BUMPER_ROTATION = 5; // degrees, tilt to follow left side curve
+
+const RIGHT_BUMPER_OFFSET_X = 777;
+const RIGHT_BUMPER_OFFSET_Y = 75;
+const RIGHT_BUMPER_SCALE = 0.47;
+const RIGHT_BUMPER_ROTATION = -6; // degrees, opposite direction
+
+// L / R button placement (on top of bumpers)
+const L_BUTTON_OFFSET_X = 0;
+const L_BUTTON_OFFSET_Y = 0;
+const L_BUTTON_SCALE = 0.35;
+const L_BUTTON_ROTATION = -6; // roughly follow left side curve
+
+const R_BUTTON_OFFSET_X = 600;
+const R_BUTTON_OFFSET_Y = -15;
+const R_BUTTON_SCALE = 0.35;
+const R_BUTTON_ROTATION = 6;  // for when we add the R path
+
 
     // CONFIG: A/B Button Position Adjustment
     // Edit these values to shift the A and B buttons group.
@@ -388,22 +414,75 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               filter="url(#floorShadowBlur)"
             />
           </g>
+ 
+{/* LAYER 0: BUMPERS */}
+<g
+  id="bumpers-layer"
+  transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}
+>
+  {/* Bumper shells */}
+  <g id="bumpers-base">
+    {/* Left bumper shell */}
+    <g
+      transform={`
+        translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
+        rotate(${LEFT_BUMPER_ROTATION})
+        scale(${LEFT_BUMPER_SCALE})
+      `}
+    >
+      <LeftBumperPath />
+    </g>
 
-          {/*
-              LAYER 0: BUMPERS
-          */}
-          <g id="bumpers-layer" transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}>
-            <g id="bumpers-base">
-              <BumpersPath />
-            </g>
-            {/* Bumpers Texture */}
-            {showTexture && (
-              <g filter="url(#plasticGrain)" style={{ mixBlendMode: 'overlay' }} opacity="0.3">
-                <BumpersPath />
-              </g>
-            )}
-          </g>
+    {/* Right bumper shell */}
+    <g
+      transform={`
+        translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
+        rotate(${RIGHT_BUMPER_ROTATION})
+        scale(${RIGHT_BUMPER_SCALE})
+      `}
+    >
+      <RightBumperPath />
+    </g>
+  </g>
 
+  {/* L / R plastic buttons sitting on top of shells */}
+  <g id="bumper-buttons-layer">
+    {/* L button */}
+    <g
+      transform={`
+        translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
+        rotate(${L_BUTTON_ROTATION})
+        scale(${L_BUTTON_SCALE})
+      `}
+    >
+      <LButtonPath />
+    </g>
+
+    {/* R button – will hook in once we have RButtonPath */}
+     <g
+      transform={`
+        translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
+        rotate(${R_BUTTON_ROTATION})
+        scale(${R_BUTTON_SCALE})
+      `}
+    >
+      <RButtonPath />
+    </g>
+  </g>
+
+  {/* Optional bumper texture */}
+  {showTexture && (
+    <g
+      filter="url(#plasticGrain)"
+      style={{ mixBlendMode: 'overlay' }}
+      opacity="0.3"
+    >
+      {/* repeat shells + buttons here if you want texture on them too */}
+    </g>
+  )}
+</g>
+
+          
           {/* 
               MAIN CONSOLE GROUP
               Wraps Shell, Lens, and Controls to center them in the new, wider viewbox.

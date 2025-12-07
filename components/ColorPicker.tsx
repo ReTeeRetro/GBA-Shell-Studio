@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
 import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight } from 'lucide-react';
@@ -32,6 +32,60 @@ const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   return a.id === b.id;
 };
 
+// Hex Input Component for Custom Colors
+const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange: (c: ColorOption) => void }) => {
+  const [value, setValue] = useState(color.hex);
+
+  useEffect(() => {
+    setValue(color.hex);
+  }, [color.hex]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVal = e.target.value;
+    setValue(newVal);
+    
+    // If it's a valid 6-digit hex, update live
+    if (/^#[0-9A-Fa-f]{6}$/.test(newVal)) {
+      onColorChange({ ...color, hex: newVal });
+    }
+  };
+
+  const handleBlur = () => {
+    let newVal = value;
+    if (!newVal.startsWith('#')) {
+        // Try to fix missing hash if valid hex chars
+        if (/^[0-9A-Fa-f]{6}$/.test(newVal) || /^[0-9A-Fa-f]{3}$/.test(newVal)) {
+            newVal = '#' + newVal;
+        }
+    }
+    
+    // Handle 3 digit hex expansion
+    if (/^#[0-9A-Fa-f]{3}$/.test(newVal)) {
+        newVal = '#' + newVal[1] + newVal[1] + newVal[2] + newVal[2] + newVal[3] + newVal[3];
+    }
+    
+    if (/^#[0-9A-Fa-f]{6}$/.test(newVal)) {
+       setValue(newVal);
+       onColorChange({ ...color, hex: newVal });
+    } else {
+       // Invalid, revert to current color prop
+       setValue(color.hex);
+    }
+  };
+
+  return (
+    <input 
+      type="text" 
+      value={value} 
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onClick={(e) => e.stopPropagation()} // Prevent triggering the color picker click
+      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 rounded px-1 py-0.5 text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white"
+      spellCheck={false}
+    />
+  );
+};
+
 // Reusable Circular Color Button (Standard + Custom)
 interface ColorButtonProps {
   color?: ColorOption; // undefined if it's the "placeholder" for custom
@@ -53,6 +107,10 @@ const ColorButton: React.FC<ColorButtonProps> = ({
   showLabel = true
 }) => {
   if (isCustom) {
+    // Extract numeric width value from "w-12" -> 12
+    const widthVal = parseInt(sizeClass.split(' ')[0].replace(/\D/g, '') || '12');
+    const iconSize = widthVal * 2; // Approximate px size for half-width icon (w-12 = 48px, half = 24px)
+
     return (
       <div 
         className={`relative group flex flex-col items-center gap-2 ${className}`}
@@ -72,20 +130,25 @@ const ColorButton: React.FC<ColorButtonProps> = ({
           <input 
             type="color" 
             className="absolute inset-0 w-[150%] h-[150%] -top-1/4 -left-1/4 opacity-0 cursor-pointer"
-            value={isSelected ? color?.hex : '#ffffff'}
+            value={isSelected && color ? color.hex : '#ffffff'}
             onChange={(e) => onSelect({ id: 'custom', name: 'Custom', hex: e.target.value })}
           />
           
           <div className="pointer-events-none flex items-center justify-center">
              {!isSelected && (
-                <Palette size={parseInt(sizeClass.replace(/\D/g,'')) * 0.5} className="text-white drop-shadow-md" strokeWidth={2} />
+                <Palette size={iconSize} className="text-white drop-shadow-md" strokeWidth={2} />
              )}
           </div>
         </div>
-        {showLabel && (
-          <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900' : 'text-slate-500'}`}>
-            Custom
-          </span>
+        {/* Show Hex Input if selected, otherwise show label if enabled */}
+        {isSelected && color ? (
+            <HexInput color={color} onColorChange={onSelect} />
+        ) : (
+            showLabel && (
+              <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900' : 'text-slate-500'}`}>
+                Custom
+              </span>
+            )
         )}
       </div>
     );
