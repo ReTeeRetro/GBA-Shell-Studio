@@ -298,14 +298,14 @@ export const ABMembraneBase = (props: any) => (
 export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
   <g {...props}>
     {/* SPEAKER – circular molded support ring */}
-    <g transform="translate(680, 310) rotate(-10)">
+    <g transform="translate(680, 315) rotate(-10)">
       <circle
         cx={0}
         cy={0}
         r={50}
         fill="none"
         stroke="#cfd3d9"
-        strokeWidth={6}
+        strokeWidth={8}
         opacity={0.85}
       />
     </g>
@@ -339,19 +339,19 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         r={58}
         fill="none"
         stroke="#cfd3d9"
-        strokeWidth={6}
+        strokeWidth={7}
         opacity={0.85}
       />
     </g>
 
     {/* SPEAKER → SHELL SUPPORT RIBS (shorter so they don’t enter the ring) */}
-    <g transform="translate(680, 310) rotate(-10)">
+    <g transform="translate(680, 310) rotate(-8)">
       {/* Left Rib */}
       <line
         x1={-10}
-        y1={46}   // moved down so it doesn't enter the ring
+        y1={60}   // moved down so it doesn't enter the ring
         x2={-14}
-        y2={83}
+        y2={90}
         stroke="#cfd3d9"
         strokeWidth={6}
         opacity={0.85}
@@ -361,9 +361,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       {/* Right Rib */}
       <line
         x1={10}
-        y1={46}
+        y1={60}
         x2={14}
-        y2={83}
+        y2={80}
         stroke="#cfd3d9"
         strokeWidth={6}
         opacity={0.85}

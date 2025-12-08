@@ -555,7 +555,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
             <g
               id="clear-shell-internals-layer"
               style={{ mixBlendMode: 'multiply' }}
-              opacity={0.65}
+              opacity={0.75}
               pointerEvents="none"
             >
               <ClearShellInternals />
