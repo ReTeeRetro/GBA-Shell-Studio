@@ -396,7 +396,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
                 How it works
               </h3>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration or why not prompt ChatGPT with it. This is a very early version of the tool, and things will change as it improves and gains more features over time.
+                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration or why not prompt ChatGPT with it. This is a very early version of the tool, and things will change as it improves and gains more features over time. Any feedback? Contact: reteeretro@gmail.com
               </p>
             </div>
 

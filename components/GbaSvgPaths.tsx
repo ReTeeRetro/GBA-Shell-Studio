@@ -351,7 +351,7 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         x1={-10}
         y1={60}   // moved down so it doesn't enter the ring
         x2={-14}
-        y2={90}
+        y2={84}
         stroke="#cfd3d9"
         strokeWidth={6}
         opacity={0.85}
