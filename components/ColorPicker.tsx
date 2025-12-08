@@ -15,13 +15,21 @@ interface ColorPickerProps {
   onSelectBButtonColor: (color: ColorOption) => void;
   startSelectColor: ColorOption;
   onSelectStartSelectColor: (color: ColorOption) => void;
-  bumpersColor: ColorOption;
-  onSelectBumpersColor: (color: ColorOption) => void;
+  lButtonColor: ColorOption;
+  onSelectLButtonColor: (color: ColorOption) => void;
+  rButtonColor: ColorOption;
+  onSelectRButtonColor: (color: ColorOption) => void;
+  leftBumperColor: ColorOption;
+  onSelectLeftBumperColor: (color: ColorOption) => void;
+  rightBumperColor: ColorOption;
+  onSelectRightBumperColor: (color: ColorOption) => void;
   lensColor: ColorOption;
   onSelectLensColor: (color: ColorOption) => void;
   onRandomize: () => void;
   isClearShell: boolean;
   onToggleClearShell: () => void;
+  isClearButtons: boolean;
+  onToggleClearButtons: () => void;
 }
 
 // Helper to compare if two colors are effectively the same (for UI state)
@@ -192,13 +200,21 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   onSelectBButtonColor,
   startSelectColor,
   onSelectStartSelectColor,
-  bumpersColor,
-  onSelectBumpersColor,
+  lButtonColor,
+  onSelectLButtonColor,
+  rButtonColor,
+  onSelectRButtonColor,
+  leftBumperColor,
+  onSelectLeftBumperColor,
+  rightBumperColor,
+  onSelectRightBumperColor,
   lensColor,
   onSelectLensColor,
   onRandomize,
   isClearShell,
-  onToggleClearShell
+  onToggleClearShell,
+  isClearButtons,
+  onToggleClearButtons
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
 
@@ -207,7 +223,10 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     areColorsEqual(dpadColor, aButtonColor) &&
     areColorsEqual(aButtonColor, bButtonColor) &&
     areColorsEqual(bButtonColor, startSelectColor) &&
-    areColorsEqual(startSelectColor, bumpersColor)
+    areColorsEqual(startSelectColor, lButtonColor) &&
+    areColorsEqual(lButtonColor, rButtonColor) &&
+    areColorsEqual(rButtonColor, leftBumperColor) &&
+    areColorsEqual(leftBumperColor, rightBumperColor)
   ) ? dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
@@ -215,7 +234,10 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     onSelectAButtonColor(color);
     onSelectBButtonColor(color);
     onSelectStartSelectColor(color);
-    onSelectBumpersColor(color);
+    onSelectLButtonColor(color);
+    onSelectRButtonColor(color);
+    onSelectLeftBumperColor(color);
+    onSelectRightBumperColor(color);
   };
 
   return (
@@ -230,7 +252,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             </h2>
             <button
                 onClick={onToggleClearShell}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
                 title="Toggle Clear/Transparent Shell"
             >
                 {isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -297,8 +319,16 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         <div className="flex items-center justify-between mb-4">
            <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
             <span className="w-1 h-6 bg-slate-800 rounded-full inline-block"></span>
-            Buttons & Bumpers
+            Buttons
           </h2>
+          <button
+              onClick={onToggleClearButtons}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+              title="Toggle Clear/Transparent Buttons"
+          >
+              {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+              Clear Buttons
+          </button>
         </div>
        
         <div className="grid grid-cols-6 gap-3 mb-6">
@@ -455,18 +485,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               </div>
             </div>
 
-             {/* Bumpers Color Section */}
+             {/* L Button Color Section */}
             <div>
               <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Bumpers / L + R 
+                L Button (Trigger)
               </h3>
               <div className="grid grid-cols-6 gap-2">
                  {SHELL_COLORS.map((color) => (
                   <ColorButton 
-                    key={`bump-${color.id}`}
+                    key={`l-btn-${color.id}`}
                     color={color}
-                    isSelected={bumpersColor.id === color.id}
-                    onSelect={onSelectBumpersColor}
+                    isSelected={lButtonColor.id === color.id}
+                    onSelect={onSelectLButtonColor}
                     sizeClass="w-8 h-8"
                     className="!gap-0"
                     showLabel={false}
@@ -474,9 +504,96 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 ))}
                 <ColorButton 
                    isCustom
-                   isSelected={bumpersColor.id === 'custom'}
-                   color={bumpersColor}
-                   onSelect={onSelectBumpersColor}
+                   isSelected={lButtonColor.id === 'custom'}
+                   color={lButtonColor}
+                   onSelect={onSelectLButtonColor}
+                   sizeClass="w-8 h-8"
+                   className="!gap-0"
+                   showLabel={false}
+                />
+              </div>
+            </div>
+
+             {/* R Button Color Section */}
+            <div>
+              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+                R Button (Trigger)
+              </h3>
+              <div className="grid grid-cols-6 gap-2">
+                 {SHELL_COLORS.map((color) => (
+                  <ColorButton 
+                    key={`r-btn-${color.id}`}
+                    color={color}
+                    isSelected={rButtonColor.id === color.id}
+                    onSelect={onSelectRButtonColor}
+                    sizeClass="w-8 h-8"
+                    className="!gap-0"
+                    showLabel={false}
+                  />
+                ))}
+                <ColorButton 
+                   isCustom
+                   isSelected={rButtonColor.id === 'custom'}
+                   color={rButtonColor}
+                   onSelect={onSelectRButtonColor}
+                   sizeClass="w-8 h-8"
+                   className="!gap-0"
+                   showLabel={false}
+                />
+              </div>
+            </div>
+
+             {/* Left Bumper Color Section */}
+            <div>
+              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+                Left Bumper (Side)
+              </h3>
+              <div className="grid grid-cols-6 gap-2">
+                 {SHELL_COLORS.map((color) => (
+                  <ColorButton 
+                    key={`l-bump-${color.id}`}
+                    color={color}
+                    isSelected={leftBumperColor.id === color.id}
+                    onSelect={onSelectLeftBumperColor}
+                    sizeClass="w-8 h-8"
+                    className="!gap-0"
+                    showLabel={false}
+                  />
+                ))}
+                <ColorButton 
+                   isCustom
+                   isSelected={leftBumperColor.id === 'custom'}
+                   color={leftBumperColor}
+                   onSelect={onSelectLeftBumperColor}
+                   sizeClass="w-8 h-8"
+                   className="!gap-0"
+                   showLabel={false}
+                />
+              </div>
+            </div>
+
+             {/* Right Bumper Color Section */}
+            <div>
+              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+                Right Bumper (Side)
+              </h3>
+              <div className="grid grid-cols-6 gap-2">
+                 {SHELL_COLORS.map((color) => (
+                  <ColorButton 
+                    key={`r-bump-${color.id}`}
+                    color={color}
+                    isSelected={rightBumperColor.id === color.id}
+                    onSelect={onSelectRightBumperColor}
+                    sizeClass="w-8 h-8"
+                    className="!gap-0"
+                    showLabel={false}
+                  />
+                ))}
+                <ColorButton 
+                   isCustom
+                   isSelected={rightBumperColor.id === 'custom'}
+                   color={rightBumperColor}
+                   onSelect={onSelectRightBumperColor}
                    sizeClass="w-8 h-8"
                    className="!gap-0"
                    showLabel={false}

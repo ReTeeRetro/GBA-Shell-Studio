@@ -64,15 +64,41 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
     // 4. Draw Metadata
     ctx.textBaseline = 'middle';
 
+    const btnSuffix = config.isClearButtons ? ' (Clear)' : '';
+
+    // Logic to condense bumper/trigger text
+    const triggersMatch = config.lButtonColor.id === config.rButtonColor.id && config.lButtonColor.hex === config.rButtonColor.hex;
+    const bumpersMatch = config.leftBumperColor.id === config.rightBumperColor.id && config.leftBumperColor.hex === config.rightBumperColor.hex;
+    const allMatch = triggersMatch && bumpersMatch && config.lButtonColor.id === config.leftBumperColor.id && config.lButtonColor.hex === config.leftBumperColor.hex;
+
+    let bumperTextPart = [];
+    if (allMatch) {
+        bumperTextPart.push({ label: 'Bumpers', color: config.lButtonColor, detail: btnSuffix });
+    } else {
+        if (triggersMatch) {
+            bumperTextPart.push({ label: 'L/R Btns', color: config.lButtonColor, detail: btnSuffix });
+        } else {
+            bumperTextPart.push({ label: 'L Btn', color: config.lButtonColor, detail: btnSuffix });
+            bumperTextPart.push({ label: 'R Btn', color: config.rButtonColor, detail: btnSuffix });
+        }
+
+        if (bumpersMatch) {
+            bumperTextPart.push({ label: 'Side Bumpers', color: config.leftBumperColor, detail: btnSuffix });
+        } else {
+            bumperTextPart.push({ label: 'L Side', color: config.leftBumperColor, detail: btnSuffix });
+            bumperTextPart.push({ label: 'R Side', color: config.rightBumperColor, detail: btnSuffix });
+        }
+    }
+
     // Organize parts
     const parts = [
       { label: 'Shell', color: config.selectedColor, detail: config.isClearShell ? '(Clear)' : '' },
       { label: 'Lens', color: config.lensColor },
-      { label: 'D-Pad', color: config.dpadColor },
-      { label: 'Btn A', color: config.aButtonColor },
-      { label: 'Btn B', color: config.bButtonColor },
-      { label: 'Start/Select', color: config.startSelectColor },
-      { label: 'Bumpers', color: config.bumpersColor },
+      { label: 'D-Pad', color: config.dpadColor, detail: btnSuffix },
+      { label: 'Btn A', color: config.aButtonColor, detail: btnSuffix },
+      { label: 'Btn B', color: config.bButtonColor, detail: btnSuffix },
+      { label: 'Start/Select', color: config.startSelectColor, detail: btnSuffix },
+      ...bumperTextPart
     ];
 
     const startX = 60;
@@ -98,7 +124,7 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
       ctx.fillStyle = '#0f172a'; // slate-900
       let nameText = part.color.name;
       if (part.detail) {
-        nameText += ` ${part.detail}`;
+        nameText += part.detail; // Space already handled in suffix if needed, or manual
       }
       ctx.fillText(nameText, x + labelWidth + 12, y);
 

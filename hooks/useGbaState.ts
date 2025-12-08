@@ -8,11 +8,18 @@ export const useGbaState = () => {
   const [aButtonColor, setAButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
   const [bButtonColor, setBButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
   const [startSelectColor, setStartSelectColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [bumpersColor, setBumpersColor] = useState<ColorOption>(SHELL_COLORS[4]);
+  
+  // Split Bumpers state
+  const [lButtonColor, setLButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
+  const [rButtonColor, setRButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
+  const [leftBumperColor, setLeftBumperColor] = useState<ColorOption>(SHELL_COLORS[4]);
+  const [rightBumperColor, setRightBumperColor] = useState<ColorOption>(SHELL_COLORS[4]);
+
   const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
   const [showButtonEffects, setShowButtonEffects] = useState(true);
   const [renderMode, setRenderMode] = useState<RenderMode>('plastic');
   const [isClearShell, setIsClearShell] = useState(false);
+  const [isClearButtons, setIsClearButtons] = useState(false);
 
   const randomize = () => {
     const getRandomHex = () =>
@@ -39,7 +46,13 @@ export const useGbaState = () => {
     setBButtonColor(randomButtonColor);
 
     setStartSelectColor(getRandomOption(SHELL_COLORS));
-    setBumpersColor(getRandomOption(SHELL_COLORS));
+    
+    // Randomize bumpers/triggers as a coherent set for aesthetics, but they can be changed individually later
+    const randomBumperColor = getRandomOption(SHELL_COLORS);
+    setLButtonColor(randomBumperColor);
+    setRButtonColor(randomBumperColor);
+    setLeftBumperColor(randomBumperColor);
+    setRightBumperColor(randomBumperColor);
 
     // Lens color should only be one of the presets (Black or White)
     setLensColor(LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)]);
@@ -51,11 +64,15 @@ export const useGbaState = () => {
     setAButtonColor(SHELL_COLORS[4]);
     setBButtonColor(SHELL_COLORS[4]);
     setStartSelectColor(SHELL_COLORS[4]);
-    setBumpersColor(SHELL_COLORS[4]);
+    setLButtonColor(SHELL_COLORS[4]);
+    setRButtonColor(SHELL_COLORS[4]);
+    setLeftBumperColor(SHELL_COLORS[4]);
+    setRightBumperColor(SHELL_COLORS[4]);
     setLensColor(LENS_COLORS[0]);
     setShowButtonEffects(true);
     setRenderMode('plastic');
     setIsClearShell(false);
+    setIsClearButtons(false);
   };
 
   const config: GbaConfig = {
@@ -64,9 +81,13 @@ export const useGbaState = () => {
     aButtonColor,
     bButtonColor,
     startSelectColor,
-    bumpersColor,
+    lButtonColor,
+    rButtonColor,
+    leftBumperColor,
+    rightBumperColor,
     lensColor,
     isClearShell,
+    isClearButtons,
   };
 
   return {
@@ -81,11 +102,15 @@ export const useGbaState = () => {
       setAButtonColor,
       setBButtonColor,
       setStartSelectColor,
-      setBumpersColor,
+      setLButtonColor,
+      setRButtonColor,
+      setLeftBumperColor,
+      setRightBumperColor,
       setLensColor,
       setRenderMode,
       setShowButtonEffects,
       setIsClearShell,
+      setIsClearButtons,
     },
     randomize,
     reset,

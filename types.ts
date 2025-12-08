@@ -14,7 +14,11 @@ export interface GbaConfig {
   aButtonColor: ColorOption;
   bButtonColor: ColorOption;
   startSelectColor: ColorOption;
-  bumpersColor: ColorOption;
+  lButtonColor: ColorOption;
+  rButtonColor: ColorOption;
+  leftBumperColor: ColorOption;
+  rightBumperColor: ColorOption;
   lensColor: ColorOption;
   isClearShell: boolean;
+  isClearButtons: boolean;
 }

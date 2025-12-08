@@ -67,11 +67,15 @@ function App() {
               aButtonColor={config.aButtonColor}
               bButtonColor={config.bButtonColor}
               startSelectColor={config.startSelectColor}
-              bumpersColor={config.bumpersColor}
+              lButtonColor={config.lButtonColor}
+              rButtonColor={config.rButtonColor}
+              leftBumperColor={config.leftBumperColor}
+              rightBumperColor={config.rightBumperColor}
               lensColor={config.lensColor}
               showButtonEffects={renderSettings.showButtonEffects}
               renderMode={renderSettings.renderMode}
               isClearShell={config.isClearShell}
+              isClearButtons={config.isClearButtons}
             />
 
             <div className="flex flex-col sm:flex-row justify-between items-center px-1 gap-4">
@@ -141,13 +145,23 @@ function App() {
               onSelectBButtonColor={setters.setBButtonColor}
               startSelectColor={config.startSelectColor}
               onSelectStartSelectColor={setters.setStartSelectColor}
-              bumpersColor={config.bumpersColor}
-              onSelectBumpersColor={setters.setBumpersColor}
+              
+              lButtonColor={config.lButtonColor}
+              onSelectLButtonColor={setters.setLButtonColor}
+              rButtonColor={config.rButtonColor}
+              onSelectRButtonColor={setters.setRButtonColor}
+              leftBumperColor={config.leftBumperColor}
+              onSelectLeftBumperColor={setters.setLeftBumperColor}
+              rightBumperColor={config.rightBumperColor}
+              onSelectRightBumperColor={setters.setRightBumperColor}
+
               lensColor={config.lensColor}
               onSelectLensColor={setters.setLensColor}
               onRandomize={randomize}
               isClearShell={config.isClearShell}
               onToggleClearShell={() => setters.setIsClearShell(!config.isClearShell)}
+              isClearButtons={config.isClearButtons}
+              onToggleClearButtons={() => setters.setIsClearButtons(!config.isClearButtons)}
             />
 
             <InfoCard />
@@ -157,7 +171,7 @@ function App() {
 
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.7. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.71. Not
           affiliated with Nintendo.
         </p>
       </footer>

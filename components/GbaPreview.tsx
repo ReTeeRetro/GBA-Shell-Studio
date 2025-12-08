@@ -24,12 +24,16 @@ interface GbaPreviewProps {
   aButtonColor: ColorOption;
   bButtonColor: ColorOption;
   startSelectColor: ColorOption;
-  bumpersColor: ColorOption;
+  lButtonColor: ColorOption;
+  rButtonColor: ColorOption;
+  leftBumperColor: ColorOption;
+  rightBumperColor: ColorOption;
   lensColor: ColorOption;
   showGrid?: boolean;
   showButtonEffects?: boolean;
   renderMode?: RenderMode;
   isClearShell?: boolean;
+  isClearButtons?: boolean;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -40,12 +44,16 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       aButtonColor,
       bButtonColor,
       startSelectColor,
-      bumpersColor,
+      lButtonColor,
+      rButtonColor,
+      leftBumperColor,
+      rightBumperColor,
       lensColor,
       showGrid = false,
       showButtonEffects = true,
       renderMode = 'plastic',
       isClearShell = false,
+      isClearButtons = false,
     },
     ref
   ) => {
@@ -66,26 +74,26 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const BUMPERS_Y = 50;
 
     // Bumper placement & angle tuning
-const LEFT_BUMPER_OFFSET_X = 28;
-const LEFT_BUMPER_OFFSET_Y = 75;
-const LEFT_BUMPER_SCALE = 0.47;
-const LEFT_BUMPER_ROTATION = 5; // degrees, tilt to follow left side curve
+    const LEFT_BUMPER_OFFSET_X = 28;
+    const LEFT_BUMPER_OFFSET_Y = 75;
+    const LEFT_BUMPER_SCALE = 0.47;
+    const LEFT_BUMPER_ROTATION = 5; // degrees, tilt to follow left side curve
 
-const RIGHT_BUMPER_OFFSET_X = 777;
-const RIGHT_BUMPER_OFFSET_Y = 75;
-const RIGHT_BUMPER_SCALE = 0.47;
-const RIGHT_BUMPER_ROTATION = -6; // degrees, opposite direction
+    const RIGHT_BUMPER_OFFSET_X = 777;
+    const RIGHT_BUMPER_OFFSET_Y = 75;
+    const RIGHT_BUMPER_SCALE = 0.47;
+    const RIGHT_BUMPER_ROTATION = -6; // degrees, opposite direction
 
-// L / R button placement (on top of bumpers)
-const L_BUTTON_OFFSET_X = 0;
-const L_BUTTON_OFFSET_Y = 0;
-const L_BUTTON_SCALE = 0.35;
-const L_BUTTON_ROTATION = -6; // roughly follow left side curve
+    // L / R button placement (on top of bumpers)
+    const L_BUTTON_OFFSET_X = 0;
+    const L_BUTTON_OFFSET_Y = 0;
+    const L_BUTTON_SCALE = 0.35;
+    const L_BUTTON_ROTATION = -6; // roughly follow left side curve
 
-const R_BUTTON_OFFSET_X = 600;
-const R_BUTTON_OFFSET_Y = -15;
-const R_BUTTON_SCALE = 0.35;
-const R_BUTTON_ROTATION = 6;  // for when we add the R path
+    const R_BUTTON_OFFSET_X = 600;
+    const R_BUTTON_OFFSET_Y = -15;
+    const R_BUTTON_SCALE = 0.35;
+    const R_BUTTON_ROTATION = 6;  // for when we add the R path
 
 
     // CONFIG: A/B Button Position Adjustment
@@ -140,6 +148,9 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
     const showTexture = renderMode === 'plastic';
     // With 'flat' removed, shading is always on for both 'plastic' and 'matte'
     const showShading = true;
+
+    // Opacity for clear buttons
+    const buttonOpacity = isClearButtons ? 0.6 : 1;
 
     // SEPARATION: Define Shapes and Labels separately to prevent ghosting in effect layers
 
@@ -389,8 +400,18 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
               #btn-b-base path {
                 fill: ${bButtonColor.hex} !important;
               }
-              #bumpers-layer path, #bumpers-base path {
-                fill: ${bumpersColor.hex} !important;
+              /* Independent Bumper Coloring */
+              #left-bumper-path path {
+                fill: ${leftBumperColor.hex} !important;
+              }
+              #right-bumper-path path {
+                fill: ${rightBumperColor.hex} !important;
+              }
+              #l-button-path path {
+                fill: ${lButtonColor.hex} !important;
+              }
+              #r-button-path path {
+                fill: ${rButtonColor.hex} !important;
               }
               /* Forces the sheen gradient fill on re-rendered geometry */
               .sheen-fill path, .sheen-fill circle {
@@ -419,11 +440,13 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
 <g
   id="bumpers-layer"
   transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}
+  style={{ opacity: buttonOpacity }}
 >
   {/* Bumper shells */}
   <g id="bumpers-base">
     {/* Left bumper shell */}
     <g
+      id="left-bumper-path"
       transform={`
         translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
         rotate(${LEFT_BUMPER_ROTATION})
@@ -435,6 +458,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
 
     {/* Right bumper shell */}
     <g
+      id="right-bumper-path"
       transform={`
         translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
         rotate(${RIGHT_BUMPER_ROTATION})
@@ -449,6 +473,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
   <g id="bumper-buttons-layer">
     {/* L button */}
     <g
+      id="l-button-path"
       transform={`
         translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
         rotate(${L_BUTTON_ROTATION})
@@ -458,8 +483,9 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
       <LButtonPath />
     </g>
 
-    {/* R button – will hook in once we have RButtonPath */}
+    {/* R button */}
      <g
+      id="r-button-path"
       transform={`
         translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
         rotate(${R_BUTTON_ROTATION})
@@ -477,7 +503,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
       style={{ mixBlendMode: 'overlay' }}
       opacity="0.3"
     >
-      {/* repeat shells + buttons here if you want texture on them too */}
+      {/* Texture applied via layers above if needed, here just placeholders if we wanted to clone paths */}
     </g>
   )}
 </g>
@@ -493,7 +519,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
                A circle sitting behind the shell, visible through the D-Pad cutout.
                Part of the D-Pad assembly (same color).
             */}
-            <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
+            <g transform={`translate(${DPAD_X}, ${DPAD_Y})`} style={{ opacity: buttonOpacity }}>
               <circle cx="53" cy="54" r="55" fill={dpadColor.hex} />
               {/* Optional Texture for consistency */}
               {showTexture && (
@@ -648,6 +674,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
               <g
                 id="dpad-base-layer"
                 filter={showButtonEffects ? 'url(#btnShadowRight)' : undefined}
+                style={{ opacity: buttonOpacity }}
               >
                 <DpadPaths />
               </g>
@@ -691,6 +718,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
               <g
                 id="buttons-base-layer"
                 filter={showButtonEffects ? 'url(#btnShadowLeft)' : undefined}
+                style={{ opacity: buttonOpacity }}
               >
                 <g id="btn-a-base">{A_BUTTON_SHAPE}</g>
                 <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
@@ -728,6 +756,7 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
               <g
                 fill={startSelectColor.hex}
                 filter={showButtonEffects ? 'url(#btnShadowRight)' : undefined}
+                style={{ opacity: buttonOpacity }}
               >
                 <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
                   <StartSelectPath />
@@ -801,167 +830,6 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
                   {y}
                 </text>
               ))}
-
-              {/* Bumpers Origin */}
-              <g transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}>
-                <circle r="3" fill="purple" />
-                <text
-                  x="5"
-                  y="-5"
-                  fill="purple"
-                  fontSize="10"
-                  fontWeight="bold"
-                >{`BUMPERS (${BUMPERS_X}, ${BUMPERS_Y})`}</text>
-                <rect
-                  x="0"
-                  y="0"
-                  width="802"
-                  height="379"
-                  fill="none"
-                  stroke="purple"
-                  strokeDasharray="4 2"
-                  opacity="0.5"
-                />
-              </g>
-
-              {/* Main Console Markers (Wrapped in Shell Offset) */}
-              <g transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
-                {/* Shell Origin */}
-                <circle r="4" fill="red" />
-                <text
-                  x="5"
-                  y="-5"
-                  fill="red"
-                  fontSize="10"
-                  fontWeight="bold"
-                >{`SHELL GRP (${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}</text>
-
-                {/* D-Pad Origin */}
-                <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
-                  <circle r="3" fill="magenta" />
-                  <text
-                    x="5"
-                    y="-5"
-                    fill="magenta"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    D-PAD
-                  </text>
-                  <rect
-                    x="-5"
-                    y="-5"
-                    width="70"
-                    height="115"
-                    fill="none"
-                    stroke="magenta"
-                    strokeDasharray="4 2"
-                    opacity="0.5"
-                  />
-                </g>
-
-                {/* Buttons Origin */}
-                <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
-                  <circle r="3" fill="lime" />
-                  <text
-                    x="5"
-                    y="-5"
-                    fill="lime"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    BTNS
-                  </text>
-                  <rect
-                    x="600"
-                    y="100"
-                    width="130"
-                    height="130"
-                    fill="none"
-                    stroke="lime"
-                    strokeDasharray="4 2"
-                    opacity="0.5"
-                  />
-                </g>
-
-                {/* Start/Select Origin */}
-                <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
-                  <circle r="2" fill="yellow" />
-                  <text
-                    x="35"
-                    y="10"
-                    fill="yellow"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    SEL
-                  </text>
-                </g>
-                <g transform={`translate(${START_BUTTON_X}, ${START_BUTTON_Y})`}>
-                  <circle r="2" fill="yellow" />
-                  <text
-                    x="35"
-                    y="10"
-                    fill="yellow"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    STRT
-                  </text>
-                </g>
-
-                {/* Lens Origin */}
-                <g transform={`translate(${LENS_X}, ${LENS_Y})`}>
-                  <circle r="3" fill="orange" />
-                  <text
-                    x="5"
-                    y="-5"
-                    fill="orange"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    LENS
-                  </text>
-                  <rect
-                    x="0"
-                    y="0"
-                    width="400"
-                    height="300"
-                    fill="none"
-                    stroke="orange"
-                    strokeDasharray="4 2"
-                    opacity="0.5"
-                  />
-                </g>
-
-                {/* Speaker Origin */}
-                <g transform={`translate(${SPEAKER_X}, ${SPEAKER_Y})`}>
-                  <circle r="2" fill="cyan" />
-                  <text
-                    x="15"
-                    y="5"
-                    fill="cyan"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    SPKR
-                  </text>
-                </g>
-
-                {/* Power LED Origin */}
-                <g transform={`translate(${LED_X}, ${LED_Y})`}>
-                  <circle r="2" fill="#4ade80" />
-                  <text
-                    x="-25"
-                    y="-5"
-                    fill="#4ade80"
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    PWR
-                  </text>
-                </g>
-              </g>
             </g>
           )}
         </svg>
