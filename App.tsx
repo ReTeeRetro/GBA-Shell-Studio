@@ -1,251 +1,31 @@
-
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
-import { SHELL_COLORS, LENS_COLORS } from './constants';
-import { ColorOption, RenderMode } from './types';
-import { Layers, ScanFace, CircleDashed, Download, RotateCcw, Sparkles, Bot, ExternalLink } from 'lucide-react';
+import { AiCard } from './components/AiCard';
+import { InfoCard } from './components/InfoCard';
+import { useGbaState } from './hooks/useGbaState';
+import { downloadGbaImage } from './utils/downloadUtils';
+import { openAiTool } from './utils/aiUtils';
+import { Layers, ScanFace, CircleDashed, Download, RotateCcw } from 'lucide-react';
 
 function App() {
-  const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[1]);
-  const [dpadColor, setDpadColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [aButtonColor, setAButtonColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [bButtonColor, setBButtonColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [startSelectColor, setStartSelectColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [bumpersColor, setBumpersColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
-  const [showButtonEffects, setShowButtonEffects] = useState(true);
-  const [renderMode, setRenderMode] = useState<RenderMode>('plastic');
-  const [isClearShell, setIsClearShell] = useState(false);
-  
+  const { config, renderSettings, setters, randomize, reset } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const handleRandomize = () => {
-    const getRandomHex = () => '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-
-    const getRandomOption = (options: ColorOption[]) => {
-      // 25% chance of a completely custom random color
-      if (Math.random() < 0.25) {
-        return {
-          id: 'custom',
-          name: 'Custom',
-          hex: getRandomHex()
-        };
-      }
-      return options[Math.floor(Math.random() * options.length)];
-    };
-    
-    setSelectedColor(getRandomOption(SHELL_COLORS));
-    setDpadColor(getRandomOption(SHELL_COLORS));
-    
-    // A and B buttons should share the same color for better aesthetics
-    const randomButtonColor = getRandomOption(SHELL_COLORS);
-    setAButtonColor(randomButtonColor);
-    setBButtonColor(randomButtonColor);
-    
-    setStartSelectColor(getRandomOption(SHELL_COLORS));
-    setBumpersColor(getRandomOption(SHELL_COLORS));
-    
-    // Lens color should only be one of the presets (Black or White), avoiding custom random colors
-    setLensColor(LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)]);
-  };
-
-  const handleReset = () => {
-    setSelectedColor(SHELL_COLORS[1]);
-    setDpadColor(SHELL_COLORS[4]);
-    setAButtonColor(SHELL_COLORS[4]);
-    setBButtonColor(SHELL_COLORS[4]);
-    setStartSelectColor(SHELL_COLORS[4]);
-    setBumpersColor(SHELL_COLORS[4]);
-    setLensColor(LENS_COLORS[0]);
-    setShowButtonEffects(true);
-    setRenderMode('plastic');
-    setIsClearShell(false);
-  };
-
-  const generateAiPrompt = () => {
-    return `Create a realistic high-resolution render of a Game Boy Advance.
-Follow these exact colors from the provided design:
-
-Shell: ${selectedColor.name} (Hex: ${selectedColor.hex})
-Lens: ${lensColor.name} (Hex: ${lensColor.hex})
-D-Pad: ${dpadColor.name} (Hex: ${dpadColor.hex})
-Button A: ${aButtonColor.name} (Hex: ${aButtonColor.hex})
-Button B: ${bButtonColor.name} (Hex: ${bButtonColor.hex})
-Start/Select: ${startSelectColor.name} (Hex: ${startSelectColor.hex})
-Bumpers: ${bumpersColor.name} (Hex: ${bumpersColor.hex})
-Shell Type: ${isClearShell ? 'Transparent/Clear Plastic' : 'Solid Plastic'}
-
-The render should look like a real product photo of a Game Boy Advance.`;
-  };
-
-  const handleOpenAi = (tool: 'chatgpt' | 'gemini') => {
-    const prompt = generateAiPrompt();
-    const encodedPrompt = encodeURIComponent(prompt);
-    
-    let url = '';
-    if (tool === 'chatgpt') {
-      url = `https://chat.openai.com/?q=${encodedPrompt}`;
-    } else {
-      url = `https://gemini.google.com/app?prompt=${encodedPrompt}`;
-    }
-    
-    window.open(url, '_blank');
-  };
-
-  const handleDownload = () => {
-    if (!svgRef.current) return;
-    
-    const w = 900;
-    const h = 550;
-    const scale = 2; // High res scale
-    const footerHeight = 160; // Increased height to accommodate 3 rows of metadata
-
-    // 1. Clone the SVG to manipulate it safely without affecting the DOM
-    const svgClone = svgRef.current.cloneNode(true) as SVGSVGElement;
-    
-    // 2. Set explicit dimensions on the clone to force high-res rasterization
-    svgClone.setAttribute("width", `${w * scale}`);
-    svgClone.setAttribute("height", `${h * scale}`);
-    
-    // 3. Serialize to XML string
-    const serializer = new XMLSerializer();
-    let source = serializer.serializeToString(svgClone);
-    
-    // 4. Ensure XML namespace and Declaration (critical for Blob/Image usage)
-    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-        source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
-    if(!source.match(/^<svg[^>]+xmlns:xlink/)){
-        source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-    }
-    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-
-    // 5. Create Blob URL
-    const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    
-    const canvas = document.createElement("canvas");
-    canvas.width = w * scale;
-    canvas.height = (h + footerHeight) * scale;
-    
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-        URL.revokeObjectURL(url);
-        return;
-    }
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      // 1. Fill Background
-      // Using a light slate (slate-100) to ensure white shells are visible
-      ctx.fillStyle = "#f1f5f9"; 
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 2. Draw GBA Image
-      // Draw at origin (0,0) as the SVG is already scaled via width/height attributes
-      ctx.drawImage(img, 0, 0);
-
-      // 3. Draw Footer Background
-      const footerY = h * scale;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, footerY, canvas.width, footerHeight * scale);
-      
-      // Footer Divider
-      ctx.fillStyle = "#cbd5e1";
-      ctx.fillRect(0, footerY, canvas.width, 2);
-
-      // 4. Draw Metadata
-      ctx.textBaseline = "middle";
-      
-      // Organize parts
-      const parts = [
-        { label: 'Shell', color: selectedColor, detail: isClearShell ? '(Clear)' : '' },
-        { label: 'Lens', color: lensColor },
-        { label: 'D-Pad', color: dpadColor },
-        { label: 'Btn A', color: aButtonColor },
-        { label: 'Btn B', color: bButtonColor },
-        { label: 'Start/Select', color: startSelectColor },
-        { label: 'Bumpers', color: bumpersColor },
-      ];
-
-      const startX = 60;
-      const colWidth = 530; // Slightly wider columns
-      const itemsPerCol = 3; // Allow up to 3 items per column (creates 3 columns total for 7 items)
-      
-      parts.forEach((part, index) => {
-         const col = Math.floor(index / itemsPerCol);
-         const row = index % itemsPerCol;
-         
-         const x = startX + (col * colWidth);
-         const y = footerY + 60 + (row * 60); // 60px row gap
-
-         // Label
-         ctx.textAlign = "left";
-         ctx.font = "bold 24px sans-serif";
-         ctx.fillStyle = "#64748b"; // slate-500
-         ctx.fillText(part.label + ":", x, y);
-         
-         // Color Name
-         const labelWidth = ctx.measureText(part.label + ":").width;
-         ctx.font = "bold 24px sans-serif";
-         ctx.fillStyle = "#0f172a"; // slate-900
-         let nameText = part.color.name;
-         if ('detail' in part && part.detail) {
-            nameText += ` ${part.detail}`;
-         }
-         ctx.fillText(nameText, x + labelWidth + 12, y);
-
-         // Hex Code
-         const nameWidth = ctx.measureText(nameText).width;
-         ctx.font = "20px monospace";
-         ctx.fillStyle = "#94a3b8"; // slate-400
-         ctx.fillText(part.color.hex.toUpperCase(), x + labelWidth + 12 + nameWidth + 12, y);
-      });
-
-      // 5. Draw Year Tag
-      ctx.textAlign = "right";
-      ctx.font = "bold 24px sans-serif";
-      ctx.fillStyle = "#cbd5e1"; // slate-300
-      // Position relative to the bottom of the canvas
-      ctx.fillText(`GBA Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, canvas.height - 40);
-
-      // 6. Draw URL
-      ctx.textAlign = "left";
-      ctx.font = "24px sans-serif";
-      ctx.fillStyle = "#94a3b8"; // slate-400
-      ctx.fillText("https://gba-shell-studio.vercel.app/", startX, canvas.height - 40);
-      
-      // 7. Save & Download
-      const pngUrl = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.href = pngUrl;
-      downloadLink.download = `gba-shell-${selectedColor.name.toLowerCase().replace(/\s+/g, '-')}${isClearShell ? '-clear' : ''}.png`;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      
-      // Cleanup
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
-  };
+  const handleDownload = () => downloadGbaImage(svgRef.current, config);
+  const handleOpenAi = (tool: 'chatgpt' | 'gemini') => openAiTool(tool, config);
 
   return (
     <div className="min-h-screen bg-gray-50 text-slate-900 selection:bg-blue-500/30">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          
-          {/* Logo & Title */}
           <div className="flex items-center gap-3">
             <HeaderLogo />
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">GBA Shell Studio</h1>
           </div>
 
-          {/* Header Controls */}
           <div className="flex items-center gap-4 text-sm font-medium text-slate-500">
             <button
               onClick={handleDownload}
@@ -257,7 +37,7 @@ The render should look like a real product photo of a Game Boy Advance.`;
             </button>
 
             <button
-              onClick={handleReset}
+              onClick={reset}
               className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
               title="Reset to Default"
             >
@@ -270,58 +50,67 @@ The render should look like a real product photo of a Game Boy Advance.`;
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        
-        {/* Intro Text */}
         <div className="text-center max-w-2xl mx-auto mb-8">
           <p className="text-slate-500 text-lg">
-            Try out different shell and button color combinations to get a rough idea of how you might want to mod your GBA
+            Try out different shell and button color combinations to get a rough idea of how you might
+            want to mod your GBA
           </p>
         </div>
 
-        {/* Workspace */}
         <div className="grid lg:grid-cols-3 gap-8 items-start">
-          
           {/* Left: Preview Canvas */}
           <div className="lg:col-span-2 space-y-4">
-            <GbaPreview 
+            <GbaPreview
               ref={svgRef}
-              selectedColor={selectedColor} 
-              dpadColor={dpadColor}
-              aButtonColor={aButtonColor}
-              bButtonColor={bButtonColor}
-              startSelectColor={startSelectColor}
-              bumpersColor={bumpersColor}
-              lensColor={lensColor}
-              showButtonEffects={showButtonEffects}
-              renderMode={renderMode}
-              isClearShell={isClearShell}
+              selectedColor={config.selectedColor}
+              dpadColor={config.dpadColor}
+              aButtonColor={config.aButtonColor}
+              bButtonColor={config.bButtonColor}
+              startSelectColor={config.startSelectColor}
+              bumpersColor={config.bumpersColor}
+              lensColor={config.lensColor}
+              showButtonEffects={renderSettings.showButtonEffects}
+              renderMode={renderSettings.renderMode}
+              isClearShell={config.isClearShell}
             />
-            
+
             <div className="flex flex-col sm:flex-row justify-between items-center px-1 gap-4">
               <div className="flex items-center gap-2">
                 {/* Render Mode Toggle */}
                 <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                   <button 
-                    onClick={() => setRenderMode('plastic')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'plastic' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                   >
-                     <ScanFace size={14} />
-                     Plastic
-                   </button>
-                   <button 
-                    onClick={() => setRenderMode('matte')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${renderMode === 'matte' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
-                   >
-                     <Layers size={14} />
-                     Matte
-                   </button>
+                  <button
+                    onClick={() => setters.setRenderMode('plastic')}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
+                      renderSettings.renderMode === 'plastic'
+                        ? 'bg-slate-900 text-white shadow-md'
+                        : 'text-slate-500 hover:bg-slate-100'
+                    }`}
+                  >
+                    <ScanFace size={14} />
+                    Plastic
+                  </button>
+                  <button
+                    onClick={() => setters.setRenderMode('matte')}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
+                      renderSettings.renderMode === 'matte'
+                        ? 'bg-slate-900 text-white shadow-md'
+                        : 'text-slate-500 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Layers size={14} />
+                    Matte
+                  </button>
                 </div>
 
                 {/* Button Depth Toggle */}
                 <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
                   <button
-                    onClick={() => setShowButtonEffects(!showButtonEffects)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${showButtonEffects ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100'}`}
+                    onClick={() => setters.setShowButtonEffects(!renderSettings.showButtonEffects)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
+                      renderSettings.showButtonEffects
+                        ? 'bg-slate-900 text-white shadow-md'
+                        : 'text-slate-500 hover:bg-slate-100'
+                    }`}
                     title="Toggle Button Depth"
                   >
                     <CircleDashed size={14} />
@@ -331,83 +120,46 @@ The render should look like a real product photo of a Game Boy Advance.`;
               </div>
 
               <div className="text-xs text-slate-400 font-mono hidden sm:block">
-                 {renderMode === 'plastic' && 'RENDER: Textured Plastic + Sheen'}
-                 {renderMode === 'matte' && 'RENDER: Clean Vector Shading'}
+                {renderSettings.renderMode === 'plastic' && 'RENDER: Textured Plastic + Sheen'}
+                {renderSettings.renderMode === 'matte' && 'RENDER: Clean Vector Shading'}
               </div>
             </div>
 
-            {/* AI Visualization */}
-            <div className="bg-gradient-to-br from-indigo-50 to-white rounded-xl p-6 border border-indigo-100 shadow-sm relative overflow-hidden mt-6">
-              <div className="absolute top-0 right-0 p-3 opacity-10">
-                <Sparkles size={64} />
-              </div>
-              
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-indigo-900 mb-2 uppercase tracking-wide flex items-center gap-2">
-                    <Sparkles size={16} className="text-indigo-600" />
-                    AI Visualization
-                  </h3>
-                  <p className="text-sm text-indigo-700/80 leading-relaxed">
-                    Want to see a photorealistic render? Generate a prompt for your ChatGPT to visualize this design (opens in new tab).
-                  </p>
-                </div>
-                
-                <div className="w-full md:w-auto shrink-0">
-                  <button 
-                    onClick={() => handleOpenAi('chatgpt')}
-                    className="w-full md:w-auto flex items-center justify-center gap-2 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold uppercase tracking-wider rounded-xl shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                  >
-                    <Bot size={18} className="text-indigo-200" />
-                    ChatGPT
-                    <ExternalLink size={12} className="text-indigo-300 ml-0.5 opacity-70" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <AiCard onOpenAi={handleOpenAi} />
           </div>
 
           {/* Right: Controls */}
           <div className="space-y-6">
-            <ColorPicker 
-              selectedColor={selectedColor} 
-              onSelectColor={setSelectedColor}
-              dpadColor={dpadColor}
-              onSelectDpadColor={setDpadColor}
-              aButtonColor={aButtonColor}
-              onSelectAButtonColor={setAButtonColor}
-              bButtonColor={bButtonColor}
-              onSelectBButtonColor={setBButtonColor}
-              startSelectColor={startSelectColor}
-              onSelectStartSelectColor={setStartSelectColor}
-              bumpersColor={bumpersColor}
-              onSelectBumpersColor={setBumpersColor}
-              lensColor={lensColor}
-              onSelectLensColor={setLensColor}
-              onRandomize={handleRandomize}
-              isClearShell={isClearShell}
-              onToggleClearShell={() => setIsClearShell(!isClearShell)}
+            <ColorPicker
+              selectedColor={config.selectedColor}
+              onSelectColor={setters.setSelectedColor}
+              dpadColor={config.dpadColor}
+              onSelectDpadColor={setters.setDpadColor}
+              aButtonColor={config.aButtonColor}
+              onSelectAButtonColor={setters.setAButtonColor}
+              bButtonColor={config.bButtonColor}
+              onSelectBButtonColor={setters.setBButtonColor}
+              startSelectColor={config.startSelectColor}
+              onSelectStartSelectColor={setters.setStartSelectColor}
+              bumpersColor={config.bumpersColor}
+              onSelectBumpersColor={setters.setBumpersColor}
+              lensColor={config.lensColor}
+              onSelectLensColor={setters.setLensColor}
+              onRandomize={randomize}
+              isClearShell={config.isClearShell}
+              onToggleClearShell={() => setters.setIsClearShell(!config.isClearShell)}
             />
 
-            {/* How it works */}
-            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wide flex items-center gap-2">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-600 text-white text-[10px]">i</span>
-                How it works
-              </h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Choose colors for the shell, lens, and buttons, and experiment freely - you can even use custom colors. When you're happy with the result, download your configuration or why not prompt ChatGPT with it. This is a very early version of the tool, and things will change as it improves and gains more features over time. Any feedback? Contact: reteeretro@gmail.com
-              </p>
-            </div>
-
+            <InfoCard />
           </div>
-          
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
-        <p>&copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.7. Not affiliated with Nintendo.</p>
+        <p>
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.7. Not
+          affiliated with Nintendo.
+        </p>
       </footer>
     </div>
   );

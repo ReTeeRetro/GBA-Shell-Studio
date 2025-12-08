@@ -7,3 +7,14 @@ export interface ColorOption {
 export type ViewMode = 'front-off' | 'front-on' | 'back';
 
 export type RenderMode = 'plastic' | 'matte';
+
+export interface GbaConfig {
+  selectedColor: ColorOption;
+  dpadColor: ColorOption;
+  aButtonColor: ColorOption;
+  bButtonColor: ColorOption;
+  startSelectColor: ColorOption;
+  bumpersColor: ColorOption;
+  lensColor: ColorOption;
+  isClearShell: boolean;
+}

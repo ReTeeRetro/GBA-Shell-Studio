@@ -561,7 +561,7 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
     </g>
 
     {/* Top left */}
-    <g transform="translate(200, 25)">
+    <g transform="translate(205, 25)">
       <circle
         cx={0}
         cy={0}
