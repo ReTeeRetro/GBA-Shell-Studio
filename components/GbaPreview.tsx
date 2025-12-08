@@ -127,8 +127,8 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
     const SPEAKER_Y = 310;
 
     // Lens Configuration
-    const LENS_X = 379;
-    const LENS_Y = 48;
+    const LENS_X = 356;
+    const LENS_Y = 37.7;
 
     // Power LED Configuration
     // Targeted absolute visual position: X=702, Y=105
@@ -618,32 +618,27 @@ const R_BUTTON_ROTATION = 6;  // for when we add the R path
               </g>
             )}
 
-            {/* 
-                LAYER 2.5: LENS
-            */}
-            <g id="lens-layer" transform={`translate(${LENS_X}, ${LENS_Y})`}>
-              <rect
-                x="-165.5"
-                y="37"
-                width="359"
-                height="238"
-                fill="url(#screenGradient)"
-              />
-              <LensPath fill={lensColor.hex} />
-              {/* 
-                  Logo Layer
-                  Positioned below the screen, centered on the chin.
-                  Target Width: 220
-                  Original ViewBox: 192.756
-                  Scale: 220 / 192.756 = ~1.14
-                  Center X: 14 (relative to lens group center)
-                  Center Y: 320 (chin area)
-                  Origin Offset: -96.378 (half of viewbox) to center the scaling
-                */}
-              <g transform="translate(14, 320) scale(1.14) translate(-96.378, -96.378)">
-                <GbaLogo />
-              </g>
-            </g>
+            {/* LAYER 2.5: LENS */}
+<g id="lens-layer" transform={`translate(${LENS_X}, ${LENS_Y})`}>
+  {/* Lens bezel / plastic */}
+  <LensPath fill={lensColor.hex} />
+
+  {/* Screen on top, slightly inset */}
+  <rect
+    x="-148"   // a bit inset from old -165.5 to sit inside the lens
+    y="40"
+    width="370"
+    height="250"
+    fill="url(#screenGradient)"
+    rx="8"
+    ry="8"
+  />
+
+  {/* Logo */}
+  <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
+    <GbaLogo />
+  </g>
+</g>
 
             {/* 
                 LAYER 3: D-PAD
