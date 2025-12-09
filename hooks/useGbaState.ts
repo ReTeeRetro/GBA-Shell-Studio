@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ColorOption, RenderMode, GbaConfig } from '../types';
+import { ColorOption, GbaConfig } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
 
 export const useGbaState = () => {
@@ -16,8 +16,6 @@ export const useGbaState = () => {
   const [rightBumperColor, setRightBumperColor] = useState<ColorOption>(SHELL_COLORS[4]);
 
   const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
-  const [showButtonEffects, setShowButtonEffects] = useState(true);
-  const [renderMode, setRenderMode] = useState<RenderMode>('plastic');
   const [isClearShell, setIsClearShell] = useState(false);
   const [isClearButtons, setIsClearButtons] = useState(false);
 
@@ -69,8 +67,6 @@ export const useGbaState = () => {
     setLeftBumperColor(SHELL_COLORS[4]);
     setRightBumperColor(SHELL_COLORS[4]);
     setLensColor(LENS_COLORS[0]);
-    setShowButtonEffects(true);
-    setRenderMode('plastic');
     setIsClearShell(false);
     setIsClearButtons(false);
   };
@@ -92,10 +88,6 @@ export const useGbaState = () => {
 
   return {
     config,
-    renderSettings: {
-      renderMode,
-      showButtonEffects,
-    },
     setters: {
       setSelectedColor,
       setDpadColor,
@@ -107,8 +99,6 @@ export const useGbaState = () => {
       setLeftBumperColor,
       setRightBumperColor,
       setLensColor,
-      setRenderMode,
-      setShowButtonEffects,
       setIsClearShell,
       setIsClearButtons,
     },

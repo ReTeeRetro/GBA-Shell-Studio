@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { ColorOption, RenderMode } from '../types';
+import { ColorOption } from '../types';
 import {
   ShellPaths,
   DpadPaths,
@@ -30,8 +30,6 @@ interface GbaPreviewProps {
   rightBumperColor: ColorOption;
   lensColor: ColorOption;
   showGrid?: boolean;
-  showButtonEffects?: boolean;
-  renderMode?: RenderMode;
   isClearShell?: boolean;
   isClearButtons?: boolean;
 }
@@ -50,8 +48,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       rightBumperColor,
       lensColor,
       showGrid = false,
-      showButtonEffects = true,
-      renderMode = 'plastic',
       isClearShell = false,
       isClearButtons = false,
     },
@@ -144,10 +140,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const LED_X = 711 - SHELL_OFFSET_X;
     const LED_Y = 115 - SHELL_OFFSET_Y;
 
-    // RENDER MODES LOGIC
-    const showTexture = renderMode === 'plastic';
-    // With 'flat' removed, shading is always on for both 'plastic' and 'matte'
-    const showShading = true;
+    // RENDER MODES LOGIC - Hardcoded defaults as requested
+    const showTexture = true; // Always plastic
+    const showShading = true; // Always shading/depth
 
     // Opacity for clear buttons
     const buttonOpacity = isClearButtons ? 0.6 : 1;
@@ -673,7 +668,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {/* Base Layer + Drop Shadow (Right) */}
               <g
                 id="dpad-base-layer"
-                filter={showButtonEffects ? 'url(#btnShadowRight)' : undefined}
+                filter="url(#btnShadowRight)"
                 style={{ opacity: buttonOpacity }}
               >
                 <DpadPaths />
@@ -683,7 +678,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               <DpadEngraving />
 
               {/* D-Pad Texture & Sheen */}
-              {showTexture && showButtonEffects && (
+              {showTexture && (
                 <>
                   <g
                     filter="url(#plasticGrain)"
@@ -699,7 +694,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
 
               {/* D-Pad Shading */}
-              {showShading && showButtonEffects && (
+              {showShading && (
                 <g
                   filter="url(#dpadShading)"
                   style={{ mixBlendMode: 'hard-light' }}
@@ -717,7 +712,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {/* A/B Buttons Base + Drop Shadow (Left) */}
               <g
                 id="buttons-base-layer"
-                filter={showButtonEffects ? 'url(#btnShadowLeft)' : undefined}
+                filter="url(#btnShadowLeft)"
                 style={{ opacity: buttonOpacity }}
               >
                 <g id="btn-a-base">{A_BUTTON_SHAPE}</g>
@@ -726,7 +721,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               </g>
 
               {/* Buttons Texture & Sheen - SHAPES ONLY (No labels) */}
-              {showTexture && showButtonEffects && (
+              {showTexture && (
                 <>
                   <g
                     filter="url(#plasticGrain)"
@@ -742,7 +737,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
 
               {/* Buttons Shading - SHAPES ONLY */}
-              {showShading && showButtonEffects && (
+              {showShading && (
                 <g
                   filter="url(#dpadShading)"
                   style={{ mixBlendMode: 'hard-light' }}
@@ -755,7 +750,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {/* Start/Select Buttons (Rubber Texture) + Drop Shadow (Right) */}
               <g
                 fill={startSelectColor.hex}
-                filter={showButtonEffects ? 'url(#btnShadowRight)' : undefined}
+                filter="url(#btnShadowRight)"
                 style={{ opacity: buttonOpacity }}
               >
                 <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
@@ -767,7 +762,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               </g>
 
               {/* Grain only for rubber (no sheen) - Apply if Realistic OR Matte (texture is nice on rubber) */}
-              {showTexture && showButtonEffects && (
+              {showTexture && (
                 <g
                   filter="url(#plasticGrain)"
                   style={{ mixBlendMode: 'overlay' }}
@@ -783,7 +778,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
 
               {/* Shading */}
-              {showShading && showButtonEffects && (
+              {showShading && (
                 <g
                   filter="url(#dpadShading)"
                   style={{ mixBlendMode: 'hard-light' }}

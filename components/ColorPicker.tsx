@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
@@ -613,12 +612,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
           Randomize Colors
         </button>
-      </div>
-
-      <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-        <p className="text-xs text-slate-500 leading-relaxed text-center">
-          <strong>Interactive Preview:</strong> The colors are rendered in real-time. 
-        </p>
       </div>
     </div>
   );

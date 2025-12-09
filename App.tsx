@@ -7,10 +7,10 @@ import { InfoCard } from './components/InfoCard';
 import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
-import { Layers, ScanFace, CircleDashed, Download, RotateCcw } from 'lucide-react';
+import { Download, RotateCcw } from 'lucide-react';
 
 function App() {
-  const { config, renderSettings, setters, randomize, reset } = useGbaState();
+  const { config, setters, randomize, reset } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
 
   const handleDownload = () => downloadGbaImage(svgRef.current, config);
@@ -72,62 +72,9 @@ function App() {
               leftBumperColor={config.leftBumperColor}
               rightBumperColor={config.rightBumperColor}
               lensColor={config.lensColor}
-              showButtonEffects={renderSettings.showButtonEffects}
-              renderMode={renderSettings.renderMode}
               isClearShell={config.isClearShell}
               isClearButtons={config.isClearButtons}
             />
-
-            <div className="flex flex-col sm:flex-row justify-between items-center px-1 gap-4">
-              <div className="flex items-center gap-2">
-                {/* Render Mode Toggle */}
-                <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                  <button
-                    onClick={() => setters.setRenderMode('plastic')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
-                      renderSettings.renderMode === 'plastic'
-                        ? 'bg-slate-900 text-white shadow-md'
-                        : 'text-slate-500 hover:bg-slate-100'
-                    }`}
-                  >
-                    <ScanFace size={14} />
-                    Plastic
-                  </button>
-                  <button
-                    onClick={() => setters.setRenderMode('matte')}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
-                      renderSettings.renderMode === 'matte'
-                        ? 'bg-slate-900 text-white shadow-md'
-                        : 'text-slate-500 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Layers size={14} />
-                    Matte
-                  </button>
-                </div>
-
-                {/* Button Depth Toggle */}
-                <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                  <button
-                    onClick={() => setters.setShowButtonEffects(!renderSettings.showButtonEffects)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${
-                      renderSettings.showButtonEffects
-                        ? 'bg-slate-900 text-white shadow-md'
-                        : 'text-slate-500 hover:bg-slate-100'
-                    }`}
-                    title="Toggle Button Depth"
-                  >
-                    <CircleDashed size={14} />
-                    Button Depth
-                  </button>
-                </div>
-              </div>
-
-              <div className="text-xs text-slate-400 font-mono hidden sm:block">
-                {renderSettings.renderMode === 'plastic' && 'RENDER: Textured Plastic + Sheen'}
-                {renderSettings.renderMode === 'matte' && 'RENDER: Clean Vector Shading'}
-              </div>
-            </div>
 
             <AiCard onOpenAi={handleOpenAi} />
           </div>
