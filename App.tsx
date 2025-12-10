@@ -3,6 +3,7 @@ import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { AiCard } from './components/AiCard';
+import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
@@ -77,6 +78,7 @@ function App() {
             />
 
             <AiCard onOpenAi={handleOpenAi} />
+            <ExampleAiImages />
           </div>
 
           {/* Right: Controls */}
