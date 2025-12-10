@@ -6,7 +6,7 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
   const w = 900;
   const h = 550;
   const scale = 2; // High res scale
-  const footerHeight = 160;
+  const footerHeight = 180; // Increased slightly for 4 rows
 
   // 1. Clone the SVG to manipulate it safely without affecting the DOM
   const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
@@ -69,25 +69,21 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
     // Logic to condense bumper/trigger text
     const triggersMatch = config.lButtonColor.id === config.rButtonColor.id && config.lButtonColor.hex === config.rButtonColor.hex;
     const bumpersMatch = config.leftBumperColor.id === config.rightBumperColor.id && config.leftBumperColor.hex === config.rightBumperColor.hex;
-    const allMatch = triggersMatch && bumpersMatch && config.lButtonColor.id === config.leftBumperColor.id && config.lButtonColor.hex === config.leftBumperColor.hex;
-
+    
     let bumperTextPart = [];
-    if (allMatch) {
-        bumperTextPart.push({ label: 'Bumpers', color: config.lButtonColor, detail: btnSuffix });
+    
+    if (triggersMatch) {
+        bumperTextPart.push({ label: 'L/R Buttons', color: config.lButtonColor, detail: btnSuffix });
     } else {
-        if (triggersMatch) {
-            bumperTextPart.push({ label: 'L/R Btns', color: config.lButtonColor, detail: btnSuffix });
-        } else {
-            bumperTextPart.push({ label: 'L Btn', color: config.lButtonColor, detail: btnSuffix });
-            bumperTextPart.push({ label: 'R Btn', color: config.rButtonColor, detail: btnSuffix });
-        }
+        bumperTextPart.push({ label: 'L Button', color: config.lButtonColor, detail: btnSuffix });
+        bumperTextPart.push({ label: 'R Button', color: config.rButtonColor, detail: btnSuffix });
+    }
 
-        if (bumpersMatch) {
-            bumperTextPart.push({ label: 'Side Bumpers', color: config.leftBumperColor, detail: btnSuffix });
-        } else {
-            bumperTextPart.push({ label: 'L Side', color: config.leftBumperColor, detail: btnSuffix });
-            bumperTextPart.push({ label: 'R Side', color: config.rightBumperColor, detail: btnSuffix });
-        }
+    if (bumpersMatch) {
+        bumperTextPart.push({ label: 'Side Bumpers', color: config.leftBumperColor, detail: btnSuffix });
+    } else {
+        bumperTextPart.push({ label: 'L Side Bumper', color: config.leftBumperColor, detail: btnSuffix });
+        bumperTextPart.push({ label: 'R Side Bumper', color: config.rightBumperColor, detail: btnSuffix });
     }
 
     // Organize parts
@@ -103,7 +99,7 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
 
     const startX = 60;
     const colWidth = 530;
-    const itemsPerCol = 3;
+    const itemsPerCol = 4;
 
     parts.forEach((part, index) => {
       const col = Math.floor(index / itemsPerCol);
