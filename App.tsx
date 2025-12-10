@@ -59,10 +59,23 @@ function App() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 items-start">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Preview Canvas */}
-          <div className={`lg:col-span-2 space-y-4 transition-all duration-300 ease-in-out ${isPinned ? 'lg:sticky lg:top-24 lg:z-10' : ''}`}>
-            <div className="relative">
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* Placeholder to prevent layout shift on mobile when pinned (fixed) */}
+            <div 
+              className={`w-full transition-all duration-300 ${isPinned ? 'block lg:hidden' : 'hidden'}`}
+              style={{ aspectRatio: '900/550', marginBottom: '1rem' }}
+            />
+
+            <div className={`
+              transition-all duration-300 ease-in-out
+              ${isPinned 
+                ? 'fixed top-16 left-0 right-0 z-40 bg-gray-50/95 backdrop-blur-sm border-b border-slate-200 shadow-md p-2 lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none lg:backdrop-blur-none lg:static lg:sticky lg:top-24 lg:z-30' 
+                : 'relative'
+              }
+            `}>
               {/* Pin Toggle Button */}
               <div className="absolute top-4 left-4 z-20">
                 <button
