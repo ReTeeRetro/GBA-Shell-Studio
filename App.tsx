@@ -120,7 +120,7 @@ function App() {
 
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.71. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.73. Not
           affiliated with Nintendo.
         </p>
       </footer>

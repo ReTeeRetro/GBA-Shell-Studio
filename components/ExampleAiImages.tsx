@@ -3,9 +3,9 @@ import { Image as ImageIcon } from 'lucide-react';
 
 export const ExampleAiImages: React.FC = () => {
   const images = [
-    '/example_images/1.png',
-    '/example_images/2.png',
-    '/example_images/3.png'
+    'https://godsaftigochdryg.se/gbashellstudio/1.png',
+    'https://godsaftigochdryg.se/gbashellstudio/2.png',
+    'https://godsaftigochdryg.se/gbashellstudio/3.png'
   ];
 
   return (
