@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Image as ImageIcon } from 'lucide-react';
 
 export const ExampleAiImages: React.FC = () => {
-  const images = [
-    'https://godsaftigochdryg.se/gbashellstudio/1.png',
-    'https://godsaftigochdryg.se/gbashellstudio/2.png',
-    'https://godsaftigochdryg.se/gbashellstudio/3.png'
-  ];
+  const images = useMemo(() => {
+    const allImages = [
+      'https://godsaftigochdryg.se/gbashellstudio/1.png',
+      'https://godsaftigochdryg.se/gbashellstudio/2.png',
+      'https://godsaftigochdryg.se/gbashellstudio/3.png',
+      'https://godsaftigochdryg.se/gbashellstudio/4.png',
+      'https://godsaftigochdryg.se/gbashellstudio/5.png',
+      'https://godsaftigochdryg.se/gbashellstudio/6.png'
+    ];
+    
+    // Shuffle array and take 3
+    return allImages.sort(() => 0.5 - Math.random()).slice(0, 3);
+  }, []);
 
   return (
     <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
@@ -31,6 +39,12 @@ export const ExampleAiImages: React.FC = () => {
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
           </div>
         ))}
+      </div>
+      
+      <div className="mt-6 text-left">
+        <p className="text-slate-900 font-medium text-sm">
+          Share yours with #gbashellstudio
+        </p>
       </div>
     </div>
   );
