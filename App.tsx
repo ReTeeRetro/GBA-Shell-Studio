@@ -17,6 +17,32 @@ function App() {
   const [isPinned, setIsPinned] = useState(false);
   const [shareText, setShareText] = useState('Share');
 
+  // Check for view-only mode from URL
+  const searchParams = new URLSearchParams(window.location.search);
+  const isViewOnly = searchParams.get('viewOnly') === '1';
+
+  if (isViewOnly) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <GbaPreview
+          ref={svgRef}
+          selectedColor={config.selectedColor}
+          dpadColor={config.dpadColor}
+          aButtonColor={config.aButtonColor}
+          bButtonColor={config.bButtonColor}
+          startSelectColor={config.startSelectColor}
+          lButtonColor={config.lButtonColor}
+          rButtonColor={config.rButtonColor}
+          leftBumperColor={config.leftBumperColor}
+          rightBumperColor={config.rightBumperColor}
+          lensColor={config.lensColor}
+          isClearShell={config.isClearShell}
+          isClearButtons={config.isClearButtons}
+        />
+      </div>
+    );
+  }
+
   const handleDownload = () => downloadGbaImage(svgRef.current, config);
   const handleOpenAi = (tool: 'chatgpt' | 'gemini') => openAiTool(tool, config);
 
