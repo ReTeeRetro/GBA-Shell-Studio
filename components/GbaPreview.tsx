@@ -165,13 +165,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       </g>
     );
 
-    const BUTTON_SHAPES = (
-      <>
-        {A_BUTTON_SHAPE}
-        {B_BUTTON_SHAPE}
-      </>
-    );
-
     const BUTTON_LABELS = (
       <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
         {/* A Label */}
