@@ -188,6 +188,44 @@ const ColorButton: React.FC<ColorButtonProps> = ({
   );
 };
 
+// Reusable Section for Individual Controls
+interface ColorSectionProps {
+  label: string;
+  selectedColor: ColorOption;
+  onSelect: (color: ColorOption) => void;
+  idPrefix: string;
+}
+
+const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSelect, idPrefix }) => (
+  <div>
+    <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+      {label}
+    </h3>
+    <div className="grid grid-cols-6 gap-2">
+      {SHELL_COLORS.map((color) => (
+        <ColorButton 
+          key={`${idPrefix}-${color.id}`}
+          color={color}
+          isSelected={selectedColor.id === color.id}
+          onSelect={onSelect}
+          sizeClass="w-8 h-8"
+          className="!gap-0"
+          showLabel={false}
+        />
+      ))}
+      <ColorButton 
+         isCustom
+         isSelected={selectedColor.id === 'custom'}
+         color={selectedColor}
+         onSelect={onSelect}
+         sizeClass="w-8 h-8"
+         className="!gap-0"
+         showLabel={false}
+      />
+    </div>
+  </div>
+);
+
 export const ColorPicker: React.FC<ColorPickerProps> = ({ 
   selectedColor, 
   onSelectColor,
@@ -367,239 +405,14 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         {/* Collapsible Individual Controls */}
         {showIndividualControls && (
           <div className="mt-4 pl-4 border-l-2 border-slate-100 space-y-6 animate-in slide-in-from-top-2 duration-200">
-            
-             {/* D-Pad Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                D-Pad
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`dpad-${color.id}`}
-                    color={color}
-                    isSelected={dpadColor.id === color.id}
-                    onSelect={onSelectDpadColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={dpadColor.id === 'custom'}
-                   color={dpadColor}
-                   onSelect={onSelectDpadColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-            {/* A Button Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Button A
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`btn-a-${color.id}`}
-                    color={color}
-                    isSelected={aButtonColor.id === color.id}
-                    onSelect={onSelectAButtonColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={aButtonColor.id === 'custom'}
-                   color={aButtonColor}
-                   onSelect={onSelectAButtonColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-            {/* B Button Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Button B
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`btn-b-${color.id}`}
-                    color={color}
-                    isSelected={bButtonColor.id === color.id}
-                    onSelect={onSelectBButtonColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={bButtonColor.id === 'custom'}
-                   color={bButtonColor}
-                   onSelect={onSelectBButtonColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-            {/* Start/Select Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Start / Select
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`ss-${color.id}`}
-                    color={color}
-                    isSelected={startSelectColor.id === color.id}
-                    onSelect={onSelectStartSelectColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={startSelectColor.id === 'custom'}
-                   color={startSelectColor}
-                   onSelect={onSelectStartSelectColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-             {/* L Button Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                L Button (Trigger)
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`l-btn-${color.id}`}
-                    color={color}
-                    isSelected={lButtonColor.id === color.id}
-                    onSelect={onSelectLButtonColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={lButtonColor.id === 'custom'}
-                   color={lButtonColor}
-                   onSelect={onSelectLButtonColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-             {/* R Button Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                R Button (Trigger)
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`r-btn-${color.id}`}
-                    color={color}
-                    isSelected={rButtonColor.id === color.id}
-                    onSelect={onSelectRButtonColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={rButtonColor.id === 'custom'}
-                   color={rButtonColor}
-                   onSelect={onSelectRButtonColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-             {/* Left Bumper Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Left Bumper (Side)
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`l-bump-${color.id}`}
-                    color={color}
-                    isSelected={leftBumperColor.id === color.id}
-                    onSelect={onSelectLeftBumperColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={leftBumperColor.id === 'custom'}
-                   color={leftBumperColor}
-                   onSelect={onSelectLeftBumperColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
-             {/* Right Bumper Color Section */}
-            <div>
-              <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
-                Right Bumper (Side)
-              </h3>
-              <div className="grid grid-cols-6 gap-2">
-                 {SHELL_COLORS.map((color) => (
-                  <ColorButton 
-                    key={`r-bump-${color.id}`}
-                    color={color}
-                    isSelected={rightBumperColor.id === color.id}
-                    onSelect={onSelectRightBumperColor}
-                    sizeClass="w-8 h-8"
-                    className="!gap-0"
-                    showLabel={false}
-                  />
-                ))}
-                <ColorButton 
-                   isCustom
-                   isSelected={rightBumperColor.id === 'custom'}
-                   color={rightBumperColor}
-                   onSelect={onSelectRightBumperColor}
-                   sizeClass="w-8 h-8"
-                   className="!gap-0"
-                   showLabel={false}
-                />
-              </div>
-            </div>
-
+            <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" />
+            <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" />
+            <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" />
+            <ColorSection label="Start / Select" selectedColor={startSelectColor} onSelect={onSelectStartSelectColor} idPrefix="ss" />
+            <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" />
+            <ColorSection label="R Button (Trigger)" selectedColor={rButtonColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" />
+            <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" />
+            <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" />
           </div>
         )}
       </div>

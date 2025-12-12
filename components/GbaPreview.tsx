@@ -676,33 +676,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
               {/* D-Pad Details (Arrows/Dimple) - Rendered over base but under texture */}
               <DpadEngraving />
-
-              {/* D-Pad Texture & Sheen */}
-              {showTexture && (
-                <>
-                  <g
-                    filter="url(#plasticGrain)"
-                    style={{ mixBlendMode: 'overlay' }}
-                    opacity="0.3"
-                  >
-                    <DpadPaths />
-                  </g>
-                  <g className="sheen-fill" style={{ mixBlendMode: 'screen' }} opacity="0.2">
-                    <DpadPaths />
-                  </g>
-                </>
-              )}
-
-              {/* D-Pad Shading */}
-              {showShading && (
-                <g
-                  filter="url(#dpadShading)"
-                  style={{ mixBlendMode: 'hard-light' }}
-                  opacity="0.5"
-                >
-                  <DpadPaths />
-                </g>
-              )}
             </g>
 
             {/* 
@@ -719,33 +692,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
                 {BUTTON_LABELS}
               </g>
-
-              {/* Buttons Texture & Sheen - SHAPES ONLY (No labels) */}
-              {showTexture && (
-                <>
-                  <g
-                    filter="url(#plasticGrain)"
-                    style={{ mixBlendMode: 'overlay' }}
-                    opacity="0.3"
-                  >
-                    {BUTTON_SHAPES}
-                  </g>
-                  <g className="sheen-fill" style={{ mixBlendMode: 'screen' }} opacity="0.3">
-                    {BUTTON_SHAPES}
-                  </g>
-                </>
-              )}
-
-              {/* Buttons Shading - SHAPES ONLY */}
-              {showShading && (
-                <g
-                  filter="url(#dpadShading)"
-                  style={{ mixBlendMode: 'hard-light' }}
-                  opacity="0.5"
-                >
-                  {BUTTON_SHAPES}
-                </g>
-              )}
 
               {/* Start/Select Buttons (Rubber Texture) + Drop Shadow (Right) */}
               <g
