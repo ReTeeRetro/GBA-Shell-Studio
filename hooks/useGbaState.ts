@@ -1,23 +1,31 @@
 import { useState } from 'react';
 import { ColorOption, GbaConfig } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
+import { deserializeConfig } from '../utils/urlUtils';
 
 export const useGbaState = () => {
-  const [selectedColor, setSelectedColor] = useState<ColorOption>(SHELL_COLORS[1]);
-  const [dpadColor, setDpadColor] = useState<ColorOption>(SHELL_COLORS[4]); // Default to Platinum
-  const [aButtonColor, setAButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [bButtonColor, setBButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [startSelectColor, setStartSelectColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  
-  // Split Bumpers state
-  const [lButtonColor, setLButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [rButtonColor, setRButtonColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [leftBumperColor, setLeftBumperColor] = useState<ColorOption>(SHELL_COLORS[4]);
-  const [rightBumperColor, setRightBumperColor] = useState<ColorOption>(SHELL_COLORS[4]);
+  // Compute initial state once by checking URL parameters
+  const initialData = typeof window !== 'undefined' ? deserializeConfig(window.location.search) : {};
 
-  const [lensColor, setLensColor] = useState<ColorOption>(LENS_COLORS[0]); // Default to Black
-  const [isClearShell, setIsClearShell] = useState(false);
-  const [isClearButtons, setIsClearButtons] = useState(false);
+  // Defaults
+  const defaultShell = SHELL_COLORS[1]; // Indigo
+  const defaultButtons = SHELL_COLORS[4]; // Grey
+  const defaultLens = LENS_COLORS[0]; // Black
+
+  const [selectedColor, setSelectedColor] = useState<ColorOption>(initialData.selectedColor || defaultShell);
+  const [dpadColor, setDpadColor] = useState<ColorOption>(initialData.dpadColor || defaultButtons);
+  const [aButtonColor, setAButtonColor] = useState<ColorOption>(initialData.aButtonColor || defaultButtons);
+  const [bButtonColor, setBButtonColor] = useState<ColorOption>(initialData.bButtonColor || defaultButtons);
+  const [startSelectColor, setStartSelectColor] = useState<ColorOption>(initialData.startSelectColor || defaultButtons);
+  
+  const [lButtonColor, setLButtonColor] = useState<ColorOption>(initialData.lButtonColor || defaultButtons);
+  const [rButtonColor, setRButtonColor] = useState<ColorOption>(initialData.rButtonColor || defaultButtons);
+  const [leftBumperColor, setLeftBumperColor] = useState<ColorOption>(initialData.leftBumperColor || defaultButtons);
+  const [rightBumperColor, setRightBumperColor] = useState<ColorOption>(initialData.rightBumperColor || defaultButtons);
+
+  const [lensColor, setLensColor] = useState<ColorOption>(initialData.lensColor || defaultLens);
+  const [isClearShell, setIsClearShell] = useState(initialData.isClearShell ?? false);
+  const [isClearButtons, setIsClearButtons] = useState(initialData.isClearButtons ?? false);
 
   const randomize = () => {
     const getRandomHex = () =>
@@ -57,6 +65,17 @@ export const useGbaState = () => {
   };
 
   const reset = () => {
+    // Reset to defaults AND clear URL
+    if (typeof window !== 'undefined') {
+        try {
+            const url = new URL(window.location.href);
+            url.search = '';
+            window.history.pushState({}, '', url);
+        } catch (e) {
+            console.warn('Unable to reset URL history', e);
+        }
+    }
+
     setSelectedColor(SHELL_COLORS[1]);
     setDpadColor(SHELL_COLORS[4]);
     setAButtonColor(SHELL_COLORS[4]);

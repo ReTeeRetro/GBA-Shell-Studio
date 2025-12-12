@@ -8,15 +8,43 @@ import { InfoCard } from './components/InfoCard';
 import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
-import { Download, RotateCcw, Pin } from 'lucide-react';
+import { serializeConfig } from './utils/urlUtils';
+import { Download, RotateCcw, Pin, Share2, Check } from 'lucide-react';
 
 function App() {
   const { config, setters, randomize, reset } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
   const [isPinned, setIsPinned] = useState(false);
+  const [shareText, setShareText] = useState('Share');
 
   const handleDownload = () => downloadGbaImage(svgRef.current, config);
   const handleOpenAi = (tool: 'chatgpt' | 'gemini') => openAiTool(tool, config);
+
+  const handleShare = async () => {
+    const queryString = serializeConfig(config);
+    
+    // Use URL object for safer manipulation, handles origin/pathname edge cases
+    const url = new URL(window.location.href);
+    url.search = queryString;
+    const finalUrl = url.toString();
+    
+    try {
+      // Update browser URL without reload
+      // We wrap this in a try-catch because some environments (like sandboxed iframes or blobs)
+      // block pushState updates for security reasons.
+      window.history.pushState({ path: finalUrl }, '', finalUrl);
+    } catch (e) {
+      console.warn('Unable to update URL history', e);
+    }
+
+    try {
+      await navigator.clipboard.writeText(finalUrl);
+      setShareText('Copied!');
+      setTimeout(() => setShareText('Share'), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 text-slate-900 selection:bg-blue-500/30">
@@ -28,7 +56,20 @@ function App() {
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">GBA Shell Studio</h1>
           </div>
 
-          <div className="flex items-center gap-4 text-sm font-medium text-slate-500">
+          <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
+            <button
+              onClick={handleShare}
+              className={`flex items-center gap-2 px-3 py-1.5 border rounded-full transition-all shadow-sm
+                ${shareText === 'Copied!' 
+                  ? 'bg-green-50 border-green-200 text-green-700' 
+                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                }`}
+              title="Share Design URL"
+            >
+              {shareText === 'Copied!' ? <Check size={16} /> : <Share2 size={16} />}
+              <span className="hidden sm:inline">{shareText}</span>
+            </button>
+
             <button
               onClick={handleDownload}
               className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-sm border border-transparent"
