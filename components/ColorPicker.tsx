@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, Tv } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -334,8 +334,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
               title="Toggle Screen On/Off"
           >
-              <Tv size={16} />
-              {isScreenOn ? 'Screen On' : 'Screen Off'}
+              {isScreenOn ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+              Screen Power
           </button>
         </div>
         
