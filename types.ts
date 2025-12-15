@@ -21,4 +21,5 @@ export interface GbaConfig {
   lensColor: ColorOption;
   isClearShell: boolean;
   isClearButtons: boolean;
+  isScreenOn: boolean;
 }

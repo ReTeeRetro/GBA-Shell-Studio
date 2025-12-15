@@ -38,6 +38,7 @@ function App() {
           lensColor={config.lensColor}
           isClearShell={config.isClearShell}
           isClearButtons={config.isClearButtons}
+          isScreenOn={config.isScreenOn}
         />
       </div>
     );
@@ -174,6 +175,7 @@ function App() {
                 lensColor={config.lensColor}
                 isClearShell={config.isClearShell}
                 isClearButtons={config.isClearButtons}
+                isScreenOn={config.isScreenOn}
               />
             </div>
 
@@ -211,6 +213,8 @@ function App() {
               onToggleClearShell={() => setters.setIsClearShell(!config.isClearShell)}
               isClearButtons={config.isClearButtons}
               onToggleClearButtons={() => setters.setIsClearButtons(!config.isClearButtons)}
+              isScreenOn={config.isScreenOn}
+              onToggleScreenOn={() => setters.setIsScreenOn(!config.isScreenOn)}
             />
 
             <InfoCard />
@@ -220,7 +224,7 @@ function App() {
 
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.8. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.8.1. Not
           affiliated with Nintendo.
         </p>
       </footer>

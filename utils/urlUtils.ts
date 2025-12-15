@@ -14,6 +14,7 @@ const PARAM_MAP: Record<keyof GbaConfig, string> = {
   lensColor: 'lens',
   isClearShell: 'clear_shell',
   isClearButtons: 'clear_btns',
+  isScreenOn: 'screen_on',
 };
 
 // Helper to convert a ColorOption to a string for the URL
@@ -89,6 +90,9 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   }
   if (params.has(PARAM_MAP.isClearButtons)) {
     config.isClearButtons = params.get(PARAM_MAP.isClearButtons) === '1';
+  }
+  if (params.has(PARAM_MAP.isScreenOn)) {
+    config.isScreenOn = params.get(PARAM_MAP.isScreenOn) === '1';
   }
 
   // Remove undefined keys so they don't overwrite defaults with undefined

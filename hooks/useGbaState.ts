@@ -26,6 +26,8 @@ export const useGbaState = () => {
   const [lensColor, setLensColor] = useState<ColorOption>(initialData.lensColor || defaultLens);
   const [isClearShell, setIsClearShell] = useState(initialData.isClearShell ?? false);
   const [isClearButtons, setIsClearButtons] = useState(initialData.isClearButtons ?? false);
+  // Default to true for screen on if not specified, it's prettier
+  const [isScreenOn, setIsScreenOn] = useState(initialData.isScreenOn ?? true);
 
   const randomize = () => {
     const getRandomHex = () =>
@@ -88,6 +90,7 @@ export const useGbaState = () => {
     setLensColor(LENS_COLORS[0]);
     setIsClearShell(false);
     setIsClearButtons(false);
+    setIsScreenOn(true);
   };
 
   const config: GbaConfig = {
@@ -103,6 +106,7 @@ export const useGbaState = () => {
     lensColor,
     isClearShell,
     isClearButtons,
+    isScreenOn,
   };
 
   return {
@@ -120,6 +124,7 @@ export const useGbaState = () => {
       setLensColor,
       setIsClearShell,
       setIsClearButtons,
+      setIsScreenOn,
     },
     randomize,
     reset,

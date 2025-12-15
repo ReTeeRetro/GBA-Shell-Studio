@@ -32,6 +32,7 @@ interface GbaPreviewProps {
   showGrid?: boolean;
   isClearShell?: boolean;
   isClearButtons?: boolean;
+  isScreenOn?: boolean;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -50,6 +51,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       showGrid = false,
       isClearShell = false,
       isClearButtons = false,
+      isScreenOn = false,
     },
     ref
   ) => {
@@ -221,6 +223,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
           className="w-full h-auto block"
           preserveAspectRatio="xMidYMid meet"
           xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
         >
           <defs>
             {/* 
@@ -324,6 +327,23 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             </linearGradient>
 
             {/* 
+              Screen On Gradient (Dark Blue to Light Blue)
+            */}
+            <linearGradient id="screenOnGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#1e3a8a" />
+              <stop offset="100%" stopColor="#60a5fa" />
+            </linearGradient>
+
+            {/* 
+              Boot Logo Gradient
+            */}
+            <linearGradient id="bootLogoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ef4444" />
+              <stop offset="50%" stopColor="#eab308" />
+              <stop offset="100%" stopColor="#22c55e" />
+            </linearGradient>
+
+            {/* 
               LED Glow Effect
             */}
             <filter id="ledGlow" x="-200%" y="-200%" width="500%" height="500%">
@@ -367,6 +387,14 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               <g transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
                 <ShellPaths />
               </g>
+            </clipPath>
+
+            {/*
+               Screen Mask Clip Path
+               Defines the rounded rectangle area for the screen content.
+            */}
+            <clipPath id="screen-mask">
+               <rect x="-148" y="40" width="370" height="250" rx="8" ry="8" />
             </clipPath>
           </defs>
 
@@ -596,8 +624,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {/* Power LED */}
               <g
                 transform={`translate(${LED_X}, ${LED_Y})`}
-                fill="#4ade80"
-                filter="url(#ledGlow)"
+                fill={isScreenOn ? "#4ade80" : "#ffffff"}
+                filter={isScreenOn ? "url(#ledGlow)" : undefined}
+                opacity={isScreenOn ? 1 : 0.4}
               >
                 <PowerLedPath />
               </g>
@@ -637,16 +666,55 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
   {/* Lens bezel / plastic */}
   <LensPath fill={lensColor.hex} />
 
-  {/* Screen on top, slightly inset */}
-  <rect
-    x="-148"   // a bit inset from old -165.5 to sit inside the lens
-    y="40"
-    width="370"
-    height="250"
-    fill="url(#screenGradient)"
-    rx="8"
-    ry="8"
-  />
+  {/* Screen Content */}
+  {isScreenOn ? (
+    <g clipPath="url(#screen-mask)">
+      {/* Screen Background - Gradient Blue */}
+      <rect x="-148" y="40" width="370" height="250" fill="url(#screenOnGradient)" />
+      
+      {/* GAME BOY Text */}
+      <text 
+        x="37" 
+        y="160" 
+        textAnchor="middle" 
+        fontFamily="sans-serif" 
+        fontWeight="900" 
+        fontStyle="italic" 
+        fontSize="52" 
+        fill="url(#bootLogoGradient)" 
+        stroke="url(#bootLogoGradient)"
+        strokeWidth="1"
+        letterSpacing="-7"
+        style={{ textShadow: '2px 2px 0px rgba(0,0,0,0.1)' }}
+      >
+        GAME BOY
+      </text>
+      
+      {/* Nintendo Logo */}
+      <text 
+        x="37" 
+        y="200" 
+        textAnchor="middle" 
+        fontFamily="sans-serif" 
+        fontWeight="bold" 
+        fontSize="24" 
+        fill="#000000" 
+        letterSpacing="0.5"
+      >
+        Nintendo
+      </text>
+    </g>
+  ) : (
+    <rect
+      x="-148"
+      y="40"
+      width="370"
+      height="250"
+      fill="url(#screenGradient)"
+      rx="8"
+      ry="8"
+    />
+  )}
 
   {/* Logo */}
   <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">

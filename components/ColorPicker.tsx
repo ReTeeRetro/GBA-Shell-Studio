@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, Tv } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -29,6 +29,8 @@ interface ColorPickerProps {
   onToggleClearShell: () => void;
   isClearButtons: boolean;
   onToggleClearButtons: () => void;
+  isScreenOn: boolean;
+  onToggleScreenOn: () => void;
 }
 
 // Helper to compare if two colors are effectively the same (for UI state)
@@ -251,7 +253,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   isClearShell,
   onToggleClearShell,
   isClearButtons,
-  onToggleClearButtons
+  onToggleClearButtons,
+  isScreenOn,
+  onToggleScreenOn
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
 
@@ -320,10 +324,20 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
       {/* Screen Lens Color Section */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <span className="w-1 h-6 bg-slate-500 rounded-full inline-block"></span>
-          Screen Lens
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+            <span className="w-1 h-6 bg-slate-500 rounded-full inline-block"></span>
+            Screen Lens
+          </h2>
+          <button
+              onClick={onToggleScreenOn}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+              title="Toggle Screen On/Off"
+          >
+              <Tv size={16} />
+              {isScreenOn ? 'Screen On' : 'Screen Off'}
+          </button>
+        </div>
         
         <div className="flex gap-4 flex-wrap">
           {LENS_COLORS.map((color) => {
