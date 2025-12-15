@@ -16,6 +16,7 @@ import {
   RightBumperPath,
   LButtonPath,
   RButtonPath,
+  DpadMembraneBase,
 } from './GbaSvgPaths';
 
 interface GbaPreviewProps {
@@ -117,6 +118,13 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     // D-Pad Configuration for visualization
     const DPAD_X = 46;
     const DPAD_Y = 133;
+
+    // D-Pad Membrane Configuration (under the D-pad circle)
+    // These are easy tuning knobs:
+    const DPAD_MEMBRANE_X = DPAD_X + 143;   // roughly centers under the D-pad
+    const DPAD_MEMBRANE_Y = DPAD_Y + 92;
+    const DPAD_MEMBRANE_ROTATION = 155;    // small tilt (adjust to taste)
+    const DPAD_MEMBRANE_SCALE = 0.93;      // overall size
 
     // Start/Select Configuration
     // Adjusted for larger button size (30px diameter vs 15px)
@@ -530,6 +538,30 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               Wraps Shell, Lens, and Controls to center them in the new, wider viewbox.
           */}
           <g id="main-console" transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
+
+            {/* 
+               LAYER 0.55: D-PAD MEMBRANE
+               Rubber membrane under the D-pad, same color as Start/Select.
+            */}
+            <g
+              transform={`
+                translate(${DPAD_MEMBRANE_X}, ${DPAD_MEMBRANE_Y})
+                rotate(${DPAD_MEMBRANE_ROTATION})
+                scale(${DPAD_MEMBRANE_SCALE})
+              `}
+              style={{ opacity: buttonOpacity }}
+            >
+              <DpadMembraneBase fill={startSelectColor.hex} />
+              {showTexture && (
+                <DpadMembraneBase
+                  fill={startSelectColor.hex}
+                  filter="url(#plasticGrain)"
+                  style={{ mixBlendMode: 'overlay' }}
+                  opacity={0.4}
+                />
+              )}
+            </g>
+
             {/* 
                LAYER 0.5: D-PAD UNDERLAY
                A circle sitting behind the shell, visible through the D-Pad cutout.
