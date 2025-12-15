@@ -9,7 +9,11 @@ export const ExampleAiImages: React.FC = () => {
       'https://godsaftigochdryg.se/gbashellstudio/3.png',
       'https://godsaftigochdryg.se/gbashellstudio/4.png',
       'https://godsaftigochdryg.se/gbashellstudio/5.png',
-      'https://godsaftigochdryg.se/gbashellstudio/6.png'
+      'https://godsaftigochdryg.se/gbashellstudio/6.png',
+      'https://godsaftigochdryg.se/gbashellstudio/7.png',
+      'https://godsaftigochdryg.se/gbashellstudio/8.png',
+      'https://godsaftigochdryg.se/gbashellstudio/9.png',
+      'https://godsaftigochdryg.se/gbashellstudio/10.png'
     ];
     
     // Shuffle array and take 3
