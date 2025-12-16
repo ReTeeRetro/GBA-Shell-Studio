@@ -155,7 +155,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const showShading = true; // Always shading/depth
 
     // Opacity for clear buttons
-    const buttonOpacity = isClearButtons ? 0.6 : 1;
+    const buttonOpacity = isClearButtons ? 0.5 : 1;
 
     // SEPARATION: Define Shapes and Labels separately to prevent ghosting in effect layers
 
@@ -464,63 +464,65 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 <g
   id="bumpers-layer"
   transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}
-  style={{ opacity: buttonOpacity }}
 >
-  {/* Bumper shells */}
-  <g id="bumpers-base">
-    {/* Left bumper shell */}
-    <g
-      id="left-bumper-path"
-      transform={`
-        translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
-        rotate(${LEFT_BUMPER_ROTATION})
-        scale(${LEFT_BUMPER_SCALE})
-      `}
-    >
-      <LeftBumperPath />
+  {/* Bumper base and buttons color/texture */}
+  <g style={{ opacity: buttonOpacity }}>
+    {/* Bumper shells */}
+    <g id="bumpers-base">
+      {/* Left bumper shell */}
+      <g
+        id="left-bumper-path"
+        transform={`
+          translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
+          rotate(${LEFT_BUMPER_ROTATION})
+          scale(${LEFT_BUMPER_SCALE})
+        `}
+      >
+        <LeftBumperPath />
+      </g>
+
+      {/* Right bumper shell */}
+      <g
+        id="right-bumper-path"
+        transform={`
+          translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
+          rotate(${RIGHT_BUMPER_ROTATION})
+          scale(${RIGHT_BUMPER_SCALE})
+        `}
+      >
+        <RightBumperPath />
+      </g>
     </g>
 
-    {/* Right bumper shell */}
-    <g
-      id="right-bumper-path"
-      transform={`
-        translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
-        rotate(${RIGHT_BUMPER_ROTATION})
-        scale(${RIGHT_BUMPER_SCALE})
-      `}
-    >
-      <RightBumperPath />
+    {/* L / R plastic buttons sitting on top of shells */}
+    <g id="bumper-buttons-layer">
+      {/* L button */}
+      <g
+        id="l-button-path"
+        transform={`
+          translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
+          rotate(${L_BUTTON_ROTATION})
+          scale(${L_BUTTON_SCALE})
+        `}
+      >
+        <LButtonPath />
+      </g>
+
+      {/* R button */}
+      <g
+        id="r-button-path"
+        transform={`
+          translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
+          rotate(${R_BUTTON_ROTATION})
+          scale(${R_BUTTON_SCALE})
+        `}
+      >
+        <RButtonPath />
+      </g>
     </g>
   </g>
 
-  {/* L / R plastic buttons sitting on top of shells */}
-  <g id="bumper-buttons-layer">
-    {/* L button */}
-    <g
-      id="l-button-path"
-      transform={`
-        translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
-        rotate(${L_BUTTON_ROTATION})
-        scale(${L_BUTTON_SCALE})
-      `}
-    >
-      <LButtonPath />
-    </g>
-
-    {/* R button */}
-     <g
-      id="r-button-path"
-      transform={`
-        translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
-        rotate(${R_BUTTON_ROTATION})
-        scale(${R_BUTTON_SCALE})
-      `}
-    >
-      <RButtonPath />
-    </g>
-  </g>
-
-  {/* Optional bumper texture */}
+  {/* Optional bumper texture - applied to base if opacity is high, or overlay if clear */}
   {showTexture && (
     <g
       filter="url(#plasticGrain)"
@@ -528,6 +530,28 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       opacity="0.3"
     >
       {/* Texture applied via layers above if needed, here just placeholders if we wanted to clone paths */}
+    </g>
+  )}
+
+  {/* GLOSS OVERLAY FOR CLEAR BUMPERS */}
+  {isClearButtons && (
+    <g style={{ opacity: 0.3, mixBlendMode: 'screen' }} fill="white" pointerEvents="none">
+         {/* Left Bumper Shell */}
+         <g transform={`translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y}) rotate(${LEFT_BUMPER_ROTATION}) scale(${LEFT_BUMPER_SCALE})`}>
+            <LeftBumperPath />
+         </g>
+         {/* Right Bumper Shell */}
+         <g transform={`translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y}) rotate(${RIGHT_BUMPER_ROTATION}) scale(${RIGHT_BUMPER_SCALE})`}>
+            <RightBumperPath />
+         </g>
+         {/* L Button */}
+         <g transform={`translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y}) rotate(${L_BUTTON_ROTATION}) scale(${L_BUTTON_SCALE})`}>
+            <LButtonPath />
+         </g>
+         {/* R Button */}
+         <g transform={`translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y}) rotate(${R_BUTTON_ROTATION}) scale(${R_BUTTON_SCALE})`}>
+            <RButtonPath />
+         </g>
     </g>
   )}
 </g>
@@ -767,6 +791,24 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <DpadPaths />
               </g>
 
+              {/* Clear Plastic Texture (Grain) for D-Pad */}
+              {isClearButtons && showTexture && (
+                <g 
+                  filter="url(#plasticGrain)" 
+                  style={{ mixBlendMode: 'overlay' }} 
+                  opacity="0.3"
+                >
+                  <DpadPaths />
+                </g>
+              )}
+
+              {/* Clear Plastic Gloss for D-Pad */}
+              {isClearButtons && (
+                  <g opacity="0.3" style={{ mixBlendMode: 'screen' }} fill="#ffffff">
+                      <DpadPaths />
+                  </g>
+              )}
+
               {/* D-Pad Details (Arrows/Dimple) - Rendered over base but under texture */}
               <DpadEngraving />
             </g>
@@ -785,6 +827,34 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
                 {BUTTON_LABELS}
               </g>
+
+              {/* Clear Plastic Texture (Grain) for A/B Buttons */}
+              {isClearButtons && showTexture && (
+                <g 
+                  filter="url(#plasticGrain)" 
+                  style={{ mixBlendMode: 'overlay' }} 
+                  opacity="0.3"
+                >
+                  <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
+                    <g transform={`translate(${A_BUTTON_OFFSET_X}, ${A_BUTTON_OFFSET_Y})`}>
+                      <path d="M700 129 A 26 26 0 1 1 700 181 A 26 26 0 1 1 700 129 Z" />
+                    </g>
+                    <g transform={`translate(${B_BUTTON_OFFSET_X}, ${B_BUTTON_OFFSET_Y})`}>
+                      <path d="M615 159 A 26 26 0 1 1 615 211 A 26 26 0 1 1 615 159 Z" />
+                    </g>
+                  </g>
+                </g>
+              )}
+
+              {/* Clear Plastic Gloss for A/B Buttons */}
+              {isClearButtons && (
+                <g opacity="0.3" fill="white" style={{ mixBlendMode: 'screen' }}>
+                   <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
+                      <g transform={`translate(${A_BUTTON_OFFSET_X}, ${A_BUTTON_OFFSET_Y})`}><path d="M700 129 A 26 26 0 1 1 700 181 A 26 26 0 1 1 700 129 Z" /></g>
+                      <g transform={`translate(${B_BUTTON_OFFSET_X}, ${B_BUTTON_OFFSET_Y})`}><path d="M615 159 A 26 26 0 1 1 615 211 A 26 26 0 1 1 615 159 Z" /></g>
+                   </g>
+                </g>
+              )}
 
               {/* Start/Select Buttons (Rubber Texture) + Drop Shadow (Right) */}
               <g
