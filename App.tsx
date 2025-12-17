@@ -16,7 +16,15 @@ import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X
 function App() {
   const { config, setters, randomize, reset, undo, redo, canUndo, canRedo } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
-  const [isPinned, setIsPinned] = useState(false);
+  
+  // Default to pinned on mobile (<1024px) for better UX
+  const [isPinned, setIsPinned] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
+
   const [shareText, setShareText] = useState('Share');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [isDark, setIsDark] = useState(() => {
