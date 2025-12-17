@@ -22,6 +22,8 @@ function App() {
   const searchParams = new URLSearchParams(window.location.search);
   const isViewOnly = searchParams.get('viewOnly') === '1';
 
+  const toggleScreen = () => setters.setIsScreenOn(!config.isScreenOn);
+
   if (isViewOnly) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -40,6 +42,7 @@ function App() {
           isClearShell={config.isClearShell}
           isClearButtons={config.isClearButtons}
           isScreenOn={config.isScreenOn}
+          onToggleScreen={toggleScreen}
         />
       </div>
     );
@@ -177,6 +180,7 @@ function App() {
                 isClearShell={config.isClearShell}
                 isClearButtons={config.isClearButtons}
                 isScreenOn={config.isScreenOn}
+                onToggleScreen={toggleScreen}
               />
             </div>
 
@@ -226,7 +230,7 @@ function App() {
 
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.8.3. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.8.4. Not
           affiliated with Nintendo.
         </p>
       </footer>

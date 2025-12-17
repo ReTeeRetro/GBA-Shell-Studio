@@ -1,3 +1,4 @@
+
 import { forwardRef } from 'react';
 import { ColorOption } from '../types';
 import {
@@ -34,6 +35,7 @@ interface GbaPreviewProps {
   isClearShell?: boolean;
   isClearButtons?: boolean;
   isScreenOn?: boolean;
+  onToggleScreen?: () => void;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -53,6 +55,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       isClearShell = false,
       isClearButtons = false,
       isScreenOn = false,
+      onToggleScreen,
     },
     ref
   ) => {
@@ -718,7 +721,10 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             )}
 
             {/* LAYER 2.5: LENS */}
-<g id="lens-layer" transform={`translate(${LENS_X}, ${LENS_Y})`}>
+<g 
+  id="lens-layer" 
+  transform={`translate(${LENS_X}, ${LENS_Y})`}
+>
   {/* Lens bezel / plastic */}
   <LensPath fill={lensColor.hex} />
 
@@ -776,6 +782,22 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
   <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
     <GbaLogo />
   </g>
+
+  {/* Screen Hitbox: Specifically handles clicking only the rectangular screen area */}
+  {/* Fix: Moved title attribute to a child <title> element as 'title' is not a valid prop for SVGRectElement in React types */}
+  <rect
+    x="-148"
+    y="40"
+    width="370"
+    height="250"
+    fill="transparent"
+    rx="8"
+    ry="8"
+    onClick={onToggleScreen}
+    style={{ cursor: onToggleScreen ? 'pointer' : 'default' }}
+  >
+    <title>Toggle Power</title>
+  </rect>
 </g>
 
             {/* 
