@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Bot, ExternalLink, Zap } from 'lucide-react';
+import { Sparkles, Bot, ExternalLink } from 'lucide-react';
 
 interface AiCardProps {
   onOpenAi: (tool: 'chatgpt' | 'gemini') => void;
@@ -19,7 +19,7 @@ export const AiCard: React.FC<AiCardProps> = ({ onOpenAi }) => {
             AI Visualization
           </h3>
           <p className="text-sm text-indigo-700/80 leading-relaxed">
-            Want to see a photorealistic render? Generate a prompt for ChatGPT or Gemini to visualize this
+            Want to see a photorealistic render? Generate a prompt for ChatGPT to visualize this
             design in a new tab.
           </p>
         </div>
@@ -32,15 +32,6 @@ export const AiCard: React.FC<AiCardProps> = ({ onOpenAi }) => {
             <Bot size={16} className="text-indigo-200" />
             ChatGPT
             <ExternalLink size={10} className="text-indigo-300 ml-0.5 opacity-70" />
-          </button>
-          
-          <button
-            onClick={() => onOpenAi('gemini')}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 py-2.5 px-5 bg-white border border-indigo-200 hover:border-indigo-300 text-indigo-700 text-xs font-bold uppercase tracking-wider rounded-xl shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
-          >
-            <Zap size={16} className="text-indigo-500" />
-            Gemini
-            <ExternalLink size={10} className="text-indigo-400 ml-0.5 opacity-70" />
           </button>
         </div>
       </div>
