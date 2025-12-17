@@ -112,18 +112,23 @@ function App() {
       {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <HeaderLogo />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">GBA Shell Studio</h1>
+          <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+            <div className="shrink-0">
+              <HeaderLogo />
+            </div>
+            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap truncate">
+              <span className="sm:hidden">GBA Studio</span>
+              <span className="hidden sm:inline">GBA Shell Studio</span>
+            </h1>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 text-sm font-medium text-slate-500">
+          <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0 ml-2">
             {/* Undo/Redo Group */}
-            <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-2 mr-1">
+            <div className="flex items-center gap-0.5 sm:gap-1 border-r border-slate-200 dark:border-slate-800 pr-1.5 sm:pr-2 mr-0.5 sm:mr-1">
               <button
                 onClick={undo}
                 disabled={!canUndo}
-                className={`p-2 rounded-full transition-all ${
+                className={`p-1.5 sm:p-2 rounded-full transition-all ${
                   canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
                 }`}
                 title="Undo (Ctrl+Z)"
@@ -133,7 +138,7 @@ function App() {
               <button
                 onClick={redo}
                 disabled={!canRedo}
-                className={`p-2 rounded-full transition-all ${
+                className={`p-1.5 sm:p-2 rounded-full transition-all ${
                   canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
                 }`}
                 title="Redo (Ctrl+Y)"
@@ -144,7 +149,7 @@ function App() {
 
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="p-1.5 sm:p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -152,7 +157,7 @@ function App() {
 
             <button
               onClick={handleShare}
-              className={`flex items-center gap-2 px-3 py-1.5 border rounded-full transition-all shadow-sm
+              className={`flex items-center gap-2 px-2 sm:px-3 py-1.5 border rounded-full transition-all shadow-sm
                 ${shareText === 'Copied!' 
                   ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
                   : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
@@ -165,7 +170,7 @@ function App() {
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
               title="Download PNG"
             >
               <Download size={16} />
@@ -174,7 +179,7 @@ function App() {
 
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
               title="Reset to Default"
             >
               <RotateCcw size={16} />
