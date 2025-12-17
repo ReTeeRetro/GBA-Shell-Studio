@@ -20,6 +20,7 @@ export const InfoCard: React.FC = () => {
         </p>
         
         <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400">
+          <li><strong>Get an idea</strong> on how you might want to mod your GBA.</li>
           <li><strong>Download</strong> your configuration as a high-res PNG.</li>
           <li><strong>Share</strong> the unique URL with others.</li>
           <li><strong>Visualize</strong> your design using advanced AI tools.</li>

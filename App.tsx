@@ -199,13 +199,6 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <p className="text-slate-500 dark:text-slate-400 text-lg">
-            Try out different shell and button color combinations to get a rough idea of how you might
-            want to mod your GBA
-          </p>
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Preview Canvas */}
           <div className="lg:col-span-2 space-y-4">
