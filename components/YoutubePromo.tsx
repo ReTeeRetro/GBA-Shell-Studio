@@ -5,7 +5,7 @@ import { Youtube, ExternalLink } from 'lucide-react';
 export const YoutubePromo: React.FC = () => {
   return (
     <a 
-      href="https://www.youtube.com/@ReTeeRetro"
+      href="https://www.youtube.com/@ReTeeRetro/shorts"
       target="_blank"
       rel="noopener noreferrer"
       className="group block bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-200 dark:hover:border-red-900 hover:shadow-md transition-all duration-300 mt-6"
