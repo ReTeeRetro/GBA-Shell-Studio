@@ -57,24 +57,16 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       isClearButtons = false,
       isScreenOn = false,
       onToggleScreen,
-      isDarkMode = false,
+      // isDarkMode is now ignored for the background to preserve clear shell effects
     },
     ref
   ) => {
-    // Expanded VIEWBOX to accommodate Bumpers (approx 802px wide)
-    // Original: 0 0 783 452
-    // New: 0 0 900 550
     const VIEWBOX = '0 0 900 550';
-
-    // MAIN CONTENT OFFSET
     const SHELL_OFFSET_X = 58;
     const SHELL_OFFSET_Y = 36;
-
-    // BUMPERS OFFSET
     const BUMPERS_X = 48;
     const BUMPERS_Y = 50;
 
-    // Bumper placement & angle tuning
     const LEFT_BUMPER_OFFSET_X = 28;
     const LEFT_BUMPER_OFFSET_Y = 75;
     const LEFT_BUMPER_SCALE = 0.47;
@@ -85,7 +77,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const RIGHT_BUMPER_SCALE = 0.47;
     const RIGHT_BUMPER_ROTATION = -6;
 
-    // L / R button placement (on top of bumpers)
     const L_BUTTON_OFFSET_X = 0;
     const L_BUTTON_OFFSET_Y = 0;
     const L_BUTTON_SCALE = 0.35;
@@ -96,57 +87,39 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const R_BUTTON_SCALE = 0.35;
     const R_BUTTON_ROTATION = 6;
 
-
-    // CONFIG: A/B Button Position Adjustment
     const AB_BUTTON_OFFSET_X = 15;
     const AB_BUTTON_OFFSET_Y = 12;
-
-    // CONFIG: Individual Button Fine-tuning
     const A_BUTTON_OFFSET_X = 10;
     const A_BUTTON_OFFSET_Y = 9;
-
     const B_BUTTON_OFFSET_X = 26;
     const B_BUTTON_OFFSET_Y = 2;
 
-    // A/B Membrane Configuration
     const AB_MEMBRANE_X = 589;
     const AB_MEMBRANE_Y = 167;
     const AB_MEMBRANE_ROTATION = -19;
 
-    // D-Pad Configuration for visualization
     const DPAD_X = 46;
     const DPAD_Y = 133;
 
-    // D-Pad Membrane Configuration
     const DPAD_MEMBRANE_X = DPAD_X + 143;
     const DPAD_MEMBRANE_Y = DPAD_Y + 92;
     const DPAD_MEMBRANE_ROTATION = 155;
     const DPAD_MEMBRANE_SCALE = 0.93;
 
-    // Start/Select Configuration
     const SELECT_BUTTON_X = 141;
     const SELECT_BUTTON_Y = 331;
-
     const START_BUTTON_X = 141;
     const START_BUTTON_Y = 286;
 
-    // Speaker Grill Configuration
     const SPEAKER_X = 680;
     const SPEAKER_Y = 310;
-
-    // Lens Configuration
     const LENS_X = 356;
     const LENS_Y = 37.7;
-
-    // Power LED Configuration
     const LED_X = 711 - SHELL_OFFSET_X;
     const LED_Y = 115 - SHELL_OFFSET_Y;
 
-    // RENDER MODES LOGIC
     const showTexture = true;
     const showShading = true;
-
-    // Opacity for clear buttons
     const buttonOpacity = isClearButtons ? 0.5 : 1;
 
     const A_BUTTON_SHAPE = (
@@ -206,10 +179,10 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
     return (
       <div
-        className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300"
+        className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"
         style={{
-          backgroundColor: isDarkMode ? '#0f172a' : '#e2e8f0',
-          backgroundImage: `radial-gradient(${isDarkMode ? '#1e293b' : '#cbd5e1'} 1.5px, transparent 1.5px)`,
+          backgroundColor: '#e2e8f0',
+          backgroundImage: `radial-gradient(#cbd5e1 1.5px, transparent 1.5px)`,
           backgroundSize: '20px 20px',
         }}
       >
@@ -313,30 +286,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               </feMerge>
             </filter>
 
-            {showGrid && (
-              <>
-                <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path
-                    d="M 10 0 L 0 0 0 10"
-                    fill="none"
-                    stroke="cyan"
-                    strokeWidth="0.5"
-                    opacity="0.3"
-                  />
-                </pattern>
-                <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                  <rect width="100" height="100" fill="url(#smallGrid)" />
-                  <path
-                    d="M 100 0 L 0 0 0 100"
-                    fill="none"
-                    stroke="cyan"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  />
-                </pattern>
-              </>
-            )}
-
             <clipPath id="shell-clip">
               <g transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
                 <ShellPaths />
@@ -387,93 +336,92 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               rx="280"
               ry="25"
               fill="#000000"
-              opacity={isDarkMode ? "0.4" : "0.2"}
+              opacity="0.2"
               filter="url(#floorShadowBlur)"
             />
           </g>
  
-<g
-  id="bumpers-layer"
-  transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}
->
-  <g style={{ opacity: buttonOpacity }}>
-    <g id="bumpers-base">
-      <g
-        id="left-bumper-path"
-        transform={`
-          translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
-          rotate(${LEFT_BUMPER_ROTATION})
-          scale(${LEFT_BUMPER_SCALE})
-        `}
-      >
-        <LeftBumperPath />
-      </g>
+          <g
+            id="bumpers-layer"
+            transform={`translate(${BUMPERS_X}, ${BUMPERS_Y})`}
+          >
+            <g style={{ opacity: buttonOpacity }}>
+              <g id="bumpers-base">
+                <g
+                  id="left-bumper-path"
+                  transform={`
+                    translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
+                    rotate(${LEFT_BUMPER_ROTATION})
+                    scale(${LEFT_BUMPER_SCALE})
+                  `}
+                >
+                  <LeftBumperPath />
+                </g>
 
-      <g
-        id="right-bumper-path"
-        transform={`
-          translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
-          rotate(${RIGHT_BUMPER_ROTATION})
-          scale(${RIGHT_BUMPER_SCALE})
-        `}
-      >
-        <RightBumperPath />
-      </g>
-    </g>
+                <g
+                  id="right-bumper-path"
+                  transform={`
+                    translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
+                    rotate(${RIGHT_BUMPER_ROTATION})
+                    scale(${RIGHT_BUMPER_SCALE})
+                  `}
+                >
+                  <RightBumperPath />
+                </g>
+              </g>
 
-    <g id="bumper-buttons-layer">
-      <g
-        id="l-button-path"
-        transform={`
-          translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
-          rotate(${L_BUTTON_ROTATION})
-          scale(${L_BUTTON_SCALE})
-        `}
-      >
-        <LButtonPath />
-      </g>
+              <g id="bumper-buttons-layer">
+                <g
+                  id="l-button-path"
+                  transform={`
+                    translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
+                    rotate(${L_BUTTON_ROTATION})
+                    scale(${L_BUTTON_SCALE})
+                  `}
+                >
+                  <LButtonPath />
+                </g>
 
-      <g
-        id="r-button-path"
-        transform={`
-          translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
-          rotate(${R_BUTTON_ROTATION})
-          scale(${R_BUTTON_SCALE})
-        `}
-      >
-        <RButtonPath />
-      </g>
-    </g>
-  </g>
+                <g
+                  id="r-button-path"
+                  transform={`
+                    translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
+                    rotate(${R_BUTTON_ROTATION})
+                    scale(${R_BUTTON_SCALE})
+                  `}
+                >
+                  <RButtonPath />
+                </g>
+              </g>
+            </g>
 
-  {showTexture && (
-    <g
-      filter="url(#plasticGrain)"
-      style={{ mixBlendMode: 'overlay' }}
-      opacity="0.3"
-    />
-  )}
+            {showTexture && (
+              <g
+                filter="url(#plasticGrain)"
+                style={{ mixBlendMode: 'overlay' }}
+                opacity="0.3"
+              />
+            )}
 
-  {isClearButtons && (
-    <g style={{ opacity: 0.3, mixBlendMode: 'screen' }} fill="white" pointerEvents="none">
-         <g transform={`translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y}) rotate(${LEFT_BUMPER_ROTATION}) scale(${LEFT_BUMPER_SCALE})`}>
-            <LeftBumperPath />
-         </g>
-         <g transform={`translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y}) rotate(${RIGHT_BUMPER_ROTATION}) scale(${RIGHT_BUMPER_SCALE})`}>
-            <RightBumperPath />
-         </g>
-         <g transform={`translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y}) rotate(${L_BUTTON_ROTATION}) scale(${L_BUTTON_SCALE})`}>
-            <LButtonPath />
-         </g>
-         <g transform={`translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y}) rotate(${R_BUTTON_ROTATION}) scale(${R_BUTTON_SCALE})`}>
-            <RButtonPath />
-         </g>
-    </g>
-  )}
-</g>
+            {isClearButtons && (
+              <g style={{ opacity: 0.3, mixBlendMode: 'screen' }} fill="white" pointerEvents="none">
+                  <g transform={`translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y}) rotate(${LEFT_BUMPER_ROTATION}) scale(${LEFT_BUMPER_SCALE})`}>
+                      <LeftBumperPath />
+                  </g>
+                  <g transform={`translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y}) rotate(${RIGHT_BUMPER_ROTATION}) scale(${RIGHT_BUMPER_SCALE})`}>
+                      <RightBumperPath />
+                  </g>
+                  <g transform={`translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y}) rotate(${L_BUTTON_ROTATION}) scale(${L_BUTTON_SCALE})`}>
+                      <LButtonPath />
+                  </g>
+                  <g transform={`translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y}) rotate(${R_BUTTON_ROTATION}) scale(${R_BUTTON_SCALE})`}>
+                      <RButtonPath />
+                  </g>
+              </g>
+            )}
+          </g>
 
           <g id="main-console" transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
-
             <g
               transform={`
                 translate(${DPAD_MEMBRANE_X}, ${DPAD_MEMBRANE_Y})
@@ -536,16 +484,16 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
             </g>
 
-          {isClearShell && (
-            <g
-              id="clear-shell-internals-layer"
-              style={{ mixBlendMode: 'multiply' }}
-              opacity={0.75}
-              pointerEvents="none"
-            >
-              <ClearShellInternals />
-            </g>
-          )}
+            {isClearShell && (
+              <g
+                id="clear-shell-internals-layer"
+                style={{ mixBlendMode: 'multiply' }}
+                opacity={0.75}
+                pointerEvents="none"
+              >
+                <ClearShellInternals />
+              </g>
+            )}
 
             <g id="base-color-layer" style={{ opacity: isClearShell ? 0.5 : 1 }}>
               <ShellPaths />
@@ -588,76 +536,76 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               </g>
             )}
 
-<g 
-  id="lens-layer" 
-  transform={`translate(${LENS_X}, ${LENS_Y})`}
->
-  <LensPath fill={lensColor.hex} />
+            <g 
+              id="lens-layer" 
+              transform={`translate(${LENS_X}, ${LENS_Y})`}
+            >
+              <LensPath fill={lensColor.hex} />
 
-  {isScreenOn ? (
-    <g clipPath="url(#screen-mask)">
-      <rect x="-148" y="40" width="370" height="250" fill="url(#screenOnGradient)" />
-      
-      <text 
-        x="37" 
-        y="160" 
-        textAnchor="middle" 
-        fontFamily="sans-serif" 
-        fontWeight="900" 
-        fontStyle="italic" 
-        fontSize="52" 
-        fill="url(#bootLogoGradient)" 
-        stroke="url(#bootLogoGradient)"
-        strokeWidth="1"
-        letterSpacing="-7"
-        style={{ textShadow: '2px 2px 0px rgba(0,0,0,0.1)' }}
-      >
-        GAME BOY
-      </text>
-      
-      <text 
-        x="37" 
-        y="200" 
-        textAnchor="middle" 
-        fontFamily="sans-serif" 
-        fontWeight="bold" 
-        fontSize="24" 
-        fill="#000000" 
-        letterSpacing="0.5"
-      >
-        Nintendo
-      </text>
-    </g>
-  ) : (
-    <rect
-      x="-148"
-      y="40"
-      width="370"
-      height="250"
-      fill="url(#screenGradient)"
-      rx="8"
-      ry="8"
-    />
-  )}
+              {isScreenOn ? (
+                <g clipPath="url(#screen-mask)">
+                  <rect x="-148" y="40" width="370" height="250" fill="url(#screenOnGradient)" />
+                  
+                  <text 
+                    x="37" 
+                    y="160" 
+                    textAnchor="middle" 
+                    fontFamily="sans-serif" 
+                    fontWeight="900" 
+                    fontStyle="italic" 
+                    fontSize="52" 
+                    fill="url(#bootLogoGradient)" 
+                    stroke="url(#bootLogoGradient)"
+                    strokeWidth="1"
+                    letterSpacing="-7"
+                    style={{ textShadow: '2px 2px 0px rgba(0,0,0,0.1)' }}
+                  >
+                    GAME BOY
+                  </text>
+                  
+                  <text 
+                    x="37" 
+                    y="200" 
+                    textAnchor="middle" 
+                    fontFamily="sans-serif" 
+                    fontWeight="bold" 
+                    fontSize="24" 
+                    fill="#000000" 
+                    letterSpacing="0.5"
+                  >
+                    Nintendo
+                  </text>
+                </g>
+              ) : (
+                <rect
+                  x="-148"
+                  y="40"
+                  width="370"
+                  height="250"
+                  fill="url(#screenGradient)"
+                  rx="8"
+                  ry="8"
+                />
+              )}
 
-  <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
-    <GbaLogo />
-  </g>
+              <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
+                <GbaLogo />
+              </g>
 
-  <rect
-    x="-148"
-    y="40"
-    width="370"
-    height="250"
-    fill="transparent"
-    rx="8"
-    ry="8"
-    onClick={onToggleScreen}
-    style={{ cursor: onToggleScreen ? 'pointer' : 'default' }}
-  >
-    <title>Toggle Power</title>
-  </rect>
-</g>
+              <rect
+                x="-148"
+                y="40"
+                width="370"
+                height="250"
+                fill="transparent"
+                rx="8"
+                ry="8"
+                onClick={onToggleScreen}
+                style={{ cursor: onToggleScreen ? 'pointer' : 'default' }}
+              >
+                <title>Toggle Power</title>
+              </rect>
+            </g>
 
             <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
               <g
@@ -800,7 +748,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
           )}
         </svg>
 
-        <div className="absolute bottom-4 right-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md text-slate-800 dark:text-slate-200 text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 pointer-events-none shadow-sm transition-opacity group-hover:opacity-0 opacity-50">
+        <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-md text-slate-800 text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-full border border-slate-200 pointer-events-none shadow-sm transition-opacity group-hover:opacity-0 opacity-50">
           GBA Shell Studio
         </div>
       </div>
