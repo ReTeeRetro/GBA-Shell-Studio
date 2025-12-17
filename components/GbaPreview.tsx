@@ -122,6 +122,12 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const showShading = true;
     const buttonOpacity = isClearButtons ? 0.5 : 1;
 
+    // Determine speaker grill color/blend mode based on shell color
+    const isBlackShell = selectedColor.hex.toLowerCase() === '#000000';
+    const speakerBlendMode = isBlackShell ? 'normal' : 'multiply';
+    const speakerFill = isBlackShell ? '#2a2a2a' : '#000000';
+    const speakerOpacity = isBlackShell ? 1 : 0.4;
+
     const A_BUTTON_SHAPE = (
       <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
         <g transform={`translate(${A_BUTTON_OFFSET_X}, ${A_BUTTON_OFFSET_Y})`}>
@@ -500,9 +506,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
               <g
                 transform={`translate(${SPEAKER_X}, ${SPEAKER_Y})`}
-                style={{ mixBlendMode: 'multiply' }}
-                opacity="0.4"
-                fill="#000000"
+                style={{ mixBlendMode: speakerBlendMode }}
+                opacity={speakerOpacity}
+                fill={speakerFill}
               >
                 <SpeakerGrillPath />
               </g>
