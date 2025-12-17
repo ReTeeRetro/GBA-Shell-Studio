@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
@@ -33,7 +34,6 @@ interface ColorPickerProps {
   onToggleScreenOn: () => void;
 }
 
-// Helper to compare if two colors are effectively the same (for UI state)
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   if (a.id === 'custom' || b.id === 'custom') {
     return a.hex.toLowerCase() === b.hex.toLowerCase();
@@ -41,7 +41,6 @@ const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   return a.id === b.id;
 };
 
-// Hex Input Component for Custom Colors
 const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange: (c: ColorOption) => void }) => {
   const [value, setValue] = useState(color.hex);
 
@@ -52,8 +51,6 @@ const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange:
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVal = e.target.value;
     setValue(newVal);
-    
-    // If it's a valid 6-digit hex, update live
     if (/^#[0-9A-Fa-f]{6}$/.test(newVal)) {
       onColorChange({ ...color, hex: newVal });
     }
@@ -62,22 +59,17 @@ const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange:
   const handleBlur = () => {
     let newVal = value;
     if (!newVal.startsWith('#')) {
-        // Try to fix missing hash if valid hex chars
         if (/^[0-9A-Fa-f]{6}$/.test(newVal) || /^[0-9A-Fa-f]{3}$/.test(newVal)) {
             newVal = '#' + newVal;
         }
     }
-    
-    // Handle 3 digit hex expansion
     if (/^#[0-9A-Fa-f]{3}$/.test(newVal)) {
         newVal = '#' + newVal[1] + newVal[1] + newVal[2] + newVal[2] + newVal[3] + newVal[3];
     }
-    
     if (/^#[0-9A-Fa-f]{6}$/.test(newVal)) {
        setValue(newVal);
        onColorChange({ ...color, hex: newVal });
     } else {
-       // Invalid, revert to current color prop
        setValue(color.hex);
     }
   };
@@ -88,16 +80,15 @@ const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange:
       value={value} 
       onChange={handleChange}
       onBlur={handleBlur}
-      onClick={(e) => e.stopPropagation()} // Prevent triggering the color picker click
-      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 rounded px-1 py-0.5 text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white"
+      onClick={(e) => e.stopPropagation()}
+      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-slate-700 rounded px-1 py-0.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white dark:bg-slate-800"
       spellCheck={false}
     />
   );
 };
 
-// Reusable Circular Color Button (Standard + Custom)
 interface ColorButtonProps {
-  color?: ColorOption; // undefined if it's the "placeholder" for custom
+  color?: ColorOption;
   isSelected: boolean;
   onSelect: (color: ColorOption) => void;
   isCustom?: boolean;
@@ -116,9 +107,8 @@ const ColorButton: React.FC<ColorButtonProps> = ({
   showLabel = true
 }) => {
   if (isCustom) {
-    // Extract numeric width value from "w-12" -> 12
     const widthVal = parseInt(sizeClass.split(' ')[0].replace(/\D/g, '') || '12');
-    const iconSize = widthVal * 2; // Approximate px size for half-width icon (w-12 = 48px, half = 24px)
+    const iconSize = widthVal * 2;
 
     return (
       <div 
@@ -128,7 +118,7 @@ const ColorButton: React.FC<ColorButtonProps> = ({
         <div 
           className={`
             ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 overflow-hidden relative
-            ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 scale-110' : 'border border-slate-200 hover:scale-105'}
+            ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-slate-300 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
           `}
           style={{ 
             background: isSelected 
@@ -149,12 +139,11 @@ const ColorButton: React.FC<ColorButtonProps> = ({
              )}
           </div>
         </div>
-        {/* Show Hex Input if selected, otherwise show label if enabled */}
         {isSelected && color ? (
             <HexInput color={color} onColorChange={onSelect} />
         ) : (
             showLabel && (
-              <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
                 Custom
               </span>
             )
@@ -163,7 +152,6 @@ const ColorButton: React.FC<ColorButtonProps> = ({
     );
   }
 
-  // Standard Preset Button
   if (!color) return null;
 
   return (
@@ -175,14 +163,14 @@ const ColorButton: React.FC<ColorButtonProps> = ({
       <div 
         className={`
           ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300
-          ${isSelected ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border border-slate-200 hover:scale-105'}
+          ${isSelected ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
         `}
         style={{ backgroundColor: color.hex }}
       >
       </div>
       
       {showLabel && (
-        <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900' : 'text-slate-500'}`}>
+        <span className={`text-[10px] font-bold uppercase tracking-wider text-center ${isSelected ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
           {color.name}
         </span>
       )}
@@ -190,7 +178,6 @@ const ColorButton: React.FC<ColorButtonProps> = ({
   );
 };
 
-// Reusable Section for Individual Controls
 interface ColorSectionProps {
   label: string;
   selectedColor: ColorOption;
@@ -200,7 +187,7 @@ interface ColorSectionProps {
 
 const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSelect, idPrefix }) => (
   <div>
-    <h3 className="text-sm font-semibold text-slate-600 mb-3 flex items-center gap-2">
+    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
       {label}
     </h3>
     <div className="grid grid-cols-6 gap-2">
@@ -259,7 +246,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
 
-  // Determine if all controls share the same color for the "Master" selector
   const unifiedControlColor = (
     areColorsEqual(dpadColor, aButtonColor) &&
     areColorsEqual(aButtonColor, bButtonColor) &&
@@ -282,18 +268,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-8">
+    <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-8 transition-colors">
       
       {/* Shell Color Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
             <span className="w-1 h-6 bg-blue-600 rounded-full inline-block"></span>
             Shell Color
             </h2>
             <button
                 onClick={onToggleClearShell}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                 title="Toggle Clear/Transparent Shell"
             >
                 {isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -310,7 +296,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               onSelect={onSelectColor}
             />
           ))}
-          {/* Custom Shell Color */}
           <ColorButton 
             isCustom
             isSelected={selectedColor.id === 'custom'}
@@ -320,18 +305,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         </div>
       </div>
 
-      <div className="h-px bg-slate-100 w-full"></div>
+      <div className="h-px bg-slate-100 dark:bg-slate-800 w-full"></div>
 
       {/* Screen Lens Color Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
             <span className="w-1 h-6 bg-slate-500 rounded-full inline-block"></span>
             Screen Lens
           </h2>
           <button
               onClick={onToggleScreenOn}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
               title="Toggle Screen On/Off"
           >
               {isScreenOn ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -348,33 +333,33 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 onClick={() => onSelectLensColor(color)}
                 className={`
                   flex-1 min-w-[120px] py-3 px-4 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200
-                  ${isSelected ? 'border-slate-800 bg-slate-50 text-slate-900 ring-1 ring-slate-800/10' : 'border-slate-200 hover:border-slate-300 text-slate-600'}
+                  ${isSelected ? 'border-slate-800 dark:border-slate-300 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400'}
                 `}
               >
                 <span 
-                  className="w-4 h-4 rounded-full border border-slate-200 shadow-sm" 
+                  className="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" 
                   style={{ backgroundColor: color.hex }}
                 ></span>
                 <span className="text-sm font-semibold">{color.name}</span>
-                {isSelected && <Check size={16} className="text-slate-900 ml-auto" strokeWidth={3} />}
+                {isSelected && <Check size={16} className="text-slate-900 dark:text-white ml-auto" strokeWidth={3} />}
               </button>
              );
           })}
         </div>
       </div>
 
-      <div className="h-px bg-slate-100 w-full"></div>
+      <div className="h-px bg-slate-100 dark:bg-slate-800 w-full"></div>
 
       {/* Buttons & Bumpers (Master Control) */}
       <div>
         <div className="flex items-center justify-between mb-4">
-           <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+           <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
             <span className="w-1 h-6 bg-slate-800 rounded-full inline-block"></span>
             Buttons
           </h2>
           <button
               onClick={onToggleClearButtons}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
               title="Toggle Clear/Transparent Buttons"
           >
               {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -394,7 +379,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               showLabel={false}
             />
           ))}
-          {/* Custom Master Color */}
           <ColorButton 
              isCustom
              isSelected={unifiedControlColor?.id === 'custom'}
@@ -406,19 +390,17 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           />
         </div>
 
-        {/* Individual Controls Toggle */}
         <button 
           onClick={() => setShowIndividualControls(!showIndividualControls)}
-          className="flex items-center gap-2 text-sm text-slate-500 font-medium hover:text-slate-800 transition-colors w-full p-2 hover:bg-slate-50 rounded-lg"
+          className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors w-full p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
         >
           {showIndividualControls ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
           <SlidersHorizontal size={14} />
           <span>Customize Individually</span>
         </button>
 
-        {/* Collapsible Individual Controls */}
         {showIndividualControls && (
-          <div className="mt-4 pl-4 border-l-2 border-slate-100 space-y-6 animate-in slide-in-from-top-2 duration-200">
+          <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
             <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" />
             <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" />
             <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" />
@@ -431,7 +413,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         )}
       </div>
 
-      <div className="pt-6 mt-6 border-t border-slate-100">
+      <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
         <button
           onClick={onRandomize}
           className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent"

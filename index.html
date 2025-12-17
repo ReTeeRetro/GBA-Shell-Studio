@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,6 +25,15 @@
     <meta property="twitter:title" content="GBA Shell Studio - Custom Gameboy Advance Visualizer" />
     <meta property="twitter:description" content="A real-time visualizer for Gameboy Advance modding. Customize shell colors, buttons, lens, and bumpers to design your dream retro console." />
 
+    <!-- Dark Mode Flash Prevention -->
+    <script>
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script>
+
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
@@ -48,6 +58,11 @@
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Crect x='5' y='5' width='110' height='70' rx='35' ry='35' fill='%23DC2626' stroke='%23991B1B' stroke-width='2'/%3E%3Crect x='30' y='15' width='60' height='50' rx='5' fill='%231F2937'/%3E%3Crect x='38' y='22' width='44' height='34' fill='%239CA3AF'/%3E%3Cpath d='M22 40 h6 v-6 h6 v6 h6 v6 h-6 v6 h-6 v-6 h-6 z' fill='%23D1D5DB'/%3E%3Ccircle cx='98' cy='35' r='5' fill='%23D1D5DB'/%3E%3Ccircle cx='85' cy='45' r='5' fill='%23D1D5DB'/%3E%3C/svg%3E" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class'
+      }
+    </script>
     <style>
       /* Custom scrollbar for a cleaner UI */
       ::-webkit-scrollbar {
@@ -62,6 +77,17 @@
       }
       ::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
+      }
+
+      /* Dark mode scrollbar overrides */
+      .dark ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
       }
     </style>
   <script type="importmap">
@@ -78,7 +104,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-50 text-slate-900 antialiased">
+  <body class="bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

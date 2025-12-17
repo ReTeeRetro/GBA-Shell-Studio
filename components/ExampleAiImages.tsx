@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Image as ImageIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -16,8 +17,7 @@ export const ExampleAiImages: React.FC = () => {
       'https://godsaftigochdryg.se/gbashellstudio/10.png'
     ];
     
-    // Shuffle array and take 3
-    return allImages.sort(() => 0.5 - Math.random()).slice(0, 3);
+    return [...allImages].sort(() => 0.5 - Math.random()).slice(0, 3);
   }, []);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -42,7 +42,6 @@ export const ExampleAiImages: React.FC = () => {
     setSelectedIndex((prev) => (prev! - 1 + images.length) % images.length);
   }, [selectedIndex, images.length]);
 
-  // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (selectedIndex === null) return;
@@ -60,7 +59,6 @@ export const ExampleAiImages: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, closeLightbox, nextImage, prevImage]);
 
-  // Lock body scroll when lightbox is open
   useEffect(() => {
     if (selectedIndex !== null) {
       document.body.style.overflow = 'hidden';
@@ -74,16 +72,16 @@ export const ExampleAiImages: React.FC = () => {
 
   return (
     <>
-      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
-        <h3 className="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wide flex items-center gap-2">
-          <ImageIcon size={16} className="text-purple-600" />
+      <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+        <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-4 uppercase tracking-wide flex items-center gap-2">
+          <ImageIcon size={16} className="text-purple-600 dark:text-purple-400" />
           Example AI images
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {images.map((src, index) => (
             <div 
               key={index} 
-              className="group relative aspect-square rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+              className="group relative aspect-square rounded-lg overflow-hidden border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
               onClick={() => openLightbox(index)}
               title="Click to view full size"
             >
@@ -93,25 +91,23 @@ export const ExampleAiImages: React.FC = () => {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 dark:group-hover:bg-white/5 transition-colors duration-300 pointer-events-none" />
             </div>
           ))}
         </div>
         
         <div className="mt-6 text-left">
-          <p className="text-slate-900 font-medium text-sm">
+          <p className="text-slate-900 dark:text-slate-300 font-medium text-sm">
             Share yours with #gbashellstudio
           </p>
         </div>
       </div>
 
-      {/* Lightbox Overlay */}
       {selectedIndex !== null && (
         <div 
           className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
           onClick={closeLightbox}
         >
-          {/* Close Button */}
           <button 
             onClick={closeLightbox}
             className="absolute top-4 right-4 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all z-50"
@@ -120,7 +116,6 @@ export const ExampleAiImages: React.FC = () => {
             <X size={32} />
           </button>
 
-          {/* Previous Button */}
           <button
             onClick={prevImage}
             className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-all z-50 hidden sm:flex"
@@ -129,7 +124,6 @@ export const ExampleAiImages: React.FC = () => {
             <ChevronLeft size={40} />
           </button>
 
-          {/* Next Button */}
           <button
             onClick={nextImage}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-all z-50 hidden sm:flex"
@@ -138,7 +132,6 @@ export const ExampleAiImages: React.FC = () => {
             <ChevronRight size={40} />
           </button>
 
-          {/* Image Container */}
           <div 
             className="relative max-w-full max-h-full flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()} 

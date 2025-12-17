@@ -1,3 +1,4 @@
+
 import { useRef, useState, useEffect } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
@@ -10,7 +11,7 @@ import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { serializeConfig } from './utils/urlUtils';
-import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
 function App() {
   const { config, setters, randomize, reset, undo, redo, canUndo, canRedo } = useGbaState();
@@ -18,12 +19,30 @@ function App() {
   const [isPinned, setIsPinned] = useState(false);
   const [shareText, setShareText] = useState('Share');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' || 
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
 
   // Check for view-only mode from URL
   const searchParams = new URLSearchParams(window.location.search);
   const isViewOnly = searchParams.get('viewOnly') === '1';
 
   const toggleScreen = () => setters.setIsScreenOn(!config.isScreenOn);
+
+  // Sync theme with document class
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   // Close modal on escape key
   useEffect(() => {
@@ -36,7 +55,7 @@ function App() {
 
   if (isViewOnly) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-4">
         <GbaPreview
           ref={svgRef}
           selectedColor={config.selectedColor}
@@ -53,6 +72,7 @@ function App() {
           isClearButtons={config.isClearButtons}
           isScreenOn={config.isScreenOn}
           onToggleScreen={toggleScreen}
+          isDarkMode={isDark}
         />
       </div>
     );
@@ -88,23 +108,23 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-slate-900 selection:bg-blue-500/30">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-blue-500/30 transition-colors duration-300">
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <HeaderLogo />
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">GBA Shell Studio</h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">GBA Shell Studio</h1>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 text-sm font-medium text-slate-500">
             {/* Undo/Redo Group */}
-            <div className="flex items-center gap-1 border-r border-slate-200 pr-2 mr-1">
+            <div className="flex items-center gap-1 border-r border-slate-200 dark:border-slate-800 pr-2 mr-1">
               <button
                 onClick={undo}
                 disabled={!canUndo}
                 className={`p-2 rounded-full transition-all ${
-                  canUndo ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 cursor-not-allowed'
+                  canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
                 }`}
                 title="Undo (Ctrl+Z)"
               >
@@ -114,7 +134,7 @@ function App() {
                 onClick={redo}
                 disabled={!canRedo}
                 className={`p-2 rounded-full transition-all ${
-                  canRedo ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 cursor-not-allowed'
+                  canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
                 }`}
                 title="Redo (Ctrl+Y)"
               >
@@ -123,11 +143,19 @@ function App() {
             </div>
 
             <button
+              onClick={() => setIsDark(!isDark)}
+              className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            <button
               onClick={handleShare}
               className={`flex items-center gap-2 px-3 py-1.5 border rounded-full transition-all shadow-sm
                 ${shareText === 'Copied!' 
-                  ? 'bg-green-50 border-green-200 text-green-700' 
-                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                  ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
+                  : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
                 }`}
               title="Share Design URL"
             >
@@ -137,7 +165,7 @@ function App() {
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
               title="Download PNG"
             >
               <Download size={16} />
@@ -146,7 +174,7 @@ function App() {
 
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
               title="Reset to Default"
             >
               <RotateCcw size={16} />
@@ -159,7 +187,7 @@ function App() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <p className="text-slate-500 text-lg">
+          <p className="text-slate-500 dark:text-slate-400 text-lg">
             Try out different shell and button color combinations to get a rough idea of how you might
             want to mod your GBA
           </p>
@@ -176,7 +204,7 @@ function App() {
             <div className={`
               transition-all duration-300 ease-in-out
               ${isPinned 
-                ? 'fixed top-16 left-0 right-0 z-40 bg-gray-50/95 backdrop-blur-sm border-b border-slate-200 shadow-md p-2 lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none lg:backdrop-blur-none lg:static lg:sticky lg:top-24 lg:z-30' 
+                ? 'fixed top-16 left-0 right-0 z-40 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-md p-2 lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none lg:backdrop-blur-none lg:static lg:sticky lg:top-24 lg:z-30' 
                 : 'relative'
               }
             `}>
@@ -187,8 +215,8 @@ function App() {
                   className={`
                     flex items-center justify-center w-10 h-10 rounded-full shadow-sm border backdrop-blur-md transition-all duration-200
                     ${isPinned 
-                      ? 'bg-blue-600 border-blue-500 text-white shadow-blue-200 ring-2 ring-blue-100' 
-                      : 'bg-white/80 border-slate-200 text-slate-400 hover:bg-white hover:text-slate-700 hover:border-slate-300'
+                      ? 'bg-blue-600 border-blue-500 text-white shadow-blue-200 ring-2 ring-blue-100 dark:ring-blue-900/50' 
+                      : 'bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'
                     }
                   `}
                   title={isPinned ? "Unpin Viewbox" : "Pin Viewbox to Top"}
@@ -213,6 +241,7 @@ function App() {
                 isClearButtons={config.isClearButtons}
                 isScreenOn={config.isScreenOn}
                 onToggleScreen={toggleScreen}
+                isDarkMode={isDark}
               />
             </div>
 
@@ -263,34 +292,34 @@ function App() {
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={() => setShowResetConfirm(false)}
         >
           <div 
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200"
+            className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 border dark:border-slate-800"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="text-amber-500" size={24} />
+                <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="text-amber-500 dark:text-amber-400" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Reset design?</h3>
-                  <p className="text-sm text-slate-500">This will revert all shell and button colors to the classic Indigo theme. You cannot undo this action.</p>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Reset design?</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">This will revert all shell and button colors to the classic Indigo theme. You cannot undo this action.</p>
                 </div>
               </div>
               
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setShowResetConfirm(false)}
-                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmReset}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-md shadow-red-100 transition-all active:scale-[0.98]"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-md shadow-red-100 dark:shadow-red-900/20 transition-all active:scale-[0.98]"
                 >
                   Reset Design
                 </button>
@@ -299,7 +328,7 @@ function App() {
             
             <button 
               onClick={() => setShowResetConfirm(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-all"
+              className="absolute top-4 right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
             >
               <X size={20} />
             </button>
@@ -307,9 +336,9 @@ function App() {
         </div>
       )}
 
-      <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
+      <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.8.4. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.9.0. Not
           affiliated with Nintendo.
         </p>
       </footer>
