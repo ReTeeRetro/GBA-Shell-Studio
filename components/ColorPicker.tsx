@@ -23,6 +23,7 @@ interface ColorPickerProps {
   onSelectLeftBumperColor: (color: ColorOption) => void;
   rightBumperColor: ColorOption;
   onSelectRightBumperColor: (color: ColorOption) => void;
+  onSelectAllButtonsColor: (color: ColorOption) => void;
   lensColor: ColorOption;
   onSelectLensColor: (color: ColorOption) => void;
   onRandomize: () => void;
@@ -234,6 +235,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   onSelectLeftBumperColor,
   rightBumperColor,
   onSelectRightBumperColor,
+  onSelectAllButtonsColor,
   lensColor,
   onSelectLensColor,
   onRandomize,
@@ -257,14 +259,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   ) ? dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
-    onSelectDpadColor(color);
-    onSelectAButtonColor(color);
-    onSelectBButtonColor(color);
-    onSelectStartSelectColor(color);
-    onSelectLButtonColor(color);
-    onSelectRButtonColor(color);
-    onSelectLeftBumperColor(color);
-    onSelectRightBumperColor(color);
+    onSelectAllButtonsColor(color);
   };
 
   return (

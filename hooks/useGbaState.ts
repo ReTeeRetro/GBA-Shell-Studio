@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { ColorOption, GbaConfig } from '../types';
 import { SHELL_COLORS, LENS_COLORS } from '../constants';
@@ -87,6 +88,17 @@ export const useGbaState = () => {
     setRButtonColor: (val: ColorOption) => updateConfig({ ...config, rButtonColor: val }),
     setLeftBumperColor: (val: ColorOption) => updateConfig({ ...config, leftBumperColor: val }),
     setRightBumperColor: (val: ColorOption) => updateConfig({ ...config, rightBumperColor: val }),
+    setAllButtonsColor: (val: ColorOption) => updateConfig({
+      ...config,
+      dpadColor: val,
+      aButtonColor: val,
+      bButtonColor: val,
+      startSelectColor: val,
+      lButtonColor: val,
+      rButtonColor: val,
+      leftBumperColor: val,
+      rightBumperColor: val,
+    }),
     setLensColor: (val: ColorOption) => updateConfig({ ...config, lensColor: val }),
     setIsClearShell: (val: boolean) => updateConfig({ ...config, isClearShell: val }),
     setIsClearButtons: (val: boolean) => updateConfig({ ...config, isClearButtons: val }),

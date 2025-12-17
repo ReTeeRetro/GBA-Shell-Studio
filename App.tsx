@@ -272,6 +272,7 @@ function App() {
               onSelectLeftBumperColor={setters.setLeftBumperColor}
               rightBumperColor={config.rightBumperColor}
               onSelectRightBumperColor={setters.setRightBumperColor}
+              onSelectAllButtonsColor={setters.setAllButtonsColor}
 
               lensColor={config.lensColor}
               onSelectLensColor={setters.setLensColor}
