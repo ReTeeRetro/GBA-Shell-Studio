@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
@@ -10,19 +10,29 @@ import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { serializeConfig } from './utils/urlUtils';
-import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2 } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X } from 'lucide-react';
 
 function App() {
   const { config, setters, randomize, reset, undo, redo, canUndo, canRedo } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
   const [isPinned, setIsPinned] = useState(false);
   const [shareText, setShareText] = useState('Share');
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Check for view-only mode from URL
   const searchParams = new URLSearchParams(window.location.search);
   const isViewOnly = searchParams.get('viewOnly') === '1';
 
   const toggleScreen = () => setters.setIsScreenOn(!config.isScreenOn);
+
+  // Close modal on escape key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowResetConfirm(false);
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   if (isViewOnly) {
     return (
@@ -50,6 +60,11 @@ function App() {
 
   const handleDownload = () => downloadGbaImage(svgRef.current, config);
   const handleOpenAi = (tool: 'chatgpt' | 'gemini') => openAiTool(tool, config);
+
+  const confirmReset = () => {
+    reset();
+    setShowResetConfirm(false);
+  };
 
   const handleShare = async () => {
     const queryString = serializeConfig(config);
@@ -130,7 +145,7 @@ function App() {
             </button>
 
             <button
-              onClick={reset}
+              onClick={() => setShowResetConfirm(true)}
               className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
               title="Reset to Default"
             >
@@ -244,6 +259,53 @@ function App() {
           </div>
         </div>
       </main>
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirm && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowResetConfirm(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="text-amber-500" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Reset design?</h3>
+                  <p className="text-sm text-slate-500">This will revert all shell and button colors to the classic Indigo theme. You cannot undo this action.</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowResetConfirm(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmReset}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 shadow-md shadow-red-100 transition-all active:scale-[0.98]"
+                >
+                  Reset Design
+                </button>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setShowResetConfirm(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-all"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+      )}
 
       <footer className="border-t border-slate-200 mt-12 py-8 text-center text-slate-400 text-sm bg-white/50 backdrop-blur-sm">
         <p>
