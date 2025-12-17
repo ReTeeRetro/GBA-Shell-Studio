@@ -10,10 +10,10 @@ import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { serializeConfig } from './utils/urlUtils';
-import { Download, RotateCcw, Pin, Share2, Check } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2 } from 'lucide-react';
 
 function App() {
-  const { config, setters, randomize, reset } = useGbaState();
+  const { config, setters, randomize, reset, undo, redo, canUndo, canRedo } = useGbaState();
   const svgRef = useRef<SVGSVGElement>(null);
   const [isPinned, setIsPinned] = useState(false);
   const [shareText, setShareText] = useState('Share');
@@ -53,16 +53,11 @@ function App() {
 
   const handleShare = async () => {
     const queryString = serializeConfig(config);
-    
-    // Use URL object for safer manipulation, handles origin/pathname edge cases
     const url = new URL(window.location.href);
     url.search = queryString;
     const finalUrl = url.toString();
     
     try {
-      // Update browser URL without reload
-      // We wrap this in a try-catch because some environments (like sandboxed iframes or blobs)
-      // block pushState updates for security reasons.
       window.history.pushState({ path: finalUrl }, '', finalUrl);
     } catch (e) {
       console.warn('Unable to update URL history', e);
@@ -87,7 +82,31 @@ function App() {
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">GBA Shell Studio</h1>
           </div>
 
-          <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
+          <div className="flex items-center gap-2 sm:gap-3 text-sm font-medium text-slate-500">
+            {/* Undo/Redo Group */}
+            <div className="flex items-center gap-1 border-r border-slate-200 pr-2 mr-1">
+              <button
+                onClick={undo}
+                disabled={!canUndo}
+                className={`p-2 rounded-full transition-all ${
+                  canUndo ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 cursor-not-allowed'
+                }`}
+                title="Undo (Ctrl+Z)"
+              >
+                <Undo2 size={18} />
+              </button>
+              <button
+                onClick={redo}
+                disabled={!canRedo}
+                className={`p-2 rounded-full transition-all ${
+                  canRedo ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-200 cursor-not-allowed'
+                }`}
+                title="Redo (Ctrl+Y)"
+              >
+                <Redo2 size={18} />
+              </button>
+            </div>
+
             <button
               onClick={handleShare}
               className={`flex items-center gap-2 px-3 py-1.5 border rounded-full transition-all shadow-sm
@@ -98,7 +117,7 @@ function App() {
               title="Share Design URL"
             >
               {shareText === 'Copied!' ? <Check size={16} /> : <Share2 size={16} />}
-              <span className="hidden sm:inline">{shareText}</span>
+              <span className="hidden md:inline">{shareText}</span>
             </button>
 
             <button
@@ -107,7 +126,7 @@ function App() {
               title="Download PNG"
             >
               <Download size={16} />
-              <span className="hidden sm:inline">Download</span>
+              <span className="hidden md:inline">Download</span>
             </button>
 
             <button
@@ -116,7 +135,7 @@ function App() {
               title="Reset to Default"
             >
               <RotateCcw size={16} />
-              <span className="hidden sm:inline">Reset</span>
+              <span className="hidden md:inline">Reset</span>
             </button>
           </div>
         </div>
@@ -134,8 +153,6 @@ function App() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Preview Canvas */}
           <div className="lg:col-span-2 space-y-4">
-            
-            {/* Placeholder to prevent layout shift on mobile when pinned (fixed) */}
             <div 
               className={`w-full transition-all duration-300 ${isPinned ? 'block lg:hidden' : 'hidden'}`}
               style={{ aspectRatio: '900/550', marginBottom: '1rem' }}
