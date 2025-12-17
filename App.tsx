@@ -122,7 +122,7 @@ function App() {
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all shadow-sm border border-transparent"
+              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-full transition-all shadow-sm"
               title="Download PNG"
             >
               <Download size={16} />
