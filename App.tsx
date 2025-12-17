@@ -5,6 +5,7 @@ import { HeaderLogo } from './components/HeaderLogo';
 import { AiCard } from './components/AiCard';
 import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
+import { YoutubePromo } from './components/YoutubePromo';
 import { useGbaState } from './hooks/useGbaState';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
@@ -181,6 +182,7 @@ function App() {
 
             <AiCard onOpenAi={handleOpenAi} />
             <ExampleAiImages />
+            <YoutubePromo />
           </div>
 
           {/* Right: Controls */}
