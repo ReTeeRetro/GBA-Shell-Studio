@@ -446,6 +446,73 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       />
     </g>
 
+        {/* POWER SWITCH HOUSING */}
+    <g transform="translate(230, 360) rotate(+35)">
+      {/*Power Switch Right Rib */}
+      <line
+        x1={10}
+        y1={60}
+        x2={14}
+        y2={75}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+    <g transform="translate(100, 315) rotate(+35)">
+      {/*Power Switch Left Rib */}
+      <line
+        x1={10}
+        y1={60}
+        x2={14}
+        y2={75}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+    {/* Power Switch left vert rib */}
+    <g transform="translate(118, 384) rotate(+110)">
+      <line
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={45}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+    {/* Power Switch right vert rib */}
+    <g transform="translate(204, 414) rotate(+110)">
+      <line
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={45}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+    {/* Power Switch mid vert rib */}
+    <g transform="translate(162, 395) rotate(+110)">
+      <line
+        x1={0}
+        y1={0}
+        x2={0}
+        y2={45}
+        stroke="#cfd3d9"
+        strokeWidth={6}
+        opacity={0.85}
+        strokeLinecap="round"
+      />
+    </g>
+
     {/* Thick vertical rib */}
     <g transform="translate(550, 400)">
       <line
