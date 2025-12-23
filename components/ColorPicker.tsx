@@ -13,7 +13,7 @@ import {
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
-import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock } from 'lucide-react';
+import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -230,7 +230,7 @@ const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSel
     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
       {label}
     </h3>
-    <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale' : ''}`}>
+    <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale pointer-events-none' : ''}`}>
       {options.map((color) => (
         <ColorButton 
           key={`${idPrefix}-${color.id}`}
@@ -254,6 +254,9 @@ const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSel
         />
       )}
     </div>
+    {disabled && (
+      <p className="mt-2 text-[10px] text-slate-400 italic">Individual selection locked in Shop Mode (sold as sets).</p>
+    )}
   </div>
 );
 
@@ -523,14 +526,23 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
             {showIndividualControls && (
               <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
-                <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} />
-                <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} />
-                <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} />
+                <div className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-100 dark:border-slate-800 mb-2">
+                  <Info size={14} className="text-blue-500 shrink-0" />
+                  <p className="text-[10px] text-slate-500 leading-tight">
+                    {shopMode 
+                      ? "Individual plastic buttons are locked to sets in Shop Mode. Start/Select membranes are separate parts." 
+                      : "Fine-tune individual colors for a unique custom look."}
+                  </p>
+                </div>
+                
+                <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Start / Select" selectedColor={startSelectColor} onSelect={onSelectStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
-                <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} />
-                <ColorSection label="R Button (Trigger)" selectedColor={rightBumperColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} />
-                <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} />
-                <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="R Button (Trigger)" selectedColor={rightBumperColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
               </div>
             )}
           </div>

@@ -106,10 +106,10 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
         }`}
     >
       {/* Header Section */}
-      <div className="p-6 md:p-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
+      <div className="p-5 md:p-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
           <div className="flex-1 space-y-1">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mb-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mb-1">
               <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 uppercase tracking-wide flex items-center gap-2">
                 <ShoppingBag size={16} className="text-blue-600 dark:text-blue-400" />
                 Shop Mode
@@ -169,18 +169,18 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
         </div>
 
         {shopMode && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="space-y-5 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
                 <Info size={14} className="text-blue-500" />
                 {isFunnyplaying ? 'Funnyplaying' : isRgrsHi ? 'RGRS (Hispeedido)' : 'RGRS (Funnyplaying)'} Parts List
               </div>
               <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
-                {isRgrsHi ? '(Hispeedido Laminated IPS variants)' : (isFunnyplaying || isRgrsFp) ? '(based on m2 display variants)' : '(inventory check recommended)'}
+                {isRgrsHi ? '(Hispeedido V5 variants)' : (isFunnyplaying || isRgrsFp) ? '(based on m2 variants)' : '(inventory check recommended)'}
               </span>
             </div>
             
-            <div className="grid gap-3">
+            <div className="grid gap-2">
               {[
                 {
                   label: 'Housing Shell',
@@ -231,10 +231,10 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                 }
 
                 return (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-blue-500/20 transition-all">
-                    <div className="flex items-center gap-4">
+                  <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-blue-500/20 transition-all">
+                    <div className="flex items-center gap-3.5">
                       <div 
-                        className="w-10 h-10 rounded-full border border-white dark:border-slate-700 shadow-sm flex items-center justify-center transition-transform group-hover:scale-105 overflow-hidden" 
+                        className="w-9 h-9 rounded-full border border-white dark:border-slate-700 shadow-sm flex items-center justify-center transition-transform group-hover:scale-105 overflow-hidden" 
                         style={{ background: backgroundStyle }}
                       >
                         {part.icon && React.cloneElement(part.icon as React.ReactElement<any>, { className: getContrastingIconClass(part.color) })}
@@ -253,17 +253,17 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                       href={appendUtm(part.url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
                     >
                       {part.btnLabel}
-                      <ExternalLink size={12} className="opacity-50" />
+                      <ExternalLink size={11} className="opacity-50" />
                     </a>
                   </div>
                 );
               })}
             </div>
             
-            <div className="text-[10px] text-slate-400 dark:text-slate-500 text-center italic font-medium pt-2 space-y-1">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 text-center italic font-medium pt-1 space-y-1">
               <p>This site is not affiliated with any of the brands mentioned.</p>
               <p>Color matches and availability are subject to change on store websites.</p>
             </div>
