@@ -13,7 +13,7 @@ import {
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock } from 'lucide-react';
+import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;

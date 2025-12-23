@@ -1,4 +1,4 @@
-import { GbaConfig, ColorOption, ShopMode } from '../types';
+import { GbaConfig, ColorOption } from '../types';
 import { SHELL_COLORS, LENS_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS } from '../constants';
 
 const PARAM_MAP: Record<keyof GbaConfig, string> = {
