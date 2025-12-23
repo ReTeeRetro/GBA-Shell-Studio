@@ -1,8 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
-import { ColorOption } from '../types';
-import { SHELL_COLORS, LENS_COLORS } from '../constants';
-import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ColorOption, ShopMode, RgrsSubBrand } from '../types';
+import { 
+  SHELL_COLORS, 
+  LENS_COLORS, 
+  FUNNYPLAYING_SHELL_COLORS, 
+  FUNNYPLAYING_BUTTON_COLORS, 
+  FUNNYPLAYING_MEMBRANE_COLORS, 
+  RGRS_FUNNYPLAYING_SHELL_COLORS, 
+  RGRS_FUNNYPLAYING_BUTTON_COLORS, 
+  RGRS_FUNNYPLAYING_MEMBRANE_COLORS,
+  RGRS_HISPEEDIDO_SHELL_COLORS,
+  HISPEEDIDO_DEFAULT_BTN,
+  HISPEEDIDO_DEFAULT_MEM
+} from '../constants';
+import { Check, ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock } from 'lucide-react';
 
 interface ColorPickerProps {
   selectedColor: ColorOption;
@@ -33,6 +44,10 @@ interface ColorPickerProps {
   onToggleClearButtons: () => void;
   isScreenOn: boolean;
   onToggleScreenOn: () => void;
+  shopMode: ShopMode;
+  rgrsSubBrand: RgrsSubBrand;
+  useCustomButtonsInHiMode: boolean;
+  onToggleCustomButtonsInHiMode: (val: boolean) => void;
 }
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
@@ -155,6 +170,22 @@ const ColorButton: React.FC<ColorButtonProps> = ({
 
   if (!color) return null;
 
+  // Handle mixed set backgrounds
+  let backgroundStyle: React.CSSProperties = { backgroundColor: color.hex };
+  if (color.id.includes('snes-set')) {
+    backgroundStyle = { 
+        background: 'linear-gradient(135deg, #6e707c 0%, #6e707c 33%, #8161b1 33%, #8161b1 66%, #cdc5e6 66%, #cdc5e6 100%)' 
+    };
+  } else if (color.id.includes('dmg-set')) {
+    backgroundStyle = { 
+        background: 'linear-gradient(135deg, #343434 0%, #343434 50%, #e1316a 50%, #e1316a 100%)' 
+    };
+  } else if (color.id.includes('sfc-set')) {
+    backgroundStyle = {
+        background: 'conic-gradient(#6e707c 0deg 90deg, #3cb6ab 90deg 180deg, #4a83df 180deg 270deg, #fa5949 270deg 360deg)'
+    };
+  }
+
   return (
     <button
       onClick={() => onSelect(color)}
@@ -163,11 +194,16 @@ const ColorButton: React.FC<ColorButtonProps> = ({
     >
       <div 
         className={`
-          ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300
+          ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 relative
           ${isSelected ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
         `}
-        style={{ backgroundColor: color.hex }}
+        style={backgroundStyle}
       >
+        {color.shopUrl && (
+          <div className="absolute -top-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <ShoppingBag size={8} className="text-blue-500" />
+          </div>
+        )}
       </div>
       
       {showLabel && (
@@ -184,34 +220,39 @@ interface ColorSectionProps {
   selectedColor: ColorOption;
   onSelect: (color: ColorOption) => void;
   idPrefix: string;
+  options: ColorOption[];
+  shopMode: ShopMode;
+  disabled?: boolean;
 }
 
-const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSelect, idPrefix }) => (
+const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSelect, idPrefix, options, shopMode, disabled }) => (
   <div>
     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
       {label}
     </h3>
-    <div className="grid grid-cols-6 gap-2">
-      {SHELL_COLORS.map((color) => (
+    <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale' : ''}`}>
+      {options.map((color) => (
         <ColorButton 
           key={`${idPrefix}-${color.id}`}
           color={color}
           isSelected={selectedColor.id === color.id}
-          onSelect={onSelect}
+          onSelect={disabled ? () => {} : onSelect}
           sizeClass="w-8 h-8"
           className="!gap-0"
           showLabel={false}
         />
       ))}
-      <ColorButton 
-         isCustom
-         isSelected={selectedColor.id === 'custom'}
-         color={selectedColor}
-         onSelect={onSelect}
-         sizeClass="w-8 h-8"
-         className="!gap-0"
-         showLabel={false}
-      />
+      {!shopMode && (
+        <ColorButton 
+          isCustom
+          isSelected={selectedColor.id === 'custom'}
+          color={selectedColor}
+          onSelect={disabled ? () => {} : onSelect}
+          sizeClass="w-8 h-8"
+          className="!gap-0"
+          showLabel={false}
+        />
+      )}
     </div>
   </div>
 );
@@ -244,9 +285,41 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   isClearButtons,
   onToggleClearButtons,
   isScreenOn,
-  onToggleScreenOn
+  onToggleScreenOn,
+  shopMode,
+  rgrsSubBrand,
+  useCustomButtonsInHiMode,
+  onToggleCustomButtonsInHiMode
 }) => {
   const [showIndividualControls, setShowIndividualControls] = useState(false);
+
+  const isDirectFunny = shopMode === 'funnyplaying';
+  const isRgrsFunny = shopMode === 'rgrs' && rgrsSubBrand === 'funnyplaying';
+  const isRgrsHi = shopMode === 'rgrs' && rgrsSubBrand === 'hispeedido';
+
+  const shellOptions = isDirectFunny 
+    ? FUNNYPLAYING_SHELL_COLORS 
+    : isRgrsFunny 
+      ? RGRS_FUNNYPLAYING_SHELL_COLORS 
+      : isRgrsHi
+        ? RGRS_HISPEEDIDO_SHELL_COLORS
+        : SHELL_COLORS;
+
+  const buttonOptions = (isRgrsHi && !useCustomButtonsInHiMode)
+    ? (selectedColor.id === 'hi-sfc-grey' ? [{ id: 'hi-sfc-mix', name: 'SFC Mix', hex: '#fa5949' }] : [HISPEEDIDO_DEFAULT_BTN])
+    : isDirectFunny 
+      ? FUNNYPLAYING_BUTTON_COLORS 
+      : (isRgrsFunny || (isRgrsHi && useCustomButtonsInHiMode))
+        ? RGRS_FUNNYPLAYING_BUTTON_COLORS 
+        : SHELL_COLORS;
+      
+  const membraneOptions = (isRgrsHi && !useCustomButtonsInHiMode)
+    ? [HISPEEDIDO_DEFAULT_MEM]
+    : isDirectFunny 
+      ? FUNNYPLAYING_MEMBRANE_COLORS 
+      : (isRgrsFunny || (isRgrsHi && useCustomButtonsInHiMode))
+        ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS 
+        : SHELL_COLORS;
 
   const unifiedControlColor = (
     areColorsEqual(dpadColor, aButtonColor) &&
@@ -259,6 +332,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   ) ? dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
+    if (isRgrsHi && !useCustomButtonsInHiMode) return;
     onSelectAllButtonsColor(color);
   };
 
@@ -274,16 +348,17 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             </h2>
             <button
                 onClick={onToggleClearShell}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-                title="Toggle Clear/Transparent Shell"
+                disabled={!!shopMode}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
             >
                 {isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 Clear Shell
             </button>
         </div>
         
-        <div className="grid grid-cols-5 gap-4">
-          {SHELL_COLORS.map((color) => (
+        <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi) ? 'grid-cols-5' : 'grid-cols-5'} gap-4`}>
+          {shellOptions.map((color) => (
             <ColorButton 
               key={color.id}
               color={color}
@@ -291,13 +366,21 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               onSelect={onSelectColor}
             />
           ))}
-          <ColorButton 
-            isCustom
-            isSelected={selectedColor.id === 'custom'}
-            color={selectedColor} 
-            onSelect={onSelectColor}
-          />
+          {!shopMode && (
+            <ColorButton 
+              isCustom
+              isSelected={selectedColor.id === 'custom'}
+              color={selectedColor} 
+              onSelect={onSelectColor}
+            />
+          )}
         </div>
+        {shopMode && (
+          <div className="mt-4 p-2.5 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-lg flex items-center gap-2 text-[10px] text-blue-600 dark:text-blue-400 font-medium">
+            <ShoppingBag size={14} />
+            Showing {shopMode} {shopMode === 'rgrs' ? `(${rgrsSubBrand})` : ''} shell inventory.
+          </div>
+        )}
       </div>
 
       <div className="h-px bg-slate-100 dark:bg-slate-800 w-full"></div>
@@ -319,7 +402,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           </button>
         </div>
         
-        <div className="flex gap-4 flex-wrap">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {LENS_COLORS.map((color) => {
              const isSelected = lensColor.id === color.id;
              return (
@@ -327,16 +410,15 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 key={color.id}
                 onClick={() => onSelectLensColor(color)}
                 className={`
-                  flex-1 min-w-[120px] py-3 px-4 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200
+                  py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-1.5 transition-all duration-200
                   ${isSelected ? 'border-slate-800 dark:border-slate-300 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400'}
                 `}
               >
                 <span 
-                  className="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" 
+                  className="w-3 h-3 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" 
                   style={{ backgroundColor: color.hex }}
                 ></span>
-                <span className="text-sm font-semibold">{color.name}</span>
-                {isSelected && <Check size={16} className="text-slate-900 dark:text-white ml-auto" strokeWidth={3} />}
+                <span className="text-[11px] sm:text-sm font-bold truncate">{color.name}</span>
               </button>
              );
           })}
@@ -352,58 +434,105 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             <span className="w-1 h-6 bg-slate-800 rounded-full inline-block"></span>
             Buttons
           </h2>
-          <button
-              onClick={onToggleClearButtons}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-              title="Toggle Clear/Transparent Buttons"
-          >
-              {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-              Clear Buttons
-          </button>
+          <div className="flex items-center gap-2">
+              <button
+                  onClick={onToggleClearButtons}
+                  disabled={!!shopMode && (!isRgrsHi || !useCustomButtonsInHiMode)}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && (!isRgrsHi || !useCustomButtonsInHiMode)) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                  title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
+              >
+                  {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                  Clear Buttons
+              </button>
+          </div>
         </div>
        
-        <div className="grid grid-cols-6 gap-3 mb-6">
-          {SHELL_COLORS.map((color) => (
-            <ColorButton 
-              key={`master-${color.id}`}
-              color={color}
-              isSelected={unifiedControlColor?.id === color.id}
-              onSelect={handleMasterControlColorSelect}
-              sizeClass="w-10 h-10"
-              className="!gap-0"
-              showLabel={false}
-            />
-          ))}
-          <ColorButton 
-             isCustom
-             isSelected={unifiedControlColor?.id === 'custom'}
-             color={unifiedControlColor || { id: 'custom', name: 'Custom', hex: '#000000' }}
-             onSelect={handleMasterControlColorSelect}
-             sizeClass="w-10 h-10"
-             className="!gap-0"
-             showLabel={false}
-          />
-        </div>
+        {isRgrsHi && !useCustomButtonsInHiMode ? (
+          <div className="space-y-3 animate-in fade-in duration-300">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+               <div 
+                  className="w-10 h-10 rounded-full border border-slate-300 dark:border-slate-600 flex items-center justify-center shadow-inner"
+                  style={{ backgroundColor: buttonOptions[0].hex }}
+               >
+                  <Lock size={16} className="text-slate-400/50" />
+               </div>
+               <div>
+                  <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-widest mb-0.5">
+                     Locked Set
+                  </div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">
+                     {selectedColor.id === 'hi-sfc-grey' ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
+                  </div>
+                  <p className="text-[10px] text-slate-500 italic mt-0.5">Shell kits include fixed color buttons.</p>
+               </div>
+            </div>
+            
+            <button
+                onClick={() => onToggleCustomButtonsInHiMode(true)}
+                className="w-full text-[10px] font-bold px-3 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
+            >
+                <Unlock size={14} />
+                Use Funnyplaying buttons
+            </button>
+          </div>
+        ) : (
+          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            {isRgrsHi && useCustomButtonsInHiMode && (
+              <button
+                  onClick={() => onToggleCustomButtonsInHiMode(false)}
+                  className="mb-4 w-full text-[10px] font-bold px-3 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 shadow-sm"
+              >
+                  <Lock size={14} />
+                  Switch back to Shell Kit buttons
+              </button>
+            )}
 
-        <button 
-          onClick={() => setShowIndividualControls(!showIndividualControls)}
-          className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors w-full p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
-        >
-          {showIndividualControls ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <SlidersHorizontal size={14} />
-          <span>Customize Individually</span>
-        </button>
+            <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi) ? 'grid-cols-5' : 'grid-cols-6'} gap-3 mb-6`}>
+              {buttonOptions.map((color) => (
+                <ColorButton 
+                  key={`master-${color.id}`}
+                  color={color}
+                  isSelected={unifiedControlColor?.id === color.id}
+                  onSelect={handleMasterControlColorSelect}
+                  sizeClass="w-10 h-10"
+                  className="!gap-0"
+                  showLabel={false}
+                />
+              ))}
+              {!shopMode && (
+                <ColorButton 
+                   isCustom
+                   isSelected={unifiedControlColor?.id === 'custom'}
+                   color={unifiedControlColor || { id: 'custom', name: 'Custom', hex: '#000000' }}
+                   onSelect={handleMasterControlColorSelect}
+                   sizeClass="w-10 h-10"
+                   className="!gap-0"
+                   showLabel={false}
+                />
+              )}
+            </div>
 
-        {showIndividualControls && (
-          <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
-            <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" />
-            <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" />
-            <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" />
-            <ColorSection label="Start / Select" selectedColor={startSelectColor} onSelect={onSelectStartSelectColor} idPrefix="ss" />
-            <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" />
-            <ColorSection label="R Button (Trigger)" selectedColor={rButtonColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" />
-            <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" />
-            <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" />
+            <button 
+              onClick={() => setShowIndividualControls(!showIndividualControls)}
+              className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors w-full p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
+            >
+              {showIndividualControls ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              <SlidersHorizontal size={14} />
+              <span>Customize Individually</span>
+            </button>
+
+            {showIndividualControls && (
+              <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
+                <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="Start / Select" selectedColor={startSelectColor} onSelect={onSelectStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
+                <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="R Button (Trigger)" selectedColor={rightBumperColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} />
+                <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} />
+              </div>
+            )}
           </div>
         )}
       </div>

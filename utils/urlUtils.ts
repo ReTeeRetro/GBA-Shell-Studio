@@ -1,5 +1,5 @@
-import { GbaConfig, ColorOption } from '../types';
-import { SHELL_COLORS, LENS_COLORS } from '../constants';
+import { GbaConfig, ColorOption, ShopMode } from '../types';
+import { SHELL_COLORS, LENS_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS } from '../constants';
 
 const PARAM_MAP: Record<keyof GbaConfig, string> = {
   selectedColor: 'shell',
@@ -15,6 +15,9 @@ const PARAM_MAP: Record<keyof GbaConfig, string> = {
   isClearShell: 'clear_shell',
   isClearButtons: 'clear_btns',
   isScreenOn: 'screen_on',
+  shopMode: 'shop_mode',
+  rgrsSubBrand: 'rgrs_brand',
+  useCustomButtonsInHiMode: 'hi_custom_btns',
 };
 
 // Helper to convert a ColorOption to a string for the URL
@@ -58,6 +61,10 @@ export const serializeConfig = (config: GbaConfig): string => {
 
     if (typeof value === 'boolean') {
       if (value) params.set(paramName, '1');
+    } else if (key === 'shopMode') {
+      if (value) params.set(paramName, value as string);
+    } else if (key === 'rgrsSubBrand') {
+      if (config.shopMode === 'rgrs') params.set(paramName, value as string);
     } else {
       // It's a ColorOption
       params.set(paramName, encodeColor(value as ColorOption));
@@ -71,8 +78,15 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   const params = new URLSearchParams(searchString);
   const config: Partial<GbaConfig> = {};
 
+  const allShellPresets = [
+    ...SHELL_COLORS, 
+    ...FUNNYPLAYING_SHELL_COLORS, 
+    ...RGRS_FUNNYPLAYING_SHELL_COLORS, 
+    ...RGRS_HISPEEDIDO_SHELL_COLORS
+  ];
+
   // Colors
-  config.selectedColor = decodeColor(params.get(PARAM_MAP.selectedColor), SHELL_COLORS);
+  config.selectedColor = decodeColor(params.get(PARAM_MAP.selectedColor), allShellPresets);
   config.dpadColor = decodeColor(params.get(PARAM_MAP.dpadColor), SHELL_COLORS);
   config.aButtonColor = decodeColor(params.get(PARAM_MAP.aButtonColor), SHELL_COLORS);
   config.bButtonColor = decodeColor(params.get(PARAM_MAP.bButtonColor), SHELL_COLORS);
@@ -80,7 +94,6 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   config.lButtonColor = decodeColor(params.get(PARAM_MAP.lButtonColor), SHELL_COLORS);
   config.rButtonColor = decodeColor(params.get(PARAM_MAP.rButtonColor), SHELL_COLORS);
   config.leftBumperColor = decodeColor(params.get(PARAM_MAP.leftBumperColor), SHELL_COLORS);
-  config.rightBumperColor = decodeColor(params.get(PARAM_MAP.rightBumperColor), SHELL_COLORS);
   
   config.lensColor = decodeColor(params.get(PARAM_MAP.lensColor), LENS_COLORS);
 
@@ -93,6 +106,21 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   }
   if (params.has(PARAM_MAP.isScreenOn)) {
     config.isScreenOn = params.get(PARAM_MAP.isScreenOn) === '1';
+  }
+  if (params.has(PARAM_MAP.useCustomButtonsInHiMode)) {
+    config.useCustomButtonsInHiMode = params.get(PARAM_MAP.useCustomButtonsInHiMode) === '1';
+  }
+  if (params.has(PARAM_MAP.shopMode)) {
+    const sMode = params.get(PARAM_MAP.shopMode);
+    if (sMode === 'funnyplaying' || sMode === 'rgrs') {
+      config.shopMode = sMode;
+    }
+  }
+  if (params.has(PARAM_MAP.rgrsSubBrand)) {
+    const rBrand = params.get(PARAM_MAP.rgrsSubBrand);
+    if (rBrand === 'funnyplaying' || rBrand === 'hispeedido') {
+      config.rgrsSubBrand = rBrand;
+    }
   }
 
   // Remove undefined keys so they don't overwrite defaults with undefined

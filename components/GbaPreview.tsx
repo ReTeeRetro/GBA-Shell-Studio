@@ -1,6 +1,5 @@
-
 import { forwardRef } from 'react';
-import { ColorOption } from '../types';
+import { ColorOption, ShopMode } from '../types';
 import {
   ShellPaths,
   DpadPaths,
@@ -37,6 +36,7 @@ interface GbaPreviewProps {
   isScreenOn?: boolean;
   onToggleScreen?: () => void;
   isDarkMode?: boolean;
+  shopMode?: ShopMode;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -57,6 +57,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       isClearButtons = false,
       isScreenOn = false,
       onToggleScreen,
+      shopMode,
       // isDarkMode is now ignored for the background to preserve clear shell effects
     },
     ref
@@ -468,7 +469,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                   fill={startSelectColor.hex}
                   filter="url(#plasticGrain)"
                   style={{ mixBlendMode: 'overlay' }}
-                  opacity="0.4"
+                  opacity={0.4}
                 />
               )}
             </g>
@@ -485,7 +486,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                   fill={startSelectColor.hex}
                   filter="url(#plasticGrain)"
                   style={{ mixBlendMode: 'overlay' }}
-                  opacity="0.4"
+                  opacity={0.4}
                 />
               )}
             </g>
@@ -494,14 +495,14 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               <g
                 id="clear-shell-internals-layer"
                 style={{ mixBlendMode: 'multiply' }}
-                opacity={0.75}
+                opacity={0.6}
                 pointerEvents="none"
               >
                 <ClearShellInternals />
               </g>
             )}
 
-            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.5 : 1 }}>
+            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1 }}>
               <ShellPaths />
 
               <g
@@ -594,9 +595,11 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 />
               )}
 
-              <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
-                <GbaLogo />
-              </g>
+              {!shopMode && (
+                <g transform="translate(32, 330) scale(1.14) translate(-96.378, -96.378)">
+                  <GbaLogo />
+                </g>
+              )}
 
               <rect
                 x="-148"

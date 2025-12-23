@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export const InfoCard: React.FC = () => {
@@ -24,6 +23,7 @@ export const InfoCard: React.FC = () => {
           <li><strong>Download</strong> your configuration as a high-res PNG.</li>
           <li><strong>Share</strong> the unique URL with others.</li>
           <li><strong>Visualize</strong> your design using advanced AI tools.</li>
+          <li><strong>Shop</strong> for the specific parts to mod your own GBA.</li>
         </ul>
 
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800">

@@ -2,11 +2,17 @@ export interface ColorOption {
   id: string;
   name: string;
   hex: string;
+  shopUrl?: string;
+  forcedClear?: boolean;
 }
 
 export type ViewMode = 'front-off' | 'front-on' | 'back';
 
 export type RenderMode = 'plastic' | 'matte';
+
+export type ShopMode = 'funnyplaying' | 'rgrs' | null;
+
+export type RgrsSubBrand = 'funnyplaying' | 'hispeedido';
 
 export interface GbaConfig {
   selectedColor: ColorOption;
@@ -22,4 +28,7 @@ export interface GbaConfig {
   isClearShell: boolean;
   isClearButtons: boolean;
   isScreenOn: boolean;
+  shopMode: ShopMode;
+  rgrsSubBrand: RgrsSubBrand;
+  useCustomButtonsInHiMode: boolean;
 }

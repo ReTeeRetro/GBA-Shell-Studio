@@ -1,9 +1,9 @@
-
 import { useRef, useState, useEffect } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { AiCard } from './components/AiCard';
+import { ShopModeCard } from './components/ShopModeCard';
 import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
@@ -81,6 +81,7 @@ function App() {
           isScreenOn={config.isScreenOn}
           onToggleScreen={toggleScreen}
           isDarkMode={isDark}
+          shopMode={config.shopMode}
         />
       </div>
     );
@@ -248,8 +249,15 @@ function App() {
                 isScreenOn={config.isScreenOn}
                 onToggleScreen={toggleScreen}
                 isDarkMode={isDark}
+                shopMode={config.shopMode}
               />
             </div>
+
+            <ShopModeCard 
+              config={config} 
+              onSetShopMode={setters.setShopMode}
+              onSetRgrsSubBrand={setters.setRgrsSubBrand}
+            />
 
             <AiCard onOpenAi={handleOpenAi} />
             <ExampleAiImages />
@@ -289,6 +297,10 @@ function App() {
               onToggleClearButtons={() => setters.setIsClearButtons(!config.isClearButtons)}
               isScreenOn={config.isScreenOn}
               onToggleScreenOn={() => setters.setIsScreenOn(!config.isScreenOn)}
+              shopMode={config.shopMode}
+              rgrsSubBrand={config.rgrsSubBrand}
+              useCustomButtonsInHiMode={config.useCustomButtonsInHiMode}
+              onToggleCustomButtonsInHiMode={setters.setUseCustomButtonsInHiMode}
             />
 
             <InfoCard />
@@ -345,7 +357,7 @@ function App() {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 1.9.2. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 2.0.0. Not
           affiliated with Nintendo.
         </p>
       </footer>
