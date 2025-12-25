@@ -242,7 +242,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                   value: startSelectColor.name,
                   suffix: config.isClearButtons ? '(Clear)' : '',
                   color: startSelectColor.hex,
-                  url: isSilent ? 'https://www.silentmodding.com/en/game-boy-advance/buttons.html' : isFunnyplaying ? (startSelectColor.shopUrl || 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance') : (isRgrsHi && !useCustomButtonsInHiMode) ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=Hispeedido') : (startSelectColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=FunnyPlaying'),
+                  url: isSilent ? (startSelectColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/buttons.html') : isFunnyplaying ? (startSelectColor.shopUrl || 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance') : (isRgrsHi && !useCustomButtonsInHiMode) ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=Hispeedido') : (startSelectColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=FunnyPlaying'),
                   btnLabel: 'Buy Membranes',
                   icon: <Layers size={14} />
                 }

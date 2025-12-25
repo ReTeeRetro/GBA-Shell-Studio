@@ -108,8 +108,9 @@ export const useGbaState = () => {
         membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
       }
       
-      // Fallback priority: Light Grey -> Dark Grey -> Black -> First item
+      // Fallback priority: Light Grey -> Grey -> Dark Grey -> Black -> First item
       const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                         membraneList.find(m => m.name.toLowerCase() === 'grey') || 
                          membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
                          membraneList.find(m => m.name.toLowerCase() === 'black') || 
                          membraneList[0];
@@ -237,7 +238,12 @@ export const useGbaState = () => {
         } else {
           membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
         }
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
+        
+        // Find suitable grey for SNES set
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                        { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -269,7 +275,11 @@ export const useGbaState = () => {
         } else {
           membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
         }
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
+        
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                        { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -307,7 +317,11 @@ export const useGbaState = () => {
         } else {
           membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
         }
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
+        
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'grey') || 
+                        membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                        { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -345,6 +359,7 @@ export const useGbaState = () => {
         } else {
           // Default fallback priority
           const defaultMembrane = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                                  membraneList.find(m => m.name.toLowerCase() === 'grey') || 
                                   membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
                                   membraneList.find(m => m.name.toLowerCase() === 'black');
           startColor = defaultMembrane || membraneList[0];
@@ -443,6 +458,7 @@ export const useGbaState = () => {
                 if (!isCurrentMemInShop) {
                     // Fallback priority
                     const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                                       membraneList.find(m => m.name.toLowerCase() === 'grey') || 
                                        membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
                                        membraneList.find(m => m.name.toLowerCase() === 'black') || 
                                        membraneList[0];

@@ -441,6 +441,7 @@ export const SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS: ColorOption[] = [
   { id: 'sm-fp-mem-clear-black', name: 'Clear Black', hex: '#000000', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-black-clear.html' },
   { id: 'sm-fp-mem-clear-white', name: 'Clear White', hex: '#ffffff', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-13.html' },
   { id: 'sm-fp-mem-orange', name: 'Orange', hex: '#fa9c43', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-8.html' },
+  { id: 'sm-fp-mem-grey', name: 'Grey', hex: '#c9c9c9', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-12.html' },
 ];
 
 // HISPEEDIDO CONSTANTS
