@@ -1,5 +1,5 @@
-import { GbaConfig, ColorOption } from '../types';
-import { SHELL_COLORS, LENS_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS } from '../constants';
+import { GbaConfig, ColorOption, ShopMode } from '../types';
+import { SHELL_COLORS, LENS_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_BUTTON_COLORS, RGRS_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_MEMBRANE_COLORS, RGRS_FUNNYPLAYING_MEMBRANE_COLORS, SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS } from '../constants';
 
 const PARAM_MAP: Record<keyof GbaConfig, string> = {
   selectedColor: 'shell',
@@ -82,18 +82,30 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
     ...SHELL_COLORS, 
     ...FUNNYPLAYING_SHELL_COLORS, 
     ...RGRS_FUNNYPLAYING_SHELL_COLORS, 
-    ...RGRS_HISPEEDIDO_SHELL_COLORS
+    ...RGRS_HISPEEDIDO_SHELL_COLORS,
+    ...SILENTMODDING_HISPEEDIDO_SHELL_COLORS
+  ];
+
+  const allButtonPresets = [
+    ...SHELL_COLORS, // Base colors
+    ...FUNNYPLAYING_BUTTON_COLORS,
+    ...RGRS_FUNNYPLAYING_BUTTON_COLORS,
+    ...SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
+    ...FUNNYPLAYING_MEMBRANE_COLORS,
+    ...RGRS_FUNNYPLAYING_MEMBRANE_COLORS,
+    ...SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
   ];
 
   // Colors
   config.selectedColor = decodeColor(params.get(PARAM_MAP.selectedColor), allShellPresets);
-  config.dpadColor = decodeColor(params.get(PARAM_MAP.dpadColor), SHELL_COLORS);
-  config.aButtonColor = decodeColor(params.get(PARAM_MAP.aButtonColor), SHELL_COLORS);
-  config.bButtonColor = decodeColor(params.get(PARAM_MAP.bButtonColor), SHELL_COLORS);
-  config.startSelectColor = decodeColor(params.get(PARAM_MAP.startSelectColor), SHELL_COLORS);
-  config.lButtonColor = decodeColor(params.get(PARAM_MAP.lButtonColor), SHELL_COLORS);
-  config.rButtonColor = decodeColor(params.get(PARAM_MAP.rButtonColor), SHELL_COLORS);
-  config.leftBumperColor = decodeColor(params.get(PARAM_MAP.leftBumperColor), SHELL_COLORS);
+  config.dpadColor = decodeColor(params.get(PARAM_MAP.dpadColor), allButtonPresets);
+  config.aButtonColor = decodeColor(params.get(PARAM_MAP.aButtonColor), allButtonPresets);
+  config.bButtonColor = decodeColor(params.get(PARAM_MAP.bButtonColor), allButtonPresets);
+  config.startSelectColor = decodeColor(params.get(PARAM_MAP.startSelectColor), allButtonPresets); 
+  config.lButtonColor = decodeColor(params.get(PARAM_MAP.lButtonColor), allButtonPresets);
+  config.rButtonColor = decodeColor(params.get(PARAM_MAP.rButtonColor), allButtonPresets);
+  config.leftBumperColor = decodeColor(params.get(PARAM_MAP.leftBumperColor), allButtonPresets);
+  config.rightBumperColor = decodeColor(params.get(PARAM_MAP.rightBumperColor), allButtonPresets);
   
   config.lensColor = decodeColor(params.get(PARAM_MAP.lensColor), LENS_COLORS);
 
@@ -112,8 +124,8 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   }
   if (params.has(PARAM_MAP.shopMode)) {
     const sMode = params.get(PARAM_MAP.shopMode);
-    if (sMode === 'funnyplaying' || sMode === 'rgrs') {
-      config.shopMode = sMode;
+    if (sMode === 'funnyplaying' || sMode === 'rgrs' || sMode === 'silentmodding') {
+      config.shopMode = sMode as ShopMode;
     }
   }
   if (params.has(PARAM_MAP.rgrsSubBrand)) {

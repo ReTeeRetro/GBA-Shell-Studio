@@ -10,6 +10,9 @@ import {
   RGRS_FUNNYPLAYING_BUTTON_COLORS, 
   RGRS_FUNNYPLAYING_MEMBRANE_COLORS,
   RGRS_HISPEEDIDO_SHELL_COLORS,
+  SILENTMODDING_HISPEEDIDO_SHELL_COLORS,
+  SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
+  SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
@@ -83,11 +86,33 @@ export const useGbaState = () => {
 
   const applyOriginalGreyButtons = (currentConfig: GbaConfig) => {
       const isRgrsFp = currentConfig.shopMode === 'rgrs' && (currentConfig.rgrsSubBrand === 'funnyplaying' || currentConfig.rgrsSubBrand === 'hispeedido');
-      const btnList = isRgrsFp ? RGRS_FUNNYPLAYING_BUTTON_COLORS : FUNNYPLAYING_BUTTON_COLORS;
+      const isSilent = currentConfig.shopMode === 'silentmodding';
+      
+      let btnList: ColorOption[];
+      if (isSilent) {
+        btnList = SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS;
+      } else if (isRgrsFp) {
+        btnList = RGRS_FUNNYPLAYING_BUTTON_COLORS;
+      } else {
+        btnList = FUNNYPLAYING_BUTTON_COLORS;
+      }
+
       const defaultBtn = btnList.find(c => c.name.toLowerCase() === 'original grey') || btnList[2];
       
-      const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
-      const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList[0];
+      let membraneList: ColorOption[];
+      if (isSilent) {
+        membraneList = SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
+      } else if (isRgrsFp) {
+        membraneList = RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+      } else {
+        membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
+      }
+      
+      // Fallback priority: Light Grey -> Dark Grey -> Black -> First item
+      const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                         membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                         membraneList.find(m => m.name.toLowerCase() === 'black') || 
+                         membraneList[0];
 
       return {
           ...currentConfig,
@@ -155,9 +180,12 @@ export const useGbaState = () => {
 
         let nextConfig = { ...config, ...updates };
 
-        // Handle Hispeedido locked sets
-        if (config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido' && !config.useCustomButtonsInHiMode) {
-          if (val.id === 'hi-sfc-grey') {
+        // Handle Hispeedido locked sets (RGRS & SilentModding)
+        const isHiLocked = ((config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido') || 
+                           config.shopMode === 'silentmodding') && !config.useCustomButtonsInHiMode;
+
+        if (isHiLocked) {
+          if (val.id.includes('sfc-grey')) {
             nextConfig = applySfcMix(nextConfig, val);
           } else {
             nextConfig = applyHiDefaultButtons(nextConfig);
@@ -181,10 +209,14 @@ export const useGbaState = () => {
     setLeftBumperColor: (val: ColorOption) => updateConfig({ ...config, leftBumperColor: val }),
     setRightBumperColor: (val: ColorOption) => updateConfig({ ...config, rightBumperColor: val }),
     setAllButtonsColor: (val: ColorOption) => {
-      if (config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido' && !config.useCustomButtonsInHiMode) return; // Locked
+      // Locked Check
+      const isHiLocked = ((config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido') || 
+                         config.shopMode === 'silentmodding') && !config.useCustomButtonsInHiMode;
+      if (isHiLocked) return; 
 
       const isFunny = config.shopMode === 'funnyplaying';
       const isRgrsFp = config.shopMode === 'rgrs' && (config.rgrsSubBrand === 'funnyplaying' || config.rgrsSubBrand === 'hispeedido');
+      const isSilent = config.shopMode === 'silentmodding';
       
       // Handle Mixed Sets
       if (val.id.includes('snes-set')) {
@@ -197,8 +229,15 @@ export const useGbaState = () => {
         const triggerColor = { ...val, hex: triggerHex };
         const abColor = { ...val, hex: abHex };
         
-        const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || { ...val, hex: ssHex };
+        let membraneList: ColorOption[];
+        if (isSilent) {
+          membraneList = SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else if (isRgrsFp) {
+          membraneList = RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else {
+          membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
+        }
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -222,8 +261,15 @@ export const useGbaState = () => {
         const primaryColor = { ...val, hex: primaryHex };
         const abColor = { ...val, hex: abHex };
         
-        const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || { ...val, hex: ssHex };
+        let membraneList: ColorOption[];
+        if (isSilent) {
+          membraneList = SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else if (isRgrsFp) {
+          membraneList = RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else {
+          membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
+        }
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -253,8 +299,15 @@ export const useGbaState = () => {
         const aColor = { ...val, hex: aHex };
         const bColor = { ...val, hex: bHex };
         
-        const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
-        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || { ...val, hex: ssHex };
+        let membraneList: ColorOption[];
+        if (isSilent) {
+          membraneList = SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else if (isRgrsFp) {
+          membraneList = RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else {
+          membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
+        }
+        const ssColor = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList.find(m => m.name.toLowerCase() === 'dark grey') || membraneList.find(m => m.name.toLowerCase() === 'black') || { ...val, hex: ssHex };
 
         updateConfig({
           ...config,
@@ -273,8 +326,16 @@ export const useGbaState = () => {
       // In shop mode, start/select must pull from membrane inventory
       let startColor = val;
       
-      if (isFunny || isRgrsFp) {
-        const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
+      if (isFunny || isRgrsFp || isSilent) {
+        let membraneList: ColorOption[];
+        if (isSilent) {
+          membraneList = SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else if (isRgrsFp) {
+          membraneList = RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+        } else {
+          membraneList = FUNNYPLAYING_MEMBRANE_COLORS;
+        }
+
         const matchingMembrane = membraneList.find(
           m => m.name.toLowerCase() === val.name.toLowerCase()
         );
@@ -282,9 +343,11 @@ export const useGbaState = () => {
         if (matchingMembrane) {
           startColor = matchingMembrane;
         } else {
-          // Default to Light Grey
-          const lightGreyMembrane = membraneList.find(m => m.name.toLowerCase() === 'light grey');
-          startColor = lightGreyMembrane || membraneList[0];
+          // Default fallback priority
+          const defaultMembrane = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                                  membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                                  membraneList.find(m => m.name.toLowerCase() === 'black');
+          startColor = defaultMembrane || membraneList[0];
         }
       }
       
@@ -313,31 +376,47 @@ export const useGbaState = () => {
 
         if (val === 'rgrs') {
             nextConfig.rgrsSubBrand = 'funnyplaying';
+        } else if (val === 'silentmodding') {
+            // SilentModding uses Hispeedido shells/screens by default
+            nextConfig.useCustomButtonsInHiMode = false;
         }
 
         // Validate content if switching to specific inventory
         const isRgrsFp = val === 'rgrs' && nextConfig.rgrsSubBrand === 'funnyplaying';
         const isRgrsHi = val === 'rgrs' && nextConfig.rgrsSubBrand === 'hispeedido';
-        const inventoryMode = val === 'funnyplaying' || isRgrsFp || isRgrsHi;
+        const isSilent = val === 'silentmodding';
+        
+        const inventoryMode = val === 'funnyplaying' || isRgrsFp || isRgrsHi || isSilent;
 
         if (inventoryMode) {
             // Validate Shell
-            const currentShellList = isRgrsFp ? RGRS_FUNNYPLAYING_SHELL_COLORS : isRgrsHi ? RGRS_HISPEEDIDO_SHELL_COLORS : FUNNYPLAYING_SHELL_COLORS;
+            let currentShellList;
+            if (isSilent) {
+              currentShellList = SILENTMODDING_HISPEEDIDO_SHELL_COLORS;
+            } else {
+              currentShellList = isRgrsFp ? RGRS_FUNNYPLAYING_SHELL_COLORS : isRgrsHi ? RGRS_HISPEEDIDO_SHELL_COLORS : FUNNYPLAYING_SHELL_COLORS;
+            }
+
             const isCurrentShellInShop = currentShellList.some(c => c.id === config.selectedColor.id);
             let activeShell = config.selectedColor;
             if (!isCurrentShellInShop) {
-                const defaultShopColor = currentShellList[0];
-                nextConfig.selectedColor = defaultShopColor;
-                nextConfig.isClearShell = !!defaultShopColor.forcedClear;
-                activeShell = defaultShopColor;
+                // If switching between shops, try to find a matching color by hex/name
+                const match = currentShellList.find(c => c.hex === config.selectedColor.hex) || currentShellList[0];
+                nextConfig.selectedColor = match;
+                nextConfig.isClearShell = !!match.forcedClear;
+                activeShell = match;
+            } else if (isSilent) {
+               // Re-bind to SilentModding constant to ensure URL is correct if coming from RGRS with same ID
+                const match = currentShellList.find(c => c.id === config.selectedColor.id.replace('rgrs-','sm-').replace('hi-','sm-hi-')) || currentShellList.find(c => c.hex === config.selectedColor.hex) || currentShellList[0];
+                nextConfig.selectedColor = match;
             }
 
-            if (isRgrsHi) {
+            if (isRgrsHi || isSilent) {
                 if (nextConfig.useCustomButtonsInHiMode) {
                    nextConfig = applyOriginalGreyButtons(nextConfig);
                 } else {
                     // Lock buttons logic for Hispeedido
-                    if (activeShell.id === 'hi-sfc-grey') {
+                    if (activeShell.id.includes('sfc-grey')) {
                       nextConfig = applySfcMix(nextConfig, activeShell);
                     } else {
                       nextConfig = applyHiDefaultButtons(nextConfig);
@@ -362,7 +441,11 @@ export const useGbaState = () => {
                 const membraneList = isRgrsFp ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS : FUNNYPLAYING_MEMBRANE_COLORS;
                 const isCurrentMemInShop = membraneList.some(c => c.id === config.startSelectColor.id);
                 if (!isCurrentMemInShop) {
-                    const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || membraneList[0];
+                    // Fallback priority
+                    const defaultMem = membraneList.find(m => m.name.toLowerCase() === 'light grey') || 
+                                       membraneList.find(m => m.name.toLowerCase() === 'dark grey') || 
+                                       membraneList.find(m => m.name.toLowerCase() === 'black') || 
+                                       membraneList[0];
                     nextConfig.startSelectColor = defaultMem;
                     nextConfig.isClearButtons = !!defaultMem.forcedClear;
                 }
@@ -429,13 +512,14 @@ export const useGbaState = () => {
     setUseCustomButtonsInHiMode: (val: boolean) => {
         let nextConfig = { ...config, useCustomButtonsInHiMode: val };
         
-        if (config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido') {
+        // Logic for RGRS Hispeedido OR SilentModding
+        if ((config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido') || config.shopMode === 'silentmodding') {
             if (val) {
-                // Switch to FP buttons
+                // Switch to FP buttons (or generic buttons logic)
                 nextConfig = applyOriginalGreyButtons(nextConfig);
             } else {
                 // Switch back to locked
-                if (config.selectedColor.id === 'hi-sfc-grey') {
+                if (config.selectedColor.id.includes('sfc-grey')) {
                     nextConfig = applySfcMix(nextConfig, config.selectedColor);
                 } else {
                     nextConfig = applyHiDefaultButtons(nextConfig);
@@ -461,19 +545,18 @@ export const useGbaState = () => {
     const isDirectFunny = config.shopMode === 'funnyplaying';
     const isRgrsFp = config.shopMode === 'rgrs' && config.rgrsSubBrand === 'funnyplaying';
     const isRgrsHi = config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido';
+    const isSilent = config.shopMode === 'silentmodding';
     
-    const shellOptions = isDirectFunny 
-        ? FUNNYPLAYING_SHELL_COLORS 
-        : isRgrsFp 
-            ? RGRS_FUNNYPLAYING_SHELL_COLORS 
-            : isRgrsHi
-              ? RGRS_HISPEEDIDO_SHELL_COLORS
-              : SHELL_COLORS;
+    let shellOptions = SHELL_COLORS;
+    if (isDirectFunny) shellOptions = FUNNYPLAYING_SHELL_COLORS;
+    else if (isRgrsFp) shellOptions = RGRS_FUNNYPLAYING_SHELL_COLORS;
+    else if (isRgrsHi) shellOptions = RGRS_HISPEEDIDO_SHELL_COLORS;
+    else if (isSilent) shellOptions = SILENTMODDING_HISPEEDIDO_SHELL_COLORS;
 
     let btnOptions: ColorOption[];
     let memOptions: ColorOption[];
 
-    if (isRgrsHi && !config.useCustomButtonsInHiMode) {
+    if (((isRgrsHi || isSilent) && !config.useCustomButtonsInHiMode)) {
         btnOptions = [HISPEEDIDO_DEFAULT_BTN];
         memOptions = [HISPEEDIDO_DEFAULT_MEM];
     } else {
@@ -481,20 +564,24 @@ export const useGbaState = () => {
             ? FUNNYPLAYING_BUTTON_COLORS 
             : (isRgrsFp || isRgrsHi) 
               ? RGRS_FUNNYPLAYING_BUTTON_COLORS 
-              : SHELL_COLORS;
+              : isSilent 
+                ? SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS
+                : SHELL_COLORS;
 
         memOptions = isDirectFunny 
             ? FUNNYPLAYING_MEMBRANE_COLORS 
             : (isRgrsFp || isRgrsHi) 
               ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS 
-              : SHELL_COLORS;
+              : isSilent 
+                ? SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
+                : SHELL_COLORS;
     }
 
     const randomShell = getRandomOption(shellOptions);
     let nextConfig: GbaConfig = { ...config, selectedColor: randomShell };
 
-    if (isRgrsHi && !config.useCustomButtonsInHiMode) {
-      if (randomShell.id === 'hi-sfc-grey') {
+    if ((isRgrsHi || isSilent) && !config.useCustomButtonsInHiMode) {
+      if (randomShell.id.includes('sfc-grey')) {
         nextConfig = applySfcMix(nextConfig, randomShell);
       } else {
         nextConfig = applyHiDefaultButtons(nextConfig);

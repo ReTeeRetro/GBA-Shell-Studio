@@ -10,7 +10,7 @@ export type ViewMode = 'front-off' | 'front-on' | 'back';
 
 export type RenderMode = 'plastic' | 'matte';
 
-export type ShopMode = 'funnyplaying' | 'rgrs' | null;
+export type ShopMode = 'funnyplaying' | 'rgrs' | 'silentmodding' | null;
 
 export type RgrsSubBrand = 'funnyplaying' | 'hispeedido';
 

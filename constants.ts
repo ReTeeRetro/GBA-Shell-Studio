@@ -299,6 +299,27 @@ export const RGRS_HISPEEDIDO_SHELL_COLORS: ColorOption[] = [
   { id: 'hi-clear-midnight-blue', name: 'Clear Midnight Blue', hex: '#101d6b', forcedClear: true, shopUrl: 'https://retrogamerepairshop.com/collections/gba-displays/products/game-boy-advance-laminated-720x480-ips-backlight-with-osd?variant=43205884444844' },
 ];
 
+export const SILENTMODDING_HISPEEDIDO_SHELL_COLORS: ColorOption[] = [
+  { id: 'sm-hi-clear-black', name: 'Clear Black', hex: '#000000', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-black-clear.html' },
+  { id: 'sm-hi-clear-white', name: 'Clear White', hex: '#ffffff', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-clear.html' },
+  { id: 'sm-hi-clear-orange', name: 'Clear Orange', hex: '#ff8c00', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-orange-clear.html' },
+  { id: 'sm-hi-clear-dark-purple', name: 'Clear Dark Purple', hex: '#101d6b', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-blue-clear.html' },
+  { id: 'sm-hi-clear-green', name: 'Clear Green', hex: '#82b5bb', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-grun-clear.html' },
+  { id: 'sm-hi-sfc-grey', name: 'SFC Grey', hex: '#cccdd6', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-grey.html' },
+  { id: 'sm-hi-black', name: 'Black', hex: '#000000', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-black.html' },
+  { id: 'sm-hi-clear-mint', name: 'Clear Mint Green', hex: '#a8eff0', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-mint-clear.html' },
+  { id: 'sm-hi-white', name: 'White', hex: '#ffffff', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-gehause-wei.html' },
+  { id: 'sm-hi-orange', name: 'Orange', hex: '#ec9555', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-orange.html' },
+  { id: 'sm-hi-clear-pink', name: 'Clear Pink', hex: '#ae727b', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-pink-clear.html' },
+  { id: 'sm-hi-red', name: 'Red', hex: '#ff0000', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-red.html' },
+  { id: 'sm-hi-clear-atomic-purple', name: 'Clear Atomic Purple', hex: '#4a148c', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-atomic-purple.html' },
+  { id: 'sm-hi-clear-glacier', name: 'Clear Glacier', hex: '#38bdf8', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-gehause-glacier-2.html' },
+  { id: 'sm-hi-clear-light-blue', name: 'Clear Light Blue (GitD)', hex: '#428ea5', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-luminizing.html' },
+  { id: 'sm-hi-kiwi-green', name: 'Kiwi Green', hex: '#8acb5f', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-gehause-grun.html' },
+  { id: 'sm-hi-indigo', name: 'Indigo', hex: '#1e1b4b', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-purple.html' },
+  { id: 'sm-hi-clear-yellow', name: 'Clear Yellow', hex: '#fcc041', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-house-yellow-clear.html' },
+];
+
 export const FUNNYPLAYING_BUTTON_COLORS: ColorOption[] = [
   { id: 'fp-btn-pink', name: 'Pink', hex: '#fa75b5', shopUrl: 'https://funnyplaying.com/products/agb-custom-buttons?variant=31961937707069' },
   { id: 'fp-btn-tender-green', name: 'Tender Green', hex: '#b7de5b', shopUrl: 'https://funnyplaying.com/products/agb-custom-buttons?variant=31961937739837' },
@@ -340,6 +361,28 @@ export const RGRS_FUNNYPLAYING_BUTTON_COLORS: ColorOption[] = [
   { id: 'rgrs-fp-btn-sfc-set', name: 'SFC Mix', hex: '#fa5949', shopUrl: 'https://retrogamerepairshop.com/collections/gba-buttons/products/funnyplaying-game-boy-advance-button-sets?variant=37635100442796' },
 ];
 
+export const SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS: ColorOption[] = [
+  { id: 'sm-fp-btn-pink', name: 'Pink', hex: '#fa75b5', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink.html' },
+  { id: 'sm-fp-btn-tender-green', name: 'Tender Green', hex: '#b7de5b', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-4.html' },
+  { id: 'sm-fp-btn-original-grey', name: 'Original Grey', hex: '#d9d5d6', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-3.html' },
+  { id: 'sm-fp-btn-dark-grey', name: 'Dark Grey', hex: '#686972', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-6.html' },
+  { id: 'sm-fp-btn-navy', name: 'Navy', hex: '#3a68ca', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-8.html' },
+  { id: 'sm-fp-btn-grey-blue', name: 'Grey Blue', hex: '#64abd7', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-9.html' },
+  { id: 'sm-fp-btn-lake-blue', name: 'Lake Blue', hex: '#2fb7dc', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-see-blue.html' },
+  { id: 'sm-fp-btn-deep-green', name: 'Deep Green', hex: '#186b5b', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-emerald.html' },
+  { id: 'sm-fp-btn-red', name: 'Red', hex: '#f44d43', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-10.html' },
+  { id: 'sm-fp-btn-orange', name: 'Orange', hex: '#f7962c', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-11.html' },
+  { id: 'sm-fp-btn-mais', name: 'Mais', hex: '#f6d320', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-12.html' },
+  { id: 'sm-fp-btn-white', name: 'White', hex: '#ffffff', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-15.html' },
+  { id: 'sm-fp-btn-dark-purple', name: 'Dark Purple', hex: '#7243b1', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-lila-fp.html' },
+  { id: 'sm-fp-btn-black', name: 'Black', hex: '#000000', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-5.html' },
+  { id: 'sm-fp-btn-snes-set', name: 'SNES Mix', hex: '#8161b1', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-14.html' },
+  { id: 'sm-fp-btn-dmg-set', name: 'DMG Mix', hex: '#e1316a', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-19.html' },
+  { id: 'sm-fp-btn-sfc-set', name: 'SFC Mix', hex: '#fa5949', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-16.html' },
+  { id: 'sm-fp-btn-brown', name: 'Brown', hex: '#a1545d', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-7.html' },
+  { id: 'sm-fp-btn-yellow', name: 'Yellow', hex: '#f7e000', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-buttons-pink-13.html' },
+];
+
 export const FUNNYPLAYING_MEMBRANE_COLORS: ColorOption[] = [
   { id: 'fp-mem-light-grey', name: 'Light Grey', hex: '#c9c9c9', shopUrl: 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance?variant=29490486116413' },
   { id: 'fp-mem-navy', name: 'Navy', hex: '#3777e9', shopUrl: 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance?variant=29490486018109' },
@@ -378,6 +421,26 @@ export const RGRS_FUNNYPLAYING_MEMBRANE_COLORS: ColorOption[] = [
   { id: 'rgrs-fp-mem-clear-black', name: 'Clear Black', hex: '#000000', forcedClear: true, shopUrl: 'https://retrogamerepairshop.com/collections/gba-buttons/products/funnyplaying-game-boy-advance-silicone-pads?variant=37729036304556' },
   { id: 'rgrs-fp-mem-clear-white', name: 'Clear White', hex: '#ffffff', forcedClear: true, shopUrl: 'https://retrogamerepairshop.com/collections/gba-buttons/products/funnyplaying-game-boy-advance-silicone-pads?variant=37729144570028' },
   { id: 'rgrs-fp-mem-orange', name: 'Orange', hex: '#fa9c43', shopUrl: 'https://retrogamerepairshop.com/collections/gba-buttons/products/funnyplaying-game-boy-advance-silicone-pads?variant=37610679402892' },
+];
+
+export const SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS: ColorOption[] = [
+  { id: 'sm-fp-mem-navy', name: 'Navy', hex: '#3777e9', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-2.html' },
+  { id: 'sm-fp-mem-red', name: 'Red', hex: '#f84733', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-3.html' },
+  { id: 'sm-fp-mem-black', name: 'Black', hex: '#000000', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-4.html' },
+  { id: 'sm-fp-mem-green', name: 'Green', hex: '#bfe359', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-5.html' },
+  { id: 'sm-fp-mem-pink', name: 'Pink', hex: '#fa8fbb', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silikon-pads-pink.html' },
+  { id: 'sm-fp-mem-light-pink', name: 'Light Pink', hex: '#ffc0cb', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-pinklight.html' },
+  { id: 'sm-fp-mem-purple-red', name: 'Purple Red', hex: '#d64f89', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-7.html' },
+  { id: 'sm-fp-mem-yellow', name: 'Yellow', hex: '#f6d943', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-9.html' },
+  { id: 'sm-fp-mem-mid-yellow', name: 'Mid Yellow', hex: '#f7cc4d', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silikon-pads-dunkel-gelb.html' },
+  { id: 'sm-fp-mem-lake-blue', name: 'Lake Blue', hex: '#33c7ec', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-see-blue.html' },
+  { id: 'sm-fp-mem-grey-blue', name: 'Grey Blue', hex: '#50b1e3', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-10.html' },
+  { id: 'sm-fp-mem-brown', name: 'Brown', hex: '#954a4c', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-11.html' },
+  { id: 'sm-fp-mem-emerald', name: 'Emerald', hex: '#2db4ba', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald.html' },
+  { id: 'sm-fp-mem-white', name: 'White', hex: '#ffffff', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-1.html' },
+  { id: 'sm-fp-mem-clear-black', name: 'Clear Black', hex: '#000000', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-black-clear.html' },
+  { id: 'sm-fp-mem-clear-white', name: 'Clear White', hex: '#ffffff', forcedClear: true, shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-13.html' },
+  { id: 'sm-fp-mem-orange', name: 'Orange', hex: '#fa9c43', shopUrl: 'https://www.silentmodding.com/en/game-boy-advance-silicone-pads-emerald-8.html' },
 ];
 
 // HISPEEDIDO CONSTANTS

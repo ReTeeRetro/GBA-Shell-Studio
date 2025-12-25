@@ -10,6 +10,9 @@ import {
   RGRS_FUNNYPLAYING_BUTTON_COLORS, 
   RGRS_FUNNYPLAYING_MEMBRANE_COLORS,
   RGRS_HISPEEDIDO_SHELL_COLORS,
+  SILENTMODDING_HISPEEDIDO_SHELL_COLORS,
+  SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
+  SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
@@ -230,7 +233,7 @@ const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSel
     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
       {label}
     </h3>
-    <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale pointer-events-none' : ''}`}>
+    <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs' || shopMode === 'silentmodding') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale pointer-events-none' : ''}`}>
       {options.map((color) => (
         <ColorButton 
           key={`${idPrefix}-${color.id}`}
@@ -299,6 +302,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   const isDirectFunny = shopMode === 'funnyplaying';
   const isRgrsFunny = shopMode === 'rgrs' && rgrsSubBrand === 'funnyplaying';
   const isRgrsHi = shopMode === 'rgrs' && rgrsSubBrand === 'hispeedido';
+  const isSilent = shopMode === 'silentmodding';
 
   const shellOptions = isDirectFunny 
     ? FUNNYPLAYING_SHELL_COLORS 
@@ -306,23 +310,31 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       ? RGRS_FUNNYPLAYING_SHELL_COLORS 
       : isRgrsHi
         ? RGRS_HISPEEDIDO_SHELL_COLORS
-        : SHELL_COLORS;
+        : isSilent
+          ? SILENTMODDING_HISPEEDIDO_SHELL_COLORS
+          : SHELL_COLORS;
 
-  const buttonOptions = (isRgrsHi && !useCustomButtonsInHiMode)
-    ? (selectedColor.id === 'hi-sfc-grey' ? [{ id: 'hi-sfc-mix', name: 'SFC Mix', hex: '#fa5949' }] : [HISPEEDIDO_DEFAULT_BTN])
+  const isLockedMode = ((isRgrsHi || isSilent) && !useCustomButtonsInHiMode);
+
+  const buttonOptions = isLockedMode
+    ? (selectedColor.id.includes('sfc-grey') ? [{ id: 'hi-sfc-mix', name: 'SFC Mix', hex: '#fa5949' }] : [HISPEEDIDO_DEFAULT_BTN])
     : isDirectFunny 
       ? FUNNYPLAYING_BUTTON_COLORS 
-      : (isRgrsFunny || (isRgrsHi && useCustomButtonsInHiMode))
+      : (isRgrsFunny || isRgrsHi)
         ? RGRS_FUNNYPLAYING_BUTTON_COLORS 
-        : SHELL_COLORS;
+        : isSilent
+          ? SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS
+          : SHELL_COLORS;
       
-  const membraneOptions = (isRgrsHi && !useCustomButtonsInHiMode)
+  const membraneOptions = isLockedMode
     ? [HISPEEDIDO_DEFAULT_MEM]
     : isDirectFunny 
       ? FUNNYPLAYING_MEMBRANE_COLORS 
-      : (isRgrsFunny || (isRgrsHi && useCustomButtonsInHiMode))
+      : (isRgrsFunny || isRgrsHi)
         ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS 
-        : SHELL_COLORS;
+        : isSilent
+          ? SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
+          : SHELL_COLORS;
 
   const unifiedControlColor = (
     areColorsEqual(dpadColor, aButtonColor) &&
@@ -335,7 +347,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   ) ? dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
-    if (isRgrsHi && !useCustomButtonsInHiMode) return;
+    if (isLockedMode) return;
     onSelectAllButtonsColor(color);
   };
 
@@ -360,7 +372,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             </button>
         </div>
         
-        <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi) ? 'grid-cols-5' : 'grid-cols-5'} gap-4`}>
+        <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi || isSilent) ? 'grid-cols-5' : 'grid-cols-5'} gap-4`}>
           {shellOptions.map((color) => (
             <ColorButton 
               key={color.id}
@@ -381,7 +393,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         {shopMode && (
           <div className="mt-4 p-2.5 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-lg flex items-center gap-2 text-[10px] text-blue-600 dark:text-blue-400 font-medium">
             <ShoppingBag size={14} />
-            Showing {shopMode} {shopMode === 'rgrs' ? `(${rgrsSubBrand})` : ''} shell inventory.
+            Showing {shopMode === 'silentmodding' ? 'SilentModding (EU)' : shopMode} {shopMode === 'rgrs' ? `(${rgrsSubBrand})` : ''} shell inventory.
           </div>
         )}
       </div>
@@ -440,8 +452,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           <div className="flex items-center gap-2">
               <button
                   onClick={onToggleClearButtons}
-                  disabled={!!shopMode && (!isRgrsHi || !useCustomButtonsInHiMode)}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && (!isRgrsHi || !useCustomButtonsInHiMode)) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                  disabled={!!shopMode && isLockedMode}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                   title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
               >
                   {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -450,7 +462,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           </div>
         </div>
        
-        {isRgrsHi && !useCustomButtonsInHiMode ? (
+        {isLockedMode ? (
           <div className="space-y-3 animate-in fade-in duration-300">
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-4">
                <div 
@@ -464,7 +476,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                      Locked Set
                   </div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white">
-                     {selectedColor.id === 'hi-sfc-grey' ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
+                     {selectedColor.id.includes('sfc-grey') ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-0.5">Shell kits include fixed color buttons.</p>
                </div>
@@ -480,7 +492,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            {isRgrsHi && useCustomButtonsInHiMode && (
+            {((isRgrsHi || isSilent) && useCustomButtonsInHiMode) && (
               <button
                   onClick={() => onToggleCustomButtonsInHiMode(false)}
                   className="mb-4 w-full text-[10px] font-bold px-3 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 shadow-sm"
@@ -490,7 +502,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               </button>
             )}
 
-            <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi) ? 'grid-cols-5' : 'grid-cols-6'} gap-3 mb-6`}>
+            <div className={`grid ${(isDirectFunny || isRgrsFunny || isRgrsHi || isSilent) ? 'grid-cols-5' : 'grid-cols-6'} gap-3 mb-6`}>
               {buttonOptions.map((color) => (
                 <ColorButton 
                   key={`master-${color.id}`}

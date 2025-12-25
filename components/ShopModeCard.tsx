@@ -12,9 +12,10 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
   const { shopMode, rgrsSubBrand, selectedColor, lensColor, dpadColor, aButtonColor, bButtonColor, startSelectColor, useCustomButtonsInHiMode } = config;
   const isFunnyplaying = shopMode === 'funnyplaying';
   const isRgrs = shopMode === 'rgrs';
+  const isSilent = shopMode === 'silentmodding';
   const isRgrsFp = isRgrs && rgrsSubBrand === 'funnyplaying';
   const isRgrsHi = isRgrs && rgrsSubBrand === 'hispeedido';
-  const isHiSfc = isRgrsHi && selectedColor.id === 'hi-sfc-grey' && !useCustomButtonsInHiMode;
+  const isHiSfc = (isRgrsHi || isSilent) && selectedColor.id.includes('sfc-grey') && !useCustomButtonsInHiMode;
   
   const utmSource = 'utm_source=gba-shell-studio';
 
@@ -23,6 +24,17 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
   };
 
   const getScreenUrl = () => {
+    if (isSilent) {
+        if (lensColor.id === 'white') {
+            return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-black-1.html';
+        }
+        if (lensColor.id === 'grey') {
+            return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-dmg.html';
+        }
+        // Black is default
+        return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-black.html';
+    }
+
     if (isRgrs) {
       if (isRgrsHi) {
         // Specific variant links for RGRS + Hispeedido
@@ -67,6 +79,15 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
       }
       return 'https://retrogamerepairshop.com/collections/gba-buttons?filter.p.vendor=FunnyPlaying';
     }
+
+    if (isSilent) {
+        if (!useCustomButtonsInHiMode) {
+            // Included in shell kit usually, or link to shell page
+            return selectedColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/shells.html';
+        }
+        // If unlocked to use FP buttons, try to link to them if available, or just generic
+        return dpadColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/buttons.html';
+    }
     
     if (dpadColor.id === 'fp-btn-snes-set') return 'https://funnyplaying.com/products/agb-custom-buttons?variant=32905308110909';
     if (dpadColor.id === 'fp-btn-dmg-set') return 'https://funnyplaying.com/products/agb-custom-buttons?variant=40576180322365';
@@ -107,64 +128,73 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
     >
       {/* Header Section */}
       <div className="p-5 md:p-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-6">
-          <div className="flex-1 space-y-1">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mb-1">
-              <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 uppercase tracking-wide flex items-center gap-2">
-                <ShoppingBag size={16} className="text-blue-600 dark:text-blue-400" />
-                Shop Mode
-              </h3>
-            </div>
-            
-            <p className="text-sm text-blue-700/80 dark:text-slate-400 max-w-xl leading-relaxed">
-              Restrict colors to specific inventory available at online stores. 
-              Directly link your design to real parts.
-            </p>
+        <div className="mb-6 space-y-2">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 uppercase tracking-wide flex items-center gap-2">
+              <ShoppingBag size={16} className="text-blue-600 dark:text-blue-400" />
+              Shop Mode
+            </h3>
           </div>
+          
+          <p className="text-sm text-blue-700/80 dark:text-slate-400 max-w-xl leading-relaxed">
+            Restrict colors to specific inventory available at online stores. 
+            Directly link your design to real parts.
+          </p>
+        </div>
 
-          {/* Toggle Group */}
-          <div className="flex flex-col gap-2 w-full md:w-auto">
-            <button
-              onClick={() => onSetShopMode(isFunnyplaying ? null : 'funnyplaying')}
-              className={`flex items-center justify-between gap-4 px-4 py-2.5 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isFunnyplaying ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+        {/* Toggle Group - Horizontal Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <button
+              onClick={() => onSetShopMode(isSilent ? null : 'silentmodding')}
+              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isSilent ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🇨🇳</span>
-                <span>Funnyplaying</span>
+              <div className="flex items-center gap-2 truncate">
+                <span className="text-lg">🇪🇺</span>
+                <span className="truncate">SilentModding</span>
               </div>
-              {isFunnyplaying ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
-            </button>
+              {isSilent ? <ToggleRight size={20} className="shrink-0" /> : <ToggleLeft size={20} className="shrink-0" />}
+          </button>
 
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => onSetShopMode(isRgrs ? null : 'rgrs')}
-                className={`flex items-center justify-between gap-4 px-4 py-2.5 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isRgrs ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🇺🇸</span>
-                  <span>Retro Game Repair Shop</span>
-                </div>
-                {isRgrs ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
-              </button>
-              
-              {/* RGRS Sub-Toggles */}
-              {isRgrs && onSetRgrsSubBrand && (
-                <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg animate-in slide-in-from-top-2 duration-300">
-                  <button 
-                    onClick={() => onSetRgrsSubBrand('funnyplaying')}
-                    className={`flex-1 px-3 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsFp ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                  >
-                    Funnyplaying
-                  </button>
-                  <button 
-                    onClick={() => onSetRgrsSubBrand('hispeedido')}
-                    className={`flex-1 px-3 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsHi ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                  >
-                    Hispeedido
-                  </button>
-                </div>
-              )}
+          <button
+            onClick={() => onSetShopMode(isFunnyplaying ? null : 'funnyplaying')}
+            className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isFunnyplaying ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+          >
+            <div className="flex items-center gap-2 truncate">
+              <span className="text-lg">🇨🇳</span>
+              <span className="truncate">Funnyplaying</span>
             </div>
+            {isFunnyplaying ? <ToggleRight size={20} className="shrink-0" /> : <ToggleLeft size={20} className="shrink-0" />}
+          </button>
+
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => onSetShopMode(isRgrs ? null : 'rgrs')}
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isRgrs ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+            >
+              <div className="flex items-center gap-2 truncate">
+                <span className="text-lg">🇺🇸</span>
+                <span className="truncate">Retro Game Repair Shop</span>
+              </div>
+              {isRgrs ? <ToggleRight size={20} className="shrink-0" /> : <ToggleLeft size={20} className="shrink-0" />}
+            </button>
+            
+            {/* RGRS Sub-Toggles */}
+            {isRgrs && onSetRgrsSubBrand && (
+              <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg animate-in slide-in-from-top-2 duration-300">
+                <button 
+                  onClick={() => onSetRgrsSubBrand('funnyplaying')}
+                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsFp ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  Funnyplaying
+                </button>
+                <button 
+                  onClick={() => onSetRgrsSubBrand('hispeedido')}
+                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsHi ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                  Hispeedido
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -173,10 +203,10 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
                 <Info size={14} className="text-blue-500" />
-                {isFunnyplaying ? 'Funnyplaying' : isRgrsHi ? 'RGRS (Hispeedido)' : 'RGRS (Funnyplaying)'} Parts List
+                {isFunnyplaying ? 'Funnyplaying' : (isRgrsHi || isSilent) ? `${isSilent ? 'SilentModding' : 'RGRS'} (Hispeedido)` : 'RGRS (Funnyplaying)'} Parts List
               </div>
               <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
-                {isRgrsHi ? '(Hispeedido V5 variants)' : (isFunnyplaying || isRgrsFp) ? '(based on m2 variants)' : '(inventory check recommended)'}
+                {(isRgrsHi || isSilent) ? '(Hispeedido V5 variants)' : (isFunnyplaying || isRgrsFp) ? '(based on m2 variants)' : '(inventory check recommended)'}
               </span>
             </div>
             
@@ -187,13 +217,13 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                   value: selectedColor.name,
                   suffix: config.isClearShell ? '(Clear)' : '',
                   color: selectedColor.hex,
-                  url: isFunnyplaying ? (selectedColor.shopUrl || 'https://funnyplaying.com/products/housing-for-gba-laminated-screen-kit') : isRgrsHi ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=Hispeedido') : (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=FunnyPlaying'),
+                  url: isSilent ? (selectedColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/shells.html') : isFunnyplaying ? (selectedColor.shopUrl || 'https://funnyplaying.com/products/housing-for-gba-laminated-screen-kit') : isRgrsHi ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=Hispeedido') : (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=FunnyPlaying'),
                   btnLabel: 'Buy Shell',
                   icon: null as React.ReactElement | null
                 },
                 {
                   label: 'IPS Screen Kit',
-                  value: isFunnyplaying ? `3.0" Backlight M2 (${lensColor.name})` : isRgrsHi ? `Hispeedido V5 720x480 (${lensColor.name})` : `FP Backlight Kit`,
+                  value: isFunnyplaying ? `3.0" Backlight M2 (${lensColor.name})` : (isRgrsHi || isSilent) ? `Hispeedido V5 720x480 (${lensColor.name})` : `FP Backlight Kit`,
                   color: lensColor.hex,
                   url: getScreenUrl(),
                   btnLabel: 'Buy Screen',
@@ -201,7 +231,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                 },
                 {
                   label: 'Button Kit',
-                  value: (isFunnyplaying || isRgrsFp || isHiSfc || (isRgrsHi && useCustomButtonsInHiMode)) ? getButtonLabel() : 'GBA Custom Buttons',
+                  value: (isFunnyplaying || isRgrsFp || isHiSfc || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) ? getButtonLabel() : 'GBA Custom Buttons',
                   color: dpadColor.hex,
                   url: getButtonUrl(),
                   btnLabel: 'Buy Buttons',
@@ -212,7 +242,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                   value: startSelectColor.name,
                   suffix: config.isClearButtons ? '(Clear)' : '',
                   color: startSelectColor.hex,
-                  url: isFunnyplaying ? (startSelectColor.shopUrl || 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance') : (isRgrsHi && !useCustomButtonsInHiMode) ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=Hispeedido') : (startSelectColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=FunnyPlaying'),
+                  url: isSilent ? 'https://www.silentmodding.com/en/game-boy-advance/buttons.html' : isFunnyplaying ? (startSelectColor.shopUrl || 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance') : (isRgrsHi && !useCustomButtonsInHiMode) ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=Hispeedido') : (startSelectColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=FunnyPlaying'),
                   btnLabel: 'Buy Membranes',
                   icon: <Layers size={14} />
                 }
@@ -220,11 +250,11 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                 let backgroundStyle: string;
                 const isDpadSfcSet = dpadColor.id.includes('sfc-set');
                 
-                if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || (isRgrsHi && useCustomButtonsInHiMode)) && dpadColor.id.includes('snes-set')) {
+                if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && dpadColor.id.includes('snes-set')) {
                   backgroundStyle = 'linear-gradient(135deg, #6e707c 0%, #6e707c 33%, #8161b1 33%, #8161b1 66%, #cdc5e6 66%, #cdc5e6 100%)';
-                } else if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || (isRgrsHi && useCustomButtonsInHiMode)) && dpadColor.id.includes('dmg-set')) {
+                } else if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && dpadColor.id.includes('dmg-set')) {
                   backgroundStyle = 'linear-gradient(135deg, #343434 0%, #343434 50%, #e1316a 50%, #e1316a 100%)';
-                } else if (part.label === 'Button Kit' && ((isFunnyplaying || isRgrsFp || (isRgrsHi && useCustomButtonsInHiMode)) && isDpadSfcSet || isHiSfc)) {
+                } else if (part.label === 'Button Kit' && ((isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && isDpadSfcSet || isHiSfc)) {
                   backgroundStyle = 'conic-gradient(#6e707c 0deg 90deg, #3cb6ab 90deg 180deg, #4a83df 180deg 270deg, #fa5949 270deg 360deg)';
                 } else {
                   backgroundStyle = part.color;
