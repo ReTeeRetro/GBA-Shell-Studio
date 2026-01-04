@@ -7,14 +7,14 @@ import { ShopModeCard } from './components/ShopModeCard';
 import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
-import { useGbaState } from './hooks/useGbaState';
+import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { serializeConfig } from './utils/urlUtils';
 import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
-function App() {
-  const { config, setters, randomize, reset, undo, redo, canUndo, canRedo } = useGbaState();
+const AppContent = () => {
+  const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();
   const svgRef = useRef<SVGSVGElement>(null);
   
   // Default to pinned on mobile (<1024px) for better UX
@@ -253,11 +253,7 @@ function App() {
               />
             </div>
 
-            <ShopModeCard 
-              config={config} 
-              onSetShopMode={setters.setShopMode}
-              onSetRgrsSubBrand={setters.setRgrsSubBrand}
-            />
+            <ShopModeCard />
 
             <AiCard onOpenAi={handleOpenAi} />
             <ExampleAiImages />
@@ -266,43 +262,7 @@ function App() {
 
           {/* Right: Controls */}
           <div className="space-y-6">
-            <ColorPicker
-              selectedColor={config.selectedColor}
-              onSelectColor={setters.setSelectedColor}
-              dpadColor={config.dpadColor}
-              onSelectDpadColor={setters.setDpadColor}
-              aButtonColor={config.aButtonColor}
-              onSelectAButtonColor={setters.setAButtonColor}
-              bButtonColor={config.bButtonColor}
-              onSelectBButtonColor={setters.setBButtonColor}
-              startSelectColor={config.startSelectColor}
-              onSelectStartSelectColor={setters.setStartSelectColor}
-              
-              lButtonColor={config.lButtonColor}
-              onSelectLButtonColor={setters.setLButtonColor}
-              rButtonColor={config.rButtonColor}
-              onSelectRButtonColor={setters.setRButtonColor}
-              leftBumperColor={config.leftBumperColor}
-              onSelectLeftBumperColor={setters.setLeftBumperColor}
-              rightBumperColor={config.rightBumperColor}
-              onSelectRightBumperColor={setters.setRightBumperColor}
-              onSelectAllButtonsColor={setters.setAllButtonsColor}
-
-              lensColor={config.lensColor}
-              onSelectLensColor={setters.setLensColor}
-              onRandomize={randomize}
-              isClearShell={config.isClearShell}
-              onToggleClearShell={() => setters.setIsClearShell(!config.isClearShell)}
-              isClearButtons={config.isClearButtons}
-              onToggleClearButtons={() => setters.setIsClearButtons(!config.isClearButtons)}
-              isScreenOn={config.isScreenOn}
-              onToggleScreenOn={() => setters.setIsScreenOn(!config.isScreenOn)}
-              shopMode={config.shopMode}
-              rgrsSubBrand={config.rgrsSubBrand}
-              useCustomButtonsInHiMode={config.useCustomButtonsInHiMode}
-              onToggleCustomButtonsInHiMode={setters.setUseCustomButtonsInHiMode}
-            />
-
+            <ColorPicker />
             <InfoCard />
           </div>
         </div>
@@ -362,6 +322,14 @@ function App() {
         </p>
       </footer>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <GbaProvider>
+      <AppContent />
+    </GbaProvider>
   );
 }
 

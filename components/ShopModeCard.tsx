@@ -1,15 +1,13 @@
 import React from 'react';
 import { ShoppingBag, Info, CheckCircle2, Monitor, Layers, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
-import { GbaConfig, ShopMode, RgrsSubBrand } from '../types';
+import { useGba } from '../contexts/GbaContext';
+import { getPartUrl, getButtonLabel, getScreenLabel } from '../utils/shopUtils';
 
-interface ShopModeCardProps {
-  config: GbaConfig;
-  onSetShopMode: (mode: ShopMode) => void;
-  onSetRgrsSubBrand?: (brand: RgrsSubBrand) => void;
-}
+export const ShopModeCard: React.FC = () => {
+  const { config, setters } = useGba();
+  const { shopMode, rgrsSubBrand, selectedColor, lensColor, dpadColor, startSelectColor, useCustomButtonsInHiMode } = config;
+  const { setShopMode, setRgrsSubBrand } = setters;
 
-export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMode, onSetRgrsSubBrand }) => {
-  const { shopMode, rgrsSubBrand, selectedColor, lensColor, dpadColor, aButtonColor, bButtonColor, startSelectColor, useCustomButtonsInHiMode } = config;
   const isFunnyplaying = shopMode === 'funnyplaying';
   const isRgrs = shopMode === 'rgrs';
   const isSilent = shopMode === 'silentmodding';
@@ -17,99 +15,6 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
   const isRgrsHi = isRgrs && rgrsSubBrand === 'hispeedido';
   const isHiSfc = (isRgrsHi || isSilent) && selectedColor.id.includes('sfc-grey') && !useCustomButtonsInHiMode;
   
-  const utmSource = 'utm_source=gba-shell-studio';
-
-  const appendUtm = (url: string) => {
-    return url.includes('?') ? `${url}&${utmSource}` : `${url}?${utmSource}`;
-  };
-
-  const getScreenUrl = () => {
-    if (isSilent) {
-        if (lensColor.id === 'white') {
-            return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-black-1.html';
-        }
-        if (lensColor.id === 'grey') {
-            return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-dmg.html';
-        }
-        // Black is default
-        return 'https://www.silentmodding.com/en/game-boy-advance-ips-v5-laminated-ips-kit-black.html';
-    }
-
-    if (isRgrs) {
-      if (isRgrsHi) {
-        // Specific variant links for RGRS + Hispeedido
-        if (lensColor.id === 'white') {
-          return 'https://retrogamerepairshop.com/collections/gba-displays/products/game-boy-advance-laminated-720x480-ips-backlight-with-osd?variant=43205883855020';
-        }
-        if (lensColor.id === 'grey') {
-          return 'https://retrogamerepairshop.com/collections/gba-displays/products/game-boy-advance-laminated-720x480-ips-backlight-with-osd?variant=43205883887788';
-        }
-        return 'https://retrogamerepairshop.com/collections/gba-displays/products/game-boy-advance-laminated-720x480-ips-backlight-with-osd?variant=43205883822252';
-      }
-      
-      // Specific variant links for RGRS + Funnyplaying
-      if (lensColor.id === 'white') {
-        return 'https://retrogamerepairshop.com/collections/gba-displays/products/funnyplaying-game-boy-advance-3-0-m2-kit-1?variant=44202716922028';
-      }
-      if (lensColor.id === 'grey') {
-        return 'https://retrogamerepairshop.com/collections/gba-displays/products/funnyplaying-game-boy-advance-3-0-m2-kit-1?variant=44202716987564';
-      }
-      return 'https://retrogamerepairshop.com/collections/gba-displays/products/funnyplaying-game-boy-advance-3-0-m2-kit-1?variant=44202716889260';
-    }
-    
-    if (lensColor.id === 'white') {
-      return 'https://funnyplaying.com/products/3-0-inch-ips-gba-backlight-kit-m2?variant=41746177753149';
-    }
-    if (lensColor.id === 'grey') {
-      return 'https://funnyplaying.com/products/3-0-inch-ips-gba-backlight-kit-m2?variant=41754683932733';
-    }
-    return 'https://funnyplaying.com/products/3-0-inch-ips-gba-backlight-kit-m2?variant=41674027139133';
-  };
-
-  const getButtonUrl = () => {
-    if (isRgrs) {
-      if (isRgrsHi && !useCustomButtonsInHiMode) {
-        // For Hispeedido at RGRS, buttons are included with the shell kit
-        return selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=Hispeedido';
-      }
-      
-      const isMatched = dpadColor.id === aButtonColor.id && aButtonColor.id === bButtonColor.id;
-      if (isMatched && dpadColor.shopUrl) {
-        return dpadColor.shopUrl;
-      }
-      return 'https://retrogamerepairshop.com/collections/gba-buttons?filter.p.vendor=FunnyPlaying';
-    }
-
-    if (isSilent) {
-        if (!useCustomButtonsInHiMode) {
-            // Included in shell kit usually, or link to shell page
-            return selectedColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/shells.html';
-        }
-        // If unlocked to use FP buttons, try to link to them if available, or just generic
-        return dpadColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/buttons.html';
-    }
-    
-    if (dpadColor.id === 'fp-btn-snes-set') return 'https://funnyplaying.com/products/agb-custom-buttons?variant=32905308110909';
-    if (dpadColor.id === 'fp-btn-dmg-set') return 'https://funnyplaying.com/products/agb-custom-buttons?variant=40576180322365';
-    
-    const isMatched = dpadColor.id === aButtonColor.id && aButtonColor.id === bButtonColor.id;
-    if (isMatched && dpadColor.shopUrl) {
-      return dpadColor.shopUrl;
-    }
-    return "https://funnyplaying.com/products/gba-custom-buttons";
-  };
-
-  const getButtonLabel = () => {
-    if (dpadColor.id.includes('snes-set')) return 'SNES Style Mix';
-    if (dpadColor.id.includes('dmg-set')) return 'DMG Style Mix';
-    if (dpadColor.id.includes('sfc-set')) return 'SFC Style Mix';
-    
-    if (isHiSfc) return 'SFC Style Mix';
-
-    const isMatched = dpadColor.id === aButtonColor.id && aButtonColor.id === bButtonColor.id;
-    return isMatched ? dpadColor.name : 'Mixed Colors';
-  };
-
   const getContrastingIconClass = (hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -145,7 +50,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
         {/* Toggle Group - Horizontal Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
           <button
-              onClick={() => onSetShopMode(isSilent ? null : 'silentmodding')}
+              onClick={() => setShopMode(isSilent ? null : 'silentmodding')}
               className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isSilent ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               <div className="flex items-center gap-2 truncate">
@@ -156,7 +61,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
           </button>
 
           <button
-            onClick={() => onSetShopMode(isFunnyplaying ? null : 'funnyplaying')}
+            onClick={() => setShopMode(isFunnyplaying ? null : 'funnyplaying')}
             className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isFunnyplaying ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
           >
             <div className="flex items-center gap-2 truncate">
@@ -168,7 +73,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
 
           <div className="flex flex-col gap-2">
             <button
-              onClick={() => onSetShopMode(isRgrs ? null : 'rgrs')}
+              onClick={() => setShopMode(isRgrs ? null : 'rgrs')}
               className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isRgrs ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
             >
               <div className="flex items-center gap-2 truncate">
@@ -179,16 +84,16 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
             </button>
             
             {/* RGRS Sub-Toggles */}
-            {isRgrs && onSetRgrsSubBrand && (
+            {isRgrs && (
               <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg animate-in slide-in-from-top-2 duration-300">
                 <button 
-                  onClick={() => onSetRgrsSubBrand('funnyplaying')}
+                  onClick={() => setRgrsSubBrand('funnyplaying')}
                   className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsFp ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   Funnyplaying
                 </button>
                 <button 
-                  onClick={() => onSetRgrsSubBrand('hispeedido')}
+                  onClick={() => setRgrsSubBrand('hispeedido')}
                   className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsHi ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   Hispeedido
@@ -217,23 +122,23 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                   value: selectedColor.name,
                   suffix: config.isClearShell ? '(Clear)' : '',
                   color: selectedColor.hex,
-                  url: isSilent ? (selectedColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/shells.html') : isFunnyplaying ? (selectedColor.shopUrl || 'https://funnyplaying.com/products/housing-for-gba-laminated-screen-kit') : isRgrsHi ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=Hispeedido') : (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-shells?filter.p.vendor=FunnyPlaying'),
+                  url: getPartUrl('shell', config),
                   btnLabel: 'Buy Shell',
                   icon: null as React.ReactElement | null
                 },
                 {
                   label: 'IPS Screen Kit',
-                  value: isFunnyplaying ? `3.0" Backlight M2 (${lensColor.name})` : (isRgrsHi || isSilent) ? `Hispeedido V5 720x480 (${lensColor.name})` : `FP Backlight Kit`,
+                  value: getScreenLabel(config),
                   color: lensColor.hex,
-                  url: getScreenUrl(),
+                  url: getPartUrl('screen', config),
                   btnLabel: 'Buy Screen',
                   icon: <Monitor size={14} />
                 },
                 {
                   label: 'Button Kit',
-                  value: (isFunnyplaying || isRgrsFp || isHiSfc || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) ? getButtonLabel() : 'GBA Custom Buttons',
+                  value: getButtonLabel(config),
                   color: dpadColor.hex,
-                  url: getButtonUrl(),
+                  url: getPartUrl('buttons', config),
                   btnLabel: 'Buy Buttons',
                   icon: <CheckCircle2 size={14} />
                 },
@@ -242,7 +147,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                   value: startSelectColor.name,
                   suffix: config.isClearButtons ? '(Clear)' : '',
                   color: startSelectColor.hex,
-                  url: isSilent ? (startSelectColor.shopUrl || 'https://www.silentmodding.com/en/game-boy-advance/buttons.html') : isFunnyplaying ? (startSelectColor.shopUrl || 'https://funnyplaying.com/products/replacement-silicone-pads-for-gameboy-advance') : (isRgrsHi && !useCustomButtonsInHiMode) ? (selectedColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=Hispeedido') : (startSelectColor.shopUrl || 'https://retrogamerepairshop.com/collections/gba-membranes?filter.p.vendor=FunnyPlaying'),
+                  url: getPartUrl('membranes', config),
                   btnLabel: 'Buy Membranes',
                   icon: <Layers size={14} />
                 }
@@ -280,7 +185,7 @@ export const ShopModeCard: React.FC<ShopModeCardProps> = ({ config, onSetShopMod
                       </div>
                     </div>
                     <a 
-                      href={appendUtm(part.url)}
+                      href={part.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition-all border border-slate-200 dark:border-slate-700 shadow-sm"

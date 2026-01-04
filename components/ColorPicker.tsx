@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ColorOption, ShopMode, RgrsSubBrand } from '../types';
+import { ColorOption, ShopMode } from '../types';
+import { useGba } from '../contexts/GbaContext';
 import { 
   SHELL_COLORS, 
   LENS_COLORS, 
@@ -17,41 +18,6 @@ import {
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
 import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
-
-interface ColorPickerProps {
-  selectedColor: ColorOption;
-  onSelectColor: (color: ColorOption) => void;
-  dpadColor: ColorOption;
-  onSelectDpadColor: (color: ColorOption) => void;
-  aButtonColor: ColorOption;
-  onSelectAButtonColor: (color: ColorOption) => void;
-  bButtonColor: ColorOption;
-  onSelectBButtonColor: (color: ColorOption) => void;
-  startSelectColor: ColorOption;
-  onSelectStartSelectColor: (color: ColorOption) => void;
-  lButtonColor: ColorOption;
-  onSelectLButtonColor: (color: ColorOption) => void;
-  rButtonColor: ColorOption;
-  onSelectRButtonColor: (color: ColorOption) => void;
-  leftBumperColor: ColorOption;
-  onSelectLeftBumperColor: (color: ColorOption) => void;
-  rightBumperColor: ColorOption;
-  onSelectRightBumperColor: (color: ColorOption) => void;
-  onSelectAllButtonsColor: (color: ColorOption) => void;
-  lensColor: ColorOption;
-  onSelectLensColor: (color: ColorOption) => void;
-  onRandomize: () => void;
-  isClearShell: boolean;
-  onToggleClearShell: () => void;
-  isClearButtons: boolean;
-  onToggleClearButtons: () => void;
-  isScreenOn: boolean;
-  onToggleScreenOn: () => void;
-  shopMode: ShopMode;
-  rgrsSubBrand: RgrsSubBrand;
-  useCustomButtonsInHiMode: boolean;
-  onToggleCustomButtonsInHiMode: (val: boolean) => void;
-}
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   if (a.id === 'custom' || b.id === 'custom') {
@@ -263,41 +229,11 @@ const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSel
   </div>
 );
 
-export const ColorPicker: React.FC<ColorPickerProps> = ({ 
-  selectedColor, 
-  onSelectColor,
-  dpadColor,
-  onSelectDpadColor,
-  aButtonColor,
-  onSelectAButtonColor,
-  bButtonColor,
-  onSelectBButtonColor,
-  startSelectColor,
-  onSelectStartSelectColor,
-  lButtonColor,
-  onSelectLButtonColor,
-  rButtonColor,
-  onSelectRButtonColor,
-  leftBumperColor,
-  onSelectLeftBumperColor,
-  rightBumperColor,
-  onSelectRightBumperColor,
-  onSelectAllButtonsColor,
-  lensColor,
-  onSelectLensColor,
-  onRandomize,
-  isClearShell,
-  onToggleClearShell,
-  isClearButtons,
-  onToggleClearButtons,
-  isScreenOn,
-  onToggleScreenOn,
-  shopMode,
-  rgrsSubBrand,
-  useCustomButtonsInHiMode,
-  onToggleCustomButtonsInHiMode
-}) => {
+export const ColorPicker: React.FC = () => {
+  const { config, setters, randomize } = useGba();
   const [showIndividualControls, setShowIndividualControls] = useState(false);
+
+  const { shopMode, rgrsSubBrand, useCustomButtonsInHiMode } = config;
 
   const isDirectFunny = shopMode === 'funnyplaying';
   const isRgrsFunny = shopMode === 'rgrs' && rgrsSubBrand === 'funnyplaying';
@@ -317,7 +253,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   const isLockedMode = ((isRgrsHi || isSilent) && !useCustomButtonsInHiMode);
 
   const buttonOptions = isLockedMode
-    ? (selectedColor.id.includes('sfc-grey') ? [{ id: 'hi-sfc-mix', name: 'SFC Mix', hex: '#fa5949' }] : [HISPEEDIDO_DEFAULT_BTN])
+    ? (config.selectedColor.id.includes('sfc-grey') ? [{ id: 'hi-sfc-mix', name: 'SFC Mix', hex: '#fa5949' }] : [HISPEEDIDO_DEFAULT_BTN])
     : isDirectFunny 
       ? FUNNYPLAYING_BUTTON_COLORS 
       : (isRgrsFunny || isRgrsHi)
@@ -337,18 +273,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           : SHELL_COLORS;
 
   const unifiedControlColor = (
-    areColorsEqual(dpadColor, aButtonColor) &&
-    areColorsEqual(aButtonColor, bButtonColor) &&
-    areColorsEqual(bButtonColor, startSelectColor) &&
-    areColorsEqual(startSelectColor, lButtonColor) &&
-    areColorsEqual(lButtonColor, rButtonColor) &&
-    areColorsEqual(rButtonColor, leftBumperColor) &&
-    areColorsEqual(leftBumperColor, rightBumperColor)
-  ) ? dpadColor : null;
+    areColorsEqual(config.dpadColor, config.aButtonColor) &&
+    areColorsEqual(config.aButtonColor, config.bButtonColor) &&
+    areColorsEqual(config.bButtonColor, config.startSelectColor) &&
+    areColorsEqual(config.startSelectColor, config.lButtonColor) &&
+    areColorsEqual(config.lButtonColor, config.rButtonColor) &&
+    areColorsEqual(config.rButtonColor, config.leftBumperColor) &&
+    areColorsEqual(config.leftBumperColor, config.rightBumperColor)
+  ) ? config.dpadColor : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
     if (isLockedMode) return;
-    onSelectAllButtonsColor(color);
+    setters.setAllButtonsColor(color);
   };
 
   return (
@@ -362,12 +298,12 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             Shell Color
             </h2>
             <button
-                onClick={onToggleClearShell}
+                onClick={() => setters.setIsClearShell(!config.isClearShell)}
                 disabled={!!shopMode}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                 title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
             >
-                {isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                {config.isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 Clear Shell
             </button>
         </div>
@@ -377,16 +313,16 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             <ColorButton 
               key={color.id}
               color={color}
-              isSelected={selectedColor.id === color.id}
-              onSelect={onSelectColor}
+              isSelected={config.selectedColor.id === color.id}
+              onSelect={setters.setSelectedColor}
             />
           ))}
           {!shopMode && (
             <ColorButton 
               isCustom
-              isSelected={selectedColor.id === 'custom'}
-              color={selectedColor} 
-              onSelect={onSelectColor}
+              isSelected={config.selectedColor.id === 'custom'}
+              color={config.selectedColor} 
+              onSelect={setters.setSelectedColor}
             />
           )}
         </div>
@@ -408,22 +344,22 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             Screen Lens
           </h2>
           <button
-              onClick={onToggleScreenOn}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              onClick={() => setters.setIsScreenOn(!config.isScreenOn)}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${config.isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
               title="Toggle Screen On/Off"
           >
-              {isScreenOn ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+              {config.isScreenOn ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
               Screen Power
           </button>
         </div>
         
         <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {LENS_COLORS.map((color) => {
-             const isSelected = lensColor.id === color.id;
+             const isSelected = config.lensColor.id === color.id;
              return (
               <button
                 key={color.id}
-                onClick={() => onSelectLensColor(color)}
+                onClick={() => setters.setLensColor(color)}
                 className={`
                   py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-1.5 transition-all duration-200
                   ${isSelected ? 'border-slate-800 dark:border-slate-300 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400'}
@@ -451,12 +387,12 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           </h2>
           <div className="flex items-center gap-2">
               <button
-                  onClick={onToggleClearButtons}
+                  onClick={() => setters.setIsClearButtons(!config.isClearButtons)}
                   disabled={!!shopMode && isLockedMode}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
                   title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
               >
-                  {isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                  {config.isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                   Clear Buttons
               </button>
           </div>
@@ -476,14 +412,14 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                      Locked Set
                   </div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white">
-                     {selectedColor.id.includes('sfc-grey') ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
+                     {config.selectedColor.id.includes('sfc-grey') ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-0.5">Shell kits include fixed color buttons.</p>
                </div>
             </div>
             
             <button
-                onClick={() => onToggleCustomButtonsInHiMode(true)}
+                onClick={() => setters.setUseCustomButtonsInHiMode(true)}
                 className="w-full text-[10px] font-bold px-3 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
             >
                 <Unlock size={14} />
@@ -494,7 +430,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           <div className="animate-in fade-in slide-in-from-top-2 duration-300">
             {((isRgrsHi || isSilent) && useCustomButtonsInHiMode) && (
               <button
-                  onClick={() => onToggleCustomButtonsInHiMode(false)}
+                  onClick={() => setters.setUseCustomButtonsInHiMode(false)}
                   className="mb-4 w-full text-[10px] font-bold px-3 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 shadow-sm"
               >
                   <Lock size={14} />
@@ -547,14 +483,14 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                   </p>
                 </div>
                 
-                <ColorSection label="D-Pad" selectedColor={dpadColor} onSelect={onSelectDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Button A" selectedColor={aButtonColor} onSelect={onSelectAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Button B" selectedColor={bButtonColor} onSelect={onSelectBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Start / Select" selectedColor={startSelectColor} onSelect={onSelectStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
-                <ColorSection label="L Button (Trigger)" selectedColor={lButtonColor} onSelect={onSelectLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="R Button (Trigger)" selectedColor={rightBumperColor} onSelect={onSelectRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Left Bumper (Side)" selectedColor={leftBumperColor} onSelect={onSelectLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Right Bumper (Side)" selectedColor={rightBumperColor} onSelect={onSelectRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="D-Pad" selectedColor={config.dpadColor} onSelect={setters.setDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Button A" selectedColor={config.aButtonColor} onSelect={setters.setAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Button B" selectedColor={config.bButtonColor} onSelect={setters.setBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Start / Select" selectedColor={config.startSelectColor} onSelect={setters.setStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
+                <ColorSection label="L Button (Trigger)" selectedColor={config.lButtonColor} onSelect={setters.setLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="R Button (Trigger)" selectedColor={config.rButtonColor} onSelect={setters.setRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Left Bumper (Side)" selectedColor={config.leftBumperColor} onSelect={setters.setLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Right Bumper (Side)" selectedColor={config.rightBumperColor} onSelect={setters.setRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
               </div>
             )}
           </div>
@@ -563,7 +499,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
       <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
         <button
-          onClick={onRandomize}
+          onClick={randomize}
           className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent"
         >
           <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
