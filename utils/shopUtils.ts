@@ -1,4 +1,4 @@
-import { GbaConfig, ColorOption } from '../types';
+import { GbaConfig } from '../types';
 
 const UTM_SOURCE = 'utm_source=gba-shell-studio';
 
