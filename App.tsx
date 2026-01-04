@@ -7,11 +7,11 @@ import { ShopModeCard } from './components/ShopModeCard';
 import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
+import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
-import { serializeConfig } from './utils/urlUtils';
-import { Download, RotateCcw, Pin, Share2, Check, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
 const AppContent = () => {
   const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();
@@ -25,8 +25,8 @@ const AppContent = () => {
     return false;
   });
 
-  const [shareText, setShareText] = useState('Share');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' || 
@@ -55,7 +55,10 @@ const AppContent = () => {
   // Close modal on escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowResetConfirm(false);
+      if (e.key === 'Escape') {
+        setShowResetConfirm(false);
+        setIsShareModalOpen(false);
+      }
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
@@ -93,27 +96,6 @@ const AppContent = () => {
   const confirmReset = () => {
     reset();
     setShowResetConfirm(false);
-  };
-
-  const handleShare = async () => {
-    const queryString = serializeConfig(config);
-    const url = new URL(window.location.href);
-    url.search = queryString;
-    const finalUrl = url.toString();
-    
-    try {
-      window.history.pushState({ path: finalUrl }, '', finalUrl);
-    } catch (e) {
-      console.warn('Unable to update URL history', e);
-    }
-
-    try {
-      await navigator.clipboard.writeText(finalUrl);
-      setShareText('Copied!');
-      setTimeout(() => setShareText('Share'), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
   };
 
   return (
@@ -165,16 +147,12 @@ const AppContent = () => {
             </button>
 
             <button
-              onClick={handleShare}
-              className={`flex items-center gap-2 px-2 sm:px-3 py-1.5 border rounded-full transition-all shadow-sm
-                ${shareText === 'Copied!' 
-                  ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
-                  : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
-                }`}
-              title="Share Design URL"
+              onClick={() => setIsShareModalOpen(true)}
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-full transition-all shadow-sm"
+              title="Share Design"
             >
-              {shareText === 'Copied!' ? <Check size={16} /> : <Share2 size={16} />}
-              <span className="hidden md:inline">{shareText}</span>
+              <Share2 size={16} />
+              <span className="hidden md:inline">Share</span>
             </button>
 
             <button
@@ -267,6 +245,13 @@ const AppContent = () => {
           </div>
         </div>
       </main>
+
+      {/* Share Modal */}
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+        config={config} 
+      />
 
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
