@@ -37,7 +37,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
   };
 
   const handleSocialClick = (platform: string) => {
-    const text = "Check out my custom GBA design!";
+    const text = "Check out my custom GBA design! #gbashellstudio";
     const encodedUrl = encodeURIComponent(generatedUrl);
     const encodedText = encodeURIComponent(text);
 
@@ -46,6 +46,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
     switch (platform) {
       case 'facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+        break;
+      case 'x':
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
         break;
       case 'reddit':
         shareUrl = `https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`;
@@ -91,7 +94,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
         <div className="p-6 space-y-6">
           
           {/* Social Grid */}
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
             <SocialButton 
               label="Facebook" 
               color="bg-[#1877F2]" 
@@ -103,6 +106,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
               color="bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" 
               onClick={() => handleSocialClick('instagram')}
               icon={<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11A4.5 4.5 0 0 1 17.5 22h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z" />}
+            />
+            <SocialButton 
+              label="X" 
+              color="bg-black" 
+              onClick={() => handleSocialClick('x')}
+              icon={<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />}
             />
             <SocialButton 
               label="Reddit" 
