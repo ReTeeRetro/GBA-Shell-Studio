@@ -175,8 +175,15 @@ export const useGbaState = () => {
   const setters = {
     setSelectedColor: (val: ColorOption) => {
         let updates: Partial<GbaConfig> = { selectedColor: val };
+        
         if (val.id !== 'custom') {
-          updates.isClearShell = !!val.forcedClear;
+          // In Shop Mode, transparency is strict based on the part.
+          // In default mode, preserve user preference unless forced by a specific preset.
+          if (config.shopMode) {
+            updates.isClearShell = !!val.forcedClear;
+          } else if (val.forcedClear) {
+            updates.isClearShell = true;
+          }
         }
 
         let nextConfig = { ...config, ...updates };
