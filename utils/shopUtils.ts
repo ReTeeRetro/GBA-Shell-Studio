@@ -1,4 +1,4 @@
-import { GbaConfig } from '../types';
+import { GbaConfig, ColorOption } from '../types';
 
 const UTM_SOURCE = 'utm_source=gba-shell-studio';
 
@@ -127,4 +127,18 @@ export const getScreenLabel = (config: GbaConfig): string => {
     if (isFunnyplaying) return `3.0" Backlight M2 (${lensColor.name})`;
     if (isRgrsHi || isSilent) return `Hispeedido V5 720x480 (${lensColor.name})`;
     return `FP Backlight Kit`;
+};
+
+export const getButtonColorStyle = (color: ColorOption): React.CSSProperties => {
+  if (color.id.includes('snes-set')) {
+    return { background: 'linear-gradient(135deg, #6e707c 0%, #6e707c 33%, #8161b1 33%, #8161b1 66%, #cdc5e6 66%, #cdc5e6 100%)' };
+  }
+  if (color.id.includes('dmg-set')) {
+    return { background: 'linear-gradient(135deg, #343434 0%, #343434 50%, #e1316a 50%, #e1316a 100%)' };
+  }
+  // Matches both 'sfc-set' and 'hi-sfc-mix' (which is the logic for Hispeedido locked sets)
+  if (color.id.includes('sfc-set') || color.id.includes('sfc-mix')) {
+    return { background: 'conic-gradient(#6e707c 0deg 90deg, #3cb6ab 90deg 180deg, #4a83df 180deg 270deg, #fa5949 270deg 360deg)' };
+  }
+  return { backgroundColor: color.hex };
 };

@@ -17,6 +17,7 @@ import {
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM
 } from '../constants';
+import { getButtonColorStyle } from '../utils/shopUtils';
 import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
@@ -139,22 +140,6 @@ const ColorButton: React.FC<ColorButtonProps> = ({
 
   if (!color) return null;
 
-  // Handle mixed set backgrounds
-  let backgroundStyle: React.CSSProperties = { backgroundColor: color.hex };
-  if (color.id.includes('snes-set')) {
-    backgroundStyle = { 
-        background: 'linear-gradient(135deg, #6e707c 0%, #6e707c 33%, #8161b1 33%, #8161b1 66%, #cdc5e6 66%, #cdc5e6 100%)' 
-    };
-  } else if (color.id.includes('dmg-set')) {
-    backgroundStyle = { 
-        background: 'linear-gradient(135deg, #343434 0%, #343434 50%, #e1316a 50%, #e1316a 100%)' 
-    };
-  } else if (color.id.includes('sfc-set')) {
-    backgroundStyle = {
-        background: 'conic-gradient(#6e707c 0deg 90deg, #3cb6ab 90deg 180deg, #4a83df 180deg 270deg, #fa5949 270deg 360deg)'
-    };
-  }
-
   return (
     <button
       onClick={() => onSelect(color)}
@@ -166,7 +151,7 @@ const ColorButton: React.FC<ColorButtonProps> = ({
           ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 relative
           ${isSelected ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
         `}
-        style={backgroundStyle}
+        style={getButtonColorStyle(color)}
       >
         {color.shopUrl && (
           <div className="absolute -top-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-700 shadow-sm">

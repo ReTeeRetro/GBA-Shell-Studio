@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShoppingBag, Info, CheckCircle2, Monitor, Layers, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useGba } from '../contexts/GbaContext';
-import { getPartUrl, getButtonLabel, getScreenLabel } from '../utils/shopUtils';
+import { getPartUrl, getButtonLabel, getScreenLabel, getButtonColorStyle } from '../utils/shopUtils';
 
 export const ShopModeCard: React.FC = () => {
   const { config, setters } = useGba();
@@ -13,7 +13,6 @@ export const ShopModeCard: React.FC = () => {
   const isSilent = shopMode === 'silentmodding';
   const isRgrsFp = isRgrs && rgrsSubBrand === 'funnyplaying';
   const isRgrsHi = isRgrs && rgrsSubBrand === 'hispeedido';
-  const isHiSfc = (isRgrsHi || isSilent) && selectedColor.id.includes('sfc-grey') && !useCustomButtonsInHiMode;
   
   const getContrastingIconClass = (hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -121,7 +120,7 @@ export const ShopModeCard: React.FC = () => {
                   label: 'Housing Shell',
                   value: selectedColor.name,
                   suffix: config.isClearShell ? '(Clear)' : '',
-                  color: selectedColor.hex,
+                  color: selectedColor,
                   url: getPartUrl('shell', config),
                   btnLabel: 'Buy Shell',
                   icon: null as React.ReactElement | null
@@ -129,7 +128,7 @@ export const ShopModeCard: React.FC = () => {
                 {
                   label: 'IPS Screen Kit',
                   value: getScreenLabel(config),
-                  color: lensColor.hex,
+                  color: lensColor,
                   url: getPartUrl('screen', config),
                   btnLabel: 'Buy Screen',
                   icon: <Monitor size={14} />
@@ -137,7 +136,7 @@ export const ShopModeCard: React.FC = () => {
                 {
                   label: 'Button Kit',
                   value: getButtonLabel(config),
-                  color: dpadColor.hex,
+                  color: dpadColor,
                   url: getPartUrl('buttons', config),
                   btnLabel: 'Buy Buttons',
                   icon: <CheckCircle2 size={14} />
@@ -146,33 +145,22 @@ export const ShopModeCard: React.FC = () => {
                   label: 'Silicone Pads',
                   value: startSelectColor.name,
                   suffix: config.isClearButtons ? '(Clear)' : '',
-                  color: startSelectColor.hex,
+                  color: startSelectColor,
                   url: getPartUrl('membranes', config),
                   btnLabel: 'Buy Membranes',
                   icon: <Layers size={14} />
                 }
               ].map((part, idx) => {
-                let backgroundStyle: string;
-                const isDpadSfcSet = dpadColor.id.includes('sfc-set');
-                
-                if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && dpadColor.id.includes('snes-set')) {
-                  backgroundStyle = 'linear-gradient(135deg, #6e707c 0%, #6e707c 33%, #8161b1 33%, #8161b1 66%, #cdc5e6 66%, #cdc5e6 100%)';
-                } else if (part.label === 'Button Kit' && (isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && dpadColor.id.includes('dmg-set')) {
-                  backgroundStyle = 'linear-gradient(135deg, #343434 0%, #343434 50%, #e1316a 50%, #e1316a 100%)';
-                } else if (part.label === 'Button Kit' && ((isFunnyplaying || isRgrsFp || ((isRgrsHi || isSilent) && useCustomButtonsInHiMode)) && isDpadSfcSet || isHiSfc)) {
-                  backgroundStyle = 'conic-gradient(#6e707c 0deg 90deg, #3cb6ab 90deg 180deg, #4a83df 180deg 270deg, #fa5949 270deg 360deg)';
-                } else {
-                  backgroundStyle = part.color;
-                }
+                const style = part.label === 'Button Kit' ? getButtonColorStyle(part.color) : { backgroundColor: part.color.hex };
 
                 return (
                   <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-blue-500/20 transition-all">
                     <div className="flex items-center gap-3.5">
                       <div 
                         className="w-9 h-9 rounded-full border border-white dark:border-slate-700 shadow-sm flex items-center justify-center transition-transform group-hover:scale-105 overflow-hidden" 
-                        style={{ background: backgroundStyle }}
+                        style={style}
                       >
-                        {part.icon && React.cloneElement(part.icon as React.ReactElement<any>, { className: getContrastingIconClass(part.color) })}
+                        {part.icon && React.cloneElement(part.icon as React.ReactElement<any>, { className: getContrastingIconClass(part.color.hex) })}
                       </div>
                       <div>
                         <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-widest mb-0.5">
