@@ -5,7 +5,7 @@ import { getPartUrl, getButtonLabel, getScreenLabel, getButtonColorStyle } from 
 
 export const ShopModeCard: React.FC = () => {
   const { config, setters } = useGba();
-  const { shopMode, rgrsSubBrand, selectedColor, lensColor, dpadColor, startSelectColor, useCustomButtonsInHiMode } = config;
+  const { shopMode, rgrsSubBrand, selectedColor, lensColor, dpadColor, startSelectColor } = config;
   const { setShopMode, setRgrsSubBrand } = setters;
 
   const isFunnyplaying = shopMode === 'funnyplaying';
