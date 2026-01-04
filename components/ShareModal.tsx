@@ -57,10 +57,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
         shareUrl = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
         break;
       case 'discord':
-      case 'instagram':
         // These platforms don't support web share URLs well, so we copy to clipboard
         handleCopy();
-        setToastMessage(`Link copied! Ready to paste into ${platform === 'discord' ? 'Discord' : 'Instagram'}.`);
+        setToastMessage(`Link copied! Ready to paste into Discord.`);
         setTimeout(() => setToastMessage(''), 3000);
         return;
     }
@@ -94,18 +93,12 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
         <div className="p-6 space-y-6">
           
           {/* Social Grid */}
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
             <SocialButton 
               label="Facebook" 
               color="bg-[#1877F2]" 
               onClick={() => handleSocialClick('facebook')}
               icon={<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />}
-            />
-            <SocialButton 
-              label="Instagram" 
-              color="bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" 
-              onClick={() => handleSocialClick('instagram')}
-              icon={<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11A4.5 4.5 0 0 1 17.5 22h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z" />}
             />
             <SocialButton 
               label="X" 
