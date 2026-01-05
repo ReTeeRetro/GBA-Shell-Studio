@@ -15,6 +15,7 @@ Lens (Bevel around the screen): ${config.lensColor.name} (Hex: ${config.lensColo
 D-Pad: ${config.dpadColor.name} (Hex: ${config.dpadColor.hex})
 Button A: ${config.aButtonColor.name} (Hex: ${config.aButtonColor.hex})
 Button B: ${config.bButtonColor.name} (Hex: ${config.bButtonColor.hex})
+Power Switch: ${config.powerSwitchColor.name} (Hex: ${config.powerSwitchColor.hex})
 Start/Select: ${config.startSelectColor.name} (Hex: ${config.startSelectColor.hex})
 L Button (Trigger): ${config.lButtonColor.name} (Hex: ${config.lButtonColor.hex})
 R Button (Trigger): ${config.rButtonColor.name} (Hex: ${config.rButtonColor.hex})

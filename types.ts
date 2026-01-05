@@ -20,6 +20,7 @@ export interface GbaConfig {
   aButtonColor: ColorOption;
   bButtonColor: ColorOption;
   startSelectColor: ColorOption;
+  powerSwitchColor: ColorOption;
   lButtonColor: ColorOption;
   rButtonColor: ColorOption;
   leftBumperColor: ColorOption;

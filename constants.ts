@@ -445,5 +445,8 @@ export const SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS: ColorOption[] = [
 ];
 
 // HISPEEDIDO CONSTANTS
-export const HISPEEDIDO_DEFAULT_BTN: ColorOption = { id: 'hi-locked-btn', name: 'Light Grey', hex: '#d9d5d6' };
+export const HISPEEDIDO_DEFAULT_BTN: ColorOption = { id: 'hi-locked-btn', name: 'Light Grey', hex: '#c4bebb' };
 export const HISPEEDIDO_DEFAULT_MEM: ColorOption = { id: 'hi-locked-mem', name: 'Light Grey', hex: '#c9c9c9' };
+
+// BASE UI DEFAULTS
+export const DARK_GREY_BTN: ColorOption = { id: 'default-dark-grey', name: 'Dark Grey', hex: '#686972' };

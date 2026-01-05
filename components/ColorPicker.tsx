@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ColorOption, ShopMode } from '../types';
+// Fixed: Import useGba from GbaContext instead of hooks/useGbaState
 import { useGba } from '../contexts/GbaContext';
 import { 
   SHELL_COLORS, 
@@ -257,11 +258,13 @@ export const ColorPicker: React.FC = () => {
           ? SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
           : SHELL_COLORS;
 
+  // Check if all buttons INCLUDING power switch match
   const unifiedControlColor = (
     areColorsEqual(config.dpadColor, config.aButtonColor) &&
     areColorsEqual(config.aButtonColor, config.bButtonColor) &&
     areColorsEqual(config.bButtonColor, config.startSelectColor) &&
-    areColorsEqual(config.startSelectColor, config.lButtonColor) &&
+    areColorsEqual(config.startSelectColor, config.powerSwitchColor) &&
+    areColorsEqual(config.powerSwitchColor, config.lButtonColor) &&
     areColorsEqual(config.lButtonColor, config.rButtonColor) &&
     areColorsEqual(config.rButtonColor, config.leftBumperColor) &&
     areColorsEqual(config.leftBumperColor, config.rightBumperColor)
@@ -397,7 +400,7 @@ export const ColorPicker: React.FC = () => {
                      Locked Set
                   </div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white">
-                     {config.selectedColor.id.includes('sfc-grey') ? 'SFC Mix Set' : 'Hispeedido Light Grey'}
+                     {config.selectedColor.id.includes('sfc-grey') ? 'SFC Mix Set' : 'Hispeedido Dark Grey'}
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-0.5">Shell kits include fixed color buttons.</p>
                </div>
@@ -471,6 +474,7 @@ export const ColorPicker: React.FC = () => {
                 <ColorSection label="D-Pad" selectedColor={config.dpadColor} onSelect={setters.setDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Button A" selectedColor={config.aButtonColor} onSelect={setters.setAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Button B" selectedColor={config.bButtonColor} onSelect={setters.setBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                <ColorSection label="Power Switch" selectedColor={config.powerSwitchColor} onSelect={setters.setPowerSwitchColor} idPrefix="pwr" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Start / Select" selectedColor={config.startSelectColor} onSelect={setters.setStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
                 <ColorSection label="L Button (Trigger)" selectedColor={config.lButtonColor} onSelect={setters.setLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="R Button (Trigger)" selectedColor={config.rButtonColor} onSelect={setters.setRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />

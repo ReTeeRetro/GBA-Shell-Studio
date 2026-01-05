@@ -17,6 +17,7 @@ import {
   LButtonPath,
   RButtonPath,
   DpadMembraneBase,
+  PowerSwitchButtonPath,
 } from './GbaSvgPaths';
 
 interface GbaPreviewProps {
@@ -25,6 +26,7 @@ interface GbaPreviewProps {
   aButtonColor: ColorOption;
   bButtonColor: ColorOption;
   startSelectColor: ColorOption;
+  powerSwitchColor: ColorOption;
   lButtonColor: ColorOption;
   rButtonColor: ColorOption;
   leftBumperColor: ColorOption;
@@ -47,6 +49,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       aButtonColor,
       bButtonColor,
       startSelectColor,
+      powerSwitchColor,
       lButtonColor,
       rButtonColor,
       leftBumperColor,
@@ -58,7 +61,6 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       isScreenOn = false,
       onToggleScreen,
       shopMode,
-      // isDarkMode is now ignored for the background to preserve clear shell effects
     },
     ref
   ) => {
@@ -118,6 +120,11 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const LENS_Y = 37.7;
     const LED_X = 711 - SHELL_OFFSET_X;
     const LED_Y = 115 - SHELL_OFFSET_Y;
+
+    const POWER_SWITCH_BTN_X = 10;
+    const POWER_SWITCH_BTN_Y = 210;
+    const POWER_SWITCH_BTN_SCALE = 0.62;
+    const POWER_SWITCH_BTN_ROTATION = 20;
 
     const showTexture = true;
     const showShading = true;
@@ -494,15 +501,10 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             {isClearShell && (
               <>
                 <g id="internal-speaker-layer" transform="translate(680, 315)" opacity={0.65} pointerEvents="none">
-                  {/* Speaker Rim */}
                   <circle cx="0" cy="0" r="46" fill="#9ca3af" />
-                  {/* Speaker Cone */}
                   <circle cx="0" cy="0" r="40" fill="#4b5563" />
-                  {/* Inner Cone Shading */}
                   <circle cx="0" cy="0" r="26" fill="#374151" opacity="0.5" />
-                  {/* Dust Cap */}
                   <circle cx="0" cy="0" r="14" fill="#6b7280" />
-                  {/* Glint */}
                   <ellipse cx="-5" cy="-5" rx="5" ry="3" fill="white" opacity="0.2" transform="rotate(-45)" />
                 </g>
                 <g
@@ -515,6 +517,21 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
               </>
             )}
+
+            <g
+              id="power-switch-button"
+              transform={`
+                translate(${POWER_SWITCH_BTN_X}, ${POWER_SWITCH_BTN_Y})
+                rotate(${POWER_SWITCH_BTN_ROTATION})
+                scale(${POWER_SWITCH_BTN_SCALE})
+              `}
+              opacity={buttonOpacity}
+              style={{ color: powerSwitchColor.hex }}
+              pointerEvents="none"
+            >
+              <PowerSwitchButtonPath />
+            </g>
+
 
             <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1 }}>
               <ShellPaths />

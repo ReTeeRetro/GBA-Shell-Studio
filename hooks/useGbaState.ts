@@ -14,7 +14,8 @@ import {
   SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
   SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
   HISPEEDIDO_DEFAULT_BTN,
-  HISPEEDIDO_DEFAULT_MEM
+  HISPEEDIDO_DEFAULT_MEM,
+  DARK_GREY_BTN
 } from '../constants';
 import { deserializeConfig } from '../utils/urlUtils';
 
@@ -58,8 +59,6 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
   const isRgrsHi = isRgrs && next.rgrsSubBrand === 'hispeedido';
 
   // 2. Transparency Logic
-  // If in a shop mode, transparency is strictly dictated by the selected part's properties.
-  // In custom mode, we prefer the user's toggle, unless the specific color forces it (like 'Clear Orange')
   if (next.shopMode) {
     next.isClearShell = !!next.selectedColor.forcedClear;
   } else {
@@ -82,10 +81,11 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
        next.rButtonColor = { ...sfcGrey, id: 'hi-sfc-set-r', name: 'SFC Mix', hex: '#4a83df' };
        next.leftBumperColor = { ...sfcGrey, id: 'hi-sfc-set-lbump', name: 'SFC Mix', hex: '#6e707c' };
        next.rightBumperColor = { ...sfcGrey, id: 'hi-sfc-set-rbump', name: 'SFC Mix', hex: '#6e707c' };
+       next.powerSwitchColor = DARK_GREY_BTN; // SPECIFIC EXCEPTION
        next.startSelectColor = HISPEEDIDO_DEFAULT_MEM;
        next.isClearButtons = false;
     } else {
-       // Lock to Default Grey
+       // Lock to Default: Regular buttons Light Grey, Power Switch Dark Grey
        next.dpadColor = HISPEEDIDO_DEFAULT_BTN;
        next.aButtonColor = HISPEEDIDO_DEFAULT_BTN;
        next.bButtonColor = HISPEEDIDO_DEFAULT_BTN;
@@ -93,14 +93,12 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
        next.rButtonColor = HISPEEDIDO_DEFAULT_BTN;
        next.leftBumperColor = HISPEEDIDO_DEFAULT_BTN;
        next.rightBumperColor = HISPEEDIDO_DEFAULT_BTN;
+       next.powerSwitchColor = DARK_GREY_BTN; // SPECIFIC EXCEPTION
        next.startSelectColor = HISPEEDIDO_DEFAULT_MEM;
        next.isClearButtons = false;
     }
   } else if (next.shopMode) {
       // 4. Shop Inventory Validation
-      // If we switched shops, ensure the selected buttons exist in that shop's inventory.
-      // If not, fall back to a safe default (Original Grey).
-      
       const btnList = getButtonList(next);
       const isCurrentBtnValid = btnList.some(b => b.id === next.dpadColor.id);
       
@@ -113,6 +111,7 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
           next.rButtonColor = defaultBtn;
           next.leftBumperColor = defaultBtn;
           next.rightBumperColor = defaultBtn;
+          next.powerSwitchColor = defaultBtn;
       }
 
       // Check Membranes
@@ -123,7 +122,6 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
           next.startSelectColor = getDefaultMembrane(memList);
       }
       
-      // Sync clear button toggle with membrane if forced
       next.isClearButtons = !!next.startSelectColor.forcedClear;
   }
 
@@ -140,6 +138,7 @@ export interface GbaStateResult {
         setAButtonColor: (val: ColorOption) => void;
         setBButtonColor: (val: ColorOption) => void;
         setStartSelectColor: (val: ColorOption) => void;
+        setPowerSwitchColor: (val: ColorOption) => void;
         setLButtonColor: (val: ColorOption) => void;
         setRButtonColor: (val: ColorOption) => void;
         setLeftBumperColor: (val: ColorOption) => void;
@@ -177,6 +176,7 @@ export const useGbaState = (): GbaStateResult => {
       aButtonColor: initialData.aButtonColor || defaultButtons,
       bButtonColor: initialData.bButtonColor || defaultButtons,
       startSelectColor: initialData.startSelectColor || defaultButtons,
+      powerSwitchColor: initialData.powerSwitchColor || DARK_GREY_BTN,
       lButtonColor: initialData.lButtonColor || defaultButtons,
       rButtonColor: initialData.rButtonColor || defaultButtons,
       leftBumperColor: initialData.leftBumperColor || defaultButtons,
@@ -196,13 +196,9 @@ export const useGbaState = (): GbaStateResult => {
   const [future, setFuture] = useState<GbaConfig[]>([]);
 
   const updateConfig = useCallback((partialNext: Partial<GbaConfig>) => {
-    // 1. Create proposed config
     const proposed = { ...config, ...partialNext };
-    
-    // 2. Run through constraint solver
     const validated = deriveValidConfig(proposed);
 
-    // 3. Update State
     setPast((p) => [...p.slice(-49), config]);
     setFuture([]);
     setConfig(validated);
@@ -228,7 +224,6 @@ export const useGbaState = (): GbaStateResult => {
     setConfig(next);
   }, [config, future]);
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
@@ -251,13 +246,12 @@ export const useGbaState = (): GbaStateResult => {
     setAButtonColor: (val: ColorOption) => updateConfig({ aButtonColor: val }),
     setBButtonColor: (val: ColorOption) => updateConfig({ bButtonColor: val }),
     setStartSelectColor: (val: ColorOption) => updateConfig({ startSelectColor: val }),
+    setPowerSwitchColor: (val: ColorOption) => updateConfig({ powerSwitchColor: val }),
     setLButtonColor: (val: ColorOption) => updateConfig({ lButtonColor: val }),
     setRButtonColor: (val: ColorOption) => updateConfig({ rButtonColor: val }),
     setLeftBumperColor: (val: ColorOption) => updateConfig({ leftBumperColor: val }),
     setRightBumperColor: (val: ColorOption) => updateConfig({ rightBumperColor: val }),
     setAllButtonsColor: (val: ColorOption) => {
-        // Handle Mixed Sets Logic inside the setter before constraint solver
-        // This is a "macro" action that sets multiple fields
         const updates: Partial<GbaConfig> = {
             dpadColor: val,
             aButtonColor: val,
@@ -267,18 +261,19 @@ export const useGbaState = (): GbaStateResult => {
             leftBumperColor: val,
             rightBumperColor: val,
             startSelectColor: val,
+            powerSwitchColor: val,
         };
 
         if (val.id.includes('snes-set')) {
             updates.dpadColor = { ...val, hex: '#6e707c' };
             updates.leftBumperColor = { ...val, hex: '#6e707c' };
             updates.rightBumperColor = { ...val, hex: '#6e707c' };
+            updates.powerSwitchColor = { ...val, hex: '#6e707c' };
             updates.aButtonColor = { ...val, hex: '#8161b1' };
             updates.bButtonColor = { ...val, hex: '#8161b1' };
             updates.lButtonColor = { ...val, hex: '#cdc5e6' };
             updates.rButtonColor = { ...val, hex: '#cdc5e6' };
             
-            // Find appropriate grey membrane
             const memList = getMembraneList({ ...config, ...updates });
             updates.startSelectColor = getDefaultMembrane(memList);
         } else if (val.id.includes('dmg-set')) {
@@ -287,6 +282,7 @@ export const useGbaState = (): GbaStateResult => {
             updates.rButtonColor = { ...val, hex: '#343434' };
             updates.leftBumperColor = { ...val, hex: '#343434' };
             updates.rightBumperColor = { ...val, hex: '#343434' };
+            updates.powerSwitchColor = { ...val, hex: '#343434' };
             updates.aButtonColor = { ...val, hex: '#e1316a' };
             updates.bButtonColor = { ...val, hex: '#e1316a' };
             
@@ -296,6 +292,7 @@ export const useGbaState = (): GbaStateResult => {
             updates.dpadColor = { ...val, hex: '#6e707c' };
             updates.leftBumperColor = { ...val, hex: '#6e707c' };
             updates.rightBumperColor = { ...val, hex: '#6e707c' };
+            updates.powerSwitchColor = { ...val, hex: '#6e707c' };
             updates.aButtonColor = { ...val, hex: '#fa5949' };
             updates.bButtonColor = { ...val, hex: '#fbf265' };
             updates.lButtonColor = { ...val, hex: '#3cb6ab' };
@@ -304,7 +301,6 @@ export const useGbaState = (): GbaStateResult => {
             const memList = getMembraneList({ ...config, ...updates });
             updates.startSelectColor = getDefaultMembrane(memList);
         } else {
-            // For standard colors in Shop Mode, we also need to match membrane
             if (config.shopMode) {
                const memList = getMembraneList(config);
                const match = memList.find(m => m.name.toLowerCase() === val.name.toLowerCase());
@@ -330,11 +326,9 @@ export const useGbaState = (): GbaStateResult => {
             updates.useCustomButtonsInHiMode = false;
         }
         
-        // When switching modes, we need to map the current shell to the new inventory if possible
-        // to prevent invalid IDs. The constraint solver handles validation, but we can help it here.
         let targetShells = SHELL_COLORS;
         if (val === 'funnyplaying') targetShells = FUNNYPLAYING_SHELL_COLORS;
-        else if (val === 'rgrs') targetShells = RGRS_FUNNYPLAYING_SHELL_COLORS; // Default RGRS subbrand
+        else if (val === 'rgrs') targetShells = RGRS_FUNNYPLAYING_SHELL_COLORS;
         else if (val === 'silentmodding') targetShells = SILENTMODDING_HISPEEDIDO_SHELL_COLORS;
 
         const currentHex = config.selectedColor.hex;
@@ -378,10 +372,6 @@ export const useGbaState = (): GbaStateResult => {
     else if (isRgrsHi) shellOptions = RGRS_HISPEEDIDO_SHELL_COLORS;
     else if (isSilent) shellOptions = SILENTMODDING_HISPEEDIDO_SHELL_COLORS;
 
-    // Use helpers to get options, but note that randomize needs to override the current config
-    // temporarily to get the lists for the *target* mode if we were switching modes, 
-    // but here we stay in current mode.
-    
     let btnOptions = getButtonList(config);
     let memOptions = getMembraneList(config);
 
@@ -399,6 +389,7 @@ export const useGbaState = (): GbaStateResult => {
         dpadColor: randomBtn,
         aButtonColor: randomBtn,
         bButtonColor: randomBtn,
+        powerSwitchColor: randomBtn,
         startSelectColor: randomMem,
         lButtonColor: randomBtn,
         rButtonColor: randomBtn,
@@ -423,13 +414,13 @@ export const useGbaState = (): GbaStateResult => {
       }
     }
 
-    // deriveValidConfig will ensure consistency even on reset
     updateConfig({
       selectedColor: SHELL_COLORS[1],
       dpadColor: SHELL_COLORS[4],
       aButtonColor: SHELL_COLORS[4],
       bButtonColor: SHELL_COLORS[4],
       startSelectColor: SHELL_COLORS[4],
+      powerSwitchColor: DARK_GREY_BTN,
       lButtonColor: SHELL_COLORS[4],
       rButtonColor: SHELL_COLORS[4],
       leftBumperColor: SHELL_COLORS[4],

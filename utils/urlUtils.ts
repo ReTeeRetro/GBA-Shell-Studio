@@ -7,6 +7,7 @@ const PARAM_MAP: Record<keyof GbaConfig, string> = {
   aButtonColor: 'btn_a',
   bButtonColor: 'btn_b',
   startSelectColor: 'btn_ss',
+  powerSwitchColor: 'btn_pwr',
   lButtonColor: 'btn_l',
   rButtonColor: 'btn_r',
   leftBumperColor: 'bump_l',
@@ -102,6 +103,7 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   config.aButtonColor = decodeColor(params.get(PARAM_MAP.aButtonColor), allButtonPresets);
   config.bButtonColor = decodeColor(params.get(PARAM_MAP.bButtonColor), allButtonPresets);
   config.startSelectColor = decodeColor(params.get(PARAM_MAP.startSelectColor), allButtonPresets); 
+  config.powerSwitchColor = decodeColor(params.get(PARAM_MAP.powerSwitchColor), allButtonPresets);
   config.lButtonColor = decodeColor(params.get(PARAM_MAP.lButtonColor), allButtonPresets);
   config.rButtonColor = decodeColor(params.get(PARAM_MAP.rButtonColor), allButtonPresets);
   config.leftBumperColor = decodeColor(params.get(PARAM_MAP.leftBumperColor), allButtonPresets);
