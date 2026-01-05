@@ -492,14 +492,28 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             </g>
 
             {isClearShell && (
-              <g
-                id="clear-shell-internals-layer"
-                style={{ mixBlendMode: 'multiply' }}
-                opacity={0.6}
-                pointerEvents="none"
-              >
-                <ClearShellInternals />
-              </g>
+              <>
+                <g id="internal-speaker-layer" transform="translate(680, 315)" opacity={0.65} pointerEvents="none">
+                  {/* Speaker Rim */}
+                  <circle cx="0" cy="0" r="46" fill="#9ca3af" />
+                  {/* Speaker Cone */}
+                  <circle cx="0" cy="0" r="40" fill="#4b5563" />
+                  {/* Inner Cone Shading */}
+                  <circle cx="0" cy="0" r="26" fill="#374151" opacity="0.5" />
+                  {/* Dust Cap */}
+                  <circle cx="0" cy="0" r="14" fill="#6b7280" />
+                  {/* Glint */}
+                  <ellipse cx="-5" cy="-5" rx="5" ry="3" fill="white" opacity="0.2" transform="rotate(-45)" />
+                </g>
+                <g
+                  id="clear-shell-internals-layer"
+                  style={{ mixBlendMode: 'multiply' }}
+                  opacity={0.6}
+                  pointerEvents="none"
+                >
+                  <ClearShellInternals />
+                </g>
+              </>
             )}
 
             <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1 }}>

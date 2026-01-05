@@ -1,3 +1,4 @@
+import React from 'react';
 import { GbaConfig, ColorOption } from '../types';
 
 const UTM_SOURCE = 'utm_source=gba-shell-studio';
