@@ -68,7 +68,7 @@ const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange:
       onChange={handleChange}
       onBlur={handleBlur}
       onClick={(e) => e.stopPropagation()}
-      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-slate-700 rounded px-1 py-0.5 text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white dark:bg-slate-800"
+      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-slate-600 rounded px-1 py-0.5 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-white dark:bg-slate-800 transition-colors shadow-sm"
       spellCheck={false}
     />
   );
@@ -105,7 +105,7 @@ const ColorButton: React.FC<ColorButtonProps> = ({
         <div 
           className={`
             ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 overflow-hidden relative
-            ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-slate-300 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
+            ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-white scale-110 shadow-md' : 'border border-slate-200 dark:border-slate-600 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-400'}
           `}
           style={{ 
             background: isSelected 
@@ -150,13 +150,13 @@ const ColorButton: React.FC<ColorButtonProps> = ({
       <div 
         className={`
           ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 relative
-          ${isSelected ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : 'border border-slate-200 dark:border-slate-700 hover:scale-105'}
+          ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-white scale-110 shadow-md' : 'border border-slate-200 dark:border-slate-600 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-400'}
         `}
         style={getButtonColorStyle(color)}
       >
         {color.shopUrl && (
-          <div className="absolute -top-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-700 shadow-sm">
-            <ShoppingBag size={8} className="text-blue-500" />
+          <div className="absolute -top-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-600 shadow-sm">
+            <ShoppingBag size={8} className="text-slate-500 dark:text-slate-300" />
           </div>
         )}
       </div>
@@ -182,7 +182,7 @@ interface ColorSectionProps {
 
 const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSelect, idPrefix, options, shopMode, disabled }) => (
   <div>
-    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
+    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3 flex items-center gap-2">
       {label}
     </h3>
     <div className={`grid ${(shopMode === 'funnyplaying' || shopMode === 'rgrs' || shopMode === 'silentmodding') ? 'grid-cols-5' : 'grid-cols-6'} gap-2 ${disabled ? 'opacity-50 grayscale pointer-events-none' : ''}`}>
@@ -282,13 +282,13 @@ export const ColorPicker: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-            <span className="w-1 h-6 bg-blue-600 rounded-full inline-block"></span>
+            <span className="w-1 h-6 bg-slate-800 dark:bg-white rounded-full inline-block"></span>
             Shell Color
             </h2>
             <button
                 onClick={() => setters.setIsClearShell(!config.isClearShell)}
                 disabled={!!shopMode}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
                 title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
             >
                 {config.isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -315,8 +315,8 @@ export const ColorPicker: React.FC = () => {
           )}
         </div>
         {shopMode && (
-          <div className="mt-4 p-2.5 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-lg flex items-center gap-2 text-[10px] text-blue-600 dark:text-blue-400 font-medium">
-            <ShoppingBag size={14} />
+          <div className="mt-4 p-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center gap-2 text-[10px] text-slate-600 dark:text-slate-300 font-medium">
+            <ShoppingBag size={14} className="text-slate-500 dark:text-slate-400" />
             Showing {shopMode === 'silentmodding' ? 'SilentModding (EU)' : shopMode} {shopMode === 'rgrs' ? `(${rgrsSubBrand})` : ''} shell inventory.
           </div>
         )}
@@ -333,7 +333,7 @@ export const ColorPicker: React.FC = () => {
           </h2>
           <button
               onClick={() => setters.setIsScreenOn(!config.isScreenOn)}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${config.isScreenOn ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${config.isScreenOn ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
               title="Toggle Screen On/Off"
           >
               {config.isScreenOn ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -350,11 +350,11 @@ export const ColorPicker: React.FC = () => {
                 onClick={() => setters.setLensColor(color)}
                 className={`
                   py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-1.5 transition-all duration-200
-                  ${isSelected ? 'border-slate-800 dark:border-slate-300 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400'}
+                  ${isSelected ? 'border-slate-800 dark:border-slate-100 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10 dark:ring-white/10' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 text-slate-600 dark:text-slate-300'}
                 `}
               >
                 <span 
-                  className="w-3 h-3 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm" 
+                  className="w-3 h-3 shrink-0 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" 
                   style={{ backgroundColor: color.hex }}
                 ></span>
                 <span className="text-[11px] sm:text-sm font-bold truncate">{color.name}</span>
@@ -370,14 +370,14 @@ export const ColorPicker: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
            <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-            <span className="w-1 h-6 bg-slate-800 rounded-full inline-block"></span>
+            <span className="w-1 h-6 bg-slate-800 dark:bg-slate-400 rounded-full inline-block"></span>
             Buttons
           </h2>
           <div className="flex items-center gap-2">
               <button
                   onClick={() => setters.setIsClearButtons(!config.isClearButtons)}
                   disabled={!!shopMode && isLockedMode}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
                   title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
               >
                   {config.isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
@@ -408,7 +408,7 @@ export const ColorPicker: React.FC = () => {
             
             <button
                 onClick={() => setters.setUseCustomButtonsInHiMode(true)}
-                className="w-full text-[10px] font-bold px-3 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
+                className="w-full text-[10px] font-bold px-3 py-2.5 rounded-xl border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
             >
                 <Unlock size={14} />
                 Use Funnyplaying buttons
@@ -419,7 +419,7 @@ export const ColorPicker: React.FC = () => {
             {((isRgrsHi || isSilent) && useCustomButtonsInHiMode) && (
               <button
                   onClick={() => setters.setUseCustomButtonsInHiMode(false)}
-                  className="mb-4 w-full text-[10px] font-bold px-3 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 shadow-sm"
+                  className="mb-4 w-full text-[10px] font-bold px-3 py-2 rounded-lg border transition-all flex items-center justify-center gap-2 uppercase tracking-tight bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 shadow-sm hover:bg-slate-200 dark:hover:bg-slate-700"
               >
                   <Lock size={14} />
                   Switch back to Shell Kit buttons
@@ -463,7 +463,7 @@ export const ColorPicker: React.FC = () => {
             {showIndividualControls && (
               <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-slate-100 dark:border-slate-800 mb-2">
-                  <Info size={14} className="text-blue-500 shrink-0" />
+                  <Info size={14} className="text-slate-500 shrink-0" />
                   <p className="text-[10px] text-slate-500 leading-tight">
                     {shopMode 
                       ? "Individual plastic buttons are locked to sets in Shop Mode. Start/Select membranes are separate parts." 
@@ -489,7 +489,7 @@ export const ColorPicker: React.FC = () => {
       <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
         <button
           onClick={randomize}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent dark:shadow-orange-900/20"
         >
           <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
           Randomize Colors

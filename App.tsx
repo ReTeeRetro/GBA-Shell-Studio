@@ -100,7 +100,7 @@ const AppContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-blue-500/30 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-slate-300 selection:text-slate-900 transition-colors duration-300">
       {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -121,7 +121,7 @@ const AppContent = () => {
                 onClick={undo}
                 disabled={!canUndo}
                 className={`p-1.5 sm:p-2 rounded-full transition-all ${
-                  canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
+                  canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
                 }`}
                 title="Undo (Ctrl+Z)"
               >
@@ -131,7 +131,7 @@ const AppContent = () => {
                 onClick={redo}
                 disabled={!canRedo}
                 className={`p-1.5 sm:p-2 rounded-full transition-all ${
-                  canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-800 cursor-not-allowed'
+                  canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
                 }`}
                 title="Redo (Ctrl+Y)"
               >
@@ -141,7 +141,7 @@ const AppContent = () => {
 
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-1.5 sm:p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="p-1.5 sm:p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -149,7 +149,7 @@ const AppContent = () => {
 
             <button
               onClick={() => setIsShareModalOpen(true)}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
               title="Share Design"
             >
               <Share2 size={16} />
@@ -158,7 +158,7 @@ const AppContent = () => {
 
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
               title="Download PNG"
             >
               <Download size={16} />
@@ -167,7 +167,7 @@ const AppContent = () => {
 
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
               title="Reset to Default"
             >
               <RotateCcw size={16} />
@@ -201,8 +201,8 @@ const AppContent = () => {
                   className={`
                     flex items-center justify-center w-10 h-10 rounded-full shadow-sm border backdrop-blur-md transition-all duration-200
                     ${isPinned 
-                      ? 'bg-blue-600 border-blue-500 text-white shadow-blue-200 ring-2 ring-blue-100 dark:ring-blue-900/50' 
-                      : 'bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600'
+                      ? 'bg-slate-900 border-slate-800 text-white shadow-slate-200 ring-2 ring-slate-200 dark:ring-slate-700' 
+                      : 'bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-100 hover:border-slate-300 dark:hover:border-slate-500'
                     }
                   `}
                   title={isPinned ? "Unpin Viewbox" : "Pin Viewbox to Top"}
@@ -279,7 +279,7 @@ const AppContent = () => {
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={() => setShowResetConfirm(false)}
-                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   Cancel
                 </button>
@@ -304,7 +304,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 2.0.6. Not
+          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 2.0.7. Not
           affiliated with Nintendo.
         </p>
       </footer>

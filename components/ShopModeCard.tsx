@@ -26,7 +26,7 @@ export const ShopModeCard: React.FC = () => {
     <div 
       className={`rounded-2xl border transition-all duration-300 overflow-hidden mt-6 
         ${shopMode 
-          ? 'bg-white dark:bg-slate-900 border-blue-500/30 shadow-xl ring-1 ring-blue-500/10' 
+          ? 'bg-white dark:bg-slate-900 border-slate-400 dark:border-slate-500 shadow-xl ring-1 ring-slate-200 dark:ring-slate-700' 
           : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm'
         }`}
     >
@@ -34,13 +34,13 @@ export const ShopModeCard: React.FC = () => {
       <div className="p-5 md:p-6">
         <div className="mb-6 space-y-2">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 uppercase tracking-wide flex items-center gap-2">
-              <ShoppingBag size={16} className="text-blue-600 dark:text-blue-400" />
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wide flex items-center gap-2">
+              <ShoppingBag size={16} className="text-slate-900 dark:text-slate-100" />
               Shop Mode
             </h3>
           </div>
           
-          <p className="text-sm text-blue-700/80 dark:text-slate-400 max-w-xl leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
             Restrict colors to specific inventory available at online stores. 
             Directly link your design to real parts.
           </p>
@@ -50,7 +50,7 @@ export const ShopModeCard: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
           <button
               onClick={() => setShopMode(isSilent ? null : 'silentmodding')}
-              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isSilent ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isSilent ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
             >
               <div className="flex items-center gap-2 truncate">
                 <span className="text-lg">🇪🇺</span>
@@ -61,7 +61,7 @@ export const ShopModeCard: React.FC = () => {
 
           <button
             onClick={() => setShopMode(isFunnyplaying ? null : 'funnyplaying')}
-            className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isFunnyplaying ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+            className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isFunnyplaying ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
           >
             <div className="flex items-center gap-2 truncate">
               <span className="text-lg">🇨🇳</span>
@@ -73,7 +73,7 @@ export const ShopModeCard: React.FC = () => {
           <div className="flex flex-col gap-2">
             <button
               onClick={() => setShopMode(isRgrs ? null : 'rgrs')}
-              className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isRgrs ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all font-bold text-xs uppercase tracking-wider ${isRgrs ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
             >
               <div className="flex items-center gap-2 truncate">
                 <span className="text-lg">🇺🇸</span>
@@ -84,16 +84,16 @@ export const ShopModeCard: React.FC = () => {
             
             {/* RGRS Sub-Toggles */}
             {isRgrs && (
-              <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg animate-in slide-in-from-top-2 duration-300">
+              <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-lg animate-in slide-in-from-top-2 duration-300 border border-slate-200 dark:border-slate-700">
                 <button 
                   onClick={() => setRgrsSubBrand('funnyplaying')}
-                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsFp ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsFp ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
                 >
                   Funnyplaying
                 </button>
                 <button 
                   onClick={() => setRgrsSubBrand('hispeedido')}
-                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsHi ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`flex-1 px-2 py-1.5 text-[10px] font-bold rounded-md transition-all ${isRgrsHi ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}
                 >
                   Hispeedido
                 </button>
@@ -106,7 +106,7 @@ export const ShopModeCard: React.FC = () => {
           <div className="space-y-5 animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
-                <Info size={14} className="text-blue-500" />
+                <Info size={14} className="text-slate-400" />
                 {isFunnyplaying ? 'Funnyplaying' : (isRgrsHi || isSilent) ? `${isSilent ? 'SilentModding' : 'RGRS'} (Hispeedido)` : 'RGRS (Funnyplaying)'} Parts List
               </div>
               <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
@@ -154,7 +154,7 @@ export const ShopModeCard: React.FC = () => {
                 const style = part.label === 'Button Kit' ? getButtonColorStyle(part.color) : { backgroundColor: part.color.hex };
 
                 return (
-                  <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-blue-500/20 transition-all">
+                  <div key={idx} className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 group hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                     <div className="flex items-center gap-3.5">
                       <div 
                         className="w-9 h-9 rounded-full border border-white dark:border-slate-700 shadow-sm flex items-center justify-center transition-transform group-hover:scale-105 overflow-hidden" 
@@ -176,7 +176,7 @@ export const ShopModeCard: React.FC = () => {
                       href={part.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition-all border border-slate-200 dark:border-slate-700 shadow-sm"
+                      className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-100 dark:hover:text-slate-900 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-lg transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md"
                     >
                       {part.btnLabel}
                       <ExternalLink size={11} className="opacity-50" />
