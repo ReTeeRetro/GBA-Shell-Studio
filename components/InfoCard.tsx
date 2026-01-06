@@ -3,8 +3,8 @@ import React from 'react';
 export const InfoCard: React.FC = () => {
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-      <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-4 uppercase tracking-wide flex items-center gap-2">
-        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-900 text-white text-[10px]">
+      <h3 className="text-sm font-semibold text-orange-600 dark:text-orange-400 mb-4 uppercase tracking-wide flex items-center gap-2">
+        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-orange-600 dark:bg-orange-500 text-white text-[10px] font-bold shadow-sm">
           i
         </span>
         How it works
