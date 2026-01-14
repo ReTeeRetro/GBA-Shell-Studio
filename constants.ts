@@ -103,6 +103,13 @@ export const FUNNYPLAYING_SHELL_COLORS: ColorOption[] = [
     shopUrl: 'https://funnyplaying.com/products/housing-for-gba-laminated-screen-kit?variant=41748357152829'
   },
   {
+    id: 'fp-clear-royal-blue',
+    name: 'Clear Royal Blue',
+    hex: '#0d1cbb',
+    forcedClear: true,
+    shopUrl: 'https://funnyplaying.com/products/housing-for-gba-laminated-screen-kit?variant=41748359217213'
+  },
+  {
     id: 'fp-mirror-clear',
     name: 'Mirror Clear',
     hex: '#ffffff',
@@ -208,7 +215,7 @@ export const RGRS_FUNNYPLAYING_SHELL_COLORS: ColorOption[] = [
     name: 'Mirror Clear',
     hex: '#ffffff',
     forcedClear: true,
-    shopUrl: 'https://retrogamerepairshop.com/collections/gba-shells/products/funnyplaying-game-boy-advance-laminated-ita-ready-shells?variant=43006436966572'
+    shopUrl: 'https://retrogamerepairshop.com/collections/gba-buttons/products/funnyplaying-game-boy-advance-laminated-ita-ready-shells?variant=43006436966572'
   },
   {
     id: 'rgrs-fp-gb-grey',
