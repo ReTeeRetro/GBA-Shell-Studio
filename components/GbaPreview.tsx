@@ -417,7 +417,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             {showTexture && (
               <g
                 filter="url(#plasticGrain)"
-                style={{ mixBlendMode: 'overlay' }}
+                style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
                 opacity="0.3"
               />
             )}
@@ -454,7 +454,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <DpadMembraneBase
                   fill={startSelectColor.hex}
                   filter="url(#plasticGrain)"
-                  style={{ mixBlendMode: 'overlay' }}
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
                   opacity={0.4}
                 />
               )}
@@ -468,8 +468,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                   cy="54"
                   r="55"
                   filter="url(#plasticGrain)"
-                  style={{ mixBlendMode: 'overlay' }}
-                  opacity="0.5"
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
+                  opacity={0.5}
                 />
               )}
             </g>
@@ -480,7 +480,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <StartSelectMembraneBase
                   fill={startSelectColor.hex}
                   filter="url(#plasticGrain)"
-                  style={{ mixBlendMode: 'overlay' }}
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
                   opacity={0.4}
                 />
               )}
@@ -497,7 +497,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 <ABMembraneBase
                   fill={startSelectColor.hex}
                   filter="url(#plasticGrain)"
-                  style={{ mixBlendMode: 'overlay' }}
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
                   opacity={0.4}
                 />
               )}
@@ -514,7 +514,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
                 <g
                   id="clear-shell-internals-layer"
-                  style={{ mixBlendMode: 'multiply' }}
+                  style={{ mixBlendMode: 'multiply', pointerEvents: 'none' }}
                   opacity={0.6}
                   pointerEvents="none"
                 >
@@ -531,14 +531,18 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 scale(${POWER_SWITCH_BTN_SCALE})
               `}
               opacity={buttonOpacity}
-              style={{ color: powerSwitchColor.hex }}
-              pointerEvents="none"
+              style={{ 
+                color: powerSwitchColor.hex,
+                cursor: onToggleScreen ? 'pointer' : 'default'
+              }}
+              onClick={onToggleScreen}
             >
+              <title>Toggle Power</title>
               <PowerSwitchButtonPath />
             </g>
 
 
-            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1 }}>
+            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1, pointerEvents: 'none' }}>
               <ShellPaths />
 
               <g
@@ -574,7 +578,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             </g>
 
             {showShading && (
-              <g filter="url(#vectorShading)" style={{ mixBlendMode: 'hard-light' }} opacity="0.4">
+              <g filter="url(#vectorShading)" style={{ mixBlendMode: 'hard-light', pointerEvents: 'none' }} opacity="0.4">
                 <ShellPaths />
               </g>
             )}
@@ -664,7 +668,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {isClearButtons && showTexture && (
                 <g 
                   filter="url(#plasticGrain)" 
-                  style={{ mixBlendMode: 'overlay' }} 
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} 
                   opacity="0.3"
                 >
                   <DpadPaths />
@@ -672,7 +676,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
 
               {isClearButtons && (
-                  <g opacity="0.3" style={{ mixBlendMode: 'screen' }} fill="#ffffff">
+                  <g opacity="0.3" style={{ mixBlendMode: 'screen' }} fill="#ffffff" pointerEvents="none">
                       <DpadPaths />
                   </g>
               )}
@@ -694,7 +698,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {isClearButtons && showTexture && (
                 <g 
                   filter="url(#plasticGrain)" 
-                  style={{ mixBlendMode: 'overlay' }} 
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} 
                   opacity="0.3"
                 >
                   <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
@@ -709,7 +713,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
 
               {isClearButtons && (
-                <g opacity="0.3" fill="white" style={{ mixBlendMode: 'screen' }}>
+                <g opacity="0.3" fill="white" style={{ mixBlendMode: 'screen' }} pointerEvents="none">
                    <g transform={`translate(${AB_BUTTON_OFFSET_X}, ${AB_BUTTON_OFFSET_Y})`}>
                       <g transform={`translate(${A_BUTTON_OFFSET_X}, ${A_BUTTON_OFFSET_Y})`}><path d="M700 129 A 26 26 0 1 1 700 181 A 26 26 0 1 1 700 129 Z" /></g>
                       <g transform={`translate(${B_BUTTON_OFFSET_X}, ${B_BUTTON_OFFSET_Y})`}><path d="M615 159 A 26 26 0 1 1 615 211 A 26 26 0 1 1 615 159 Z" /></g>
@@ -733,7 +737,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {showTexture && (
                 <g
                   filter="url(#plasticGrain)"
-                  style={{ mixBlendMode: 'overlay' }}
+                  style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
                   opacity="0.4"
                 >
                   <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
@@ -748,7 +752,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               {showShading && (
                 <g
                   filter="url(#dpadShading)"
-                  style={{ mixBlendMode: 'hard-light' }}
+                  style={{ mixBlendMode: 'hard-light', pointerEvents: 'none' }}
                   opacity="0.3"
                 >
                   <g transform={`translate(${SELECT_BUTTON_X}, ${SELECT_BUTTON_Y})`}>
