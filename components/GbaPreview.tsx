@@ -121,8 +121,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const LED_X = 711 - SHELL_OFFSET_X;
     const LED_Y = 115 - SHELL_OFFSET_Y;
 
-    const POWER_SWITCH_BTN_X = 10;
-    const POWER_SWITCH_BTN_Y = 210;
+    // Power switch positioning logic
+    const POWER_SWITCH_BTN_X = isScreenOn ? 20 : 0;
+    const POWER_SWITCH_BTN_Y = isScreenOn ? 215 : 208;
     const POWER_SWITCH_BTN_SCALE = 0.62;
     const POWER_SWITCH_BTN_ROTATION = 20;
 
@@ -196,7 +197,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
         className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"
         style={{
           backgroundColor: '#e2e8f0',
-          backgroundImage: `radial-gradient(#cbd5e1 1.5px, transparent 1.5px)`,
+          // Fixed CSS syntax: radial-gradient must be a string value
+          backgroundImage: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)',
           backgroundSize: '20px 20px',
         }}
       >
@@ -339,6 +341,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               }
               .sheen-fill path, .sheen-fill circle {
                  fill: url(#sheenGradient) !important;
+              }
+              #power-switch-button {
+                transition: transform 0.3s ease-in-out;
               }
             `}
           </style>
