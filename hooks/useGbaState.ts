@@ -19,24 +19,51 @@ import {
 } from '../constants';
 import { deserializeConfig } from '../utils/urlUtils';
 
+// --- COLOR MATCHING HELPERS ---
+
+const hexToRgb = (hex: string) => {
+  const r = parseInt(hex.slice(1, 3), 16) || 0;
+  const g = parseInt(hex.slice(3, 5), 16) || 0;
+  const b = parseInt(hex.slice(5, 7), 16) || 0;
+  return { r, g, b };
+};
+
+const colorDistance = (hex1: string, hex2: string) => {
+  const c1 = hexToRgb(hex1);
+  const c2 = hexToRgb(hex2);
+  // Using weighted distance for better visual matching
+  return Math.sqrt(
+    Math.pow((c1.r - c2.r) * 0.3, 2) +
+    Math.pow((c1.g - c2.g) * 0.59, 2) +
+    Math.pow((c1.b - c2.b) * 0.11, 2)
+  );
+};
+
+const findClosestColor = (targetHex: string, options: ColorOption[]): ColorOption => {
+  if (!options.length) return options[0];
+  return options.reduce((prev, curr) => {
+    return colorDistance(targetHex, curr.hex) < colorDistance(targetHex, prev.hex) ? curr : prev;
+  });
+};
+
 // --- HELPERS FOR CONSTRAINT SOLVER ---
 
 const getMembraneList = (config: GbaConfig) => {
-    const isRgrsFp = config.shopMode === 'rgrs' && (config.rgrsSubBrand === 'funnyplaying' || config.rgrsSubBrand === 'hispeedido');
+    const isRgrs = config.shopMode === 'rgrs';
     const isSilent = config.shopMode === 'silentmodding';
     
     if (isSilent) return SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS;
-    if (isRgrsFp) return RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
+    if (isRgrs) return RGRS_FUNNYPLAYING_MEMBRANE_COLORS;
     if (config.shopMode === 'funnyplaying') return FUNNYPLAYING_MEMBRANE_COLORS;
     return FUNNYPLAYING_MEMBRANE_COLORS; // Default fallback
 };
 
 const getButtonList = (config: GbaConfig) => {
-    const isRgrsFp = config.shopMode === 'rgrs' && (config.rgrsSubBrand === 'funnyplaying' || config.rgrsSubBrand === 'hispeedido');
+    const isRgrs = config.shopMode === 'rgrs';
     const isSilent = config.shopMode === 'silentmodding';
     
     if (isSilent) return SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS;
-    if (isRgrsFp) return RGRS_FUNNYPLAYING_BUTTON_COLORS;
+    if (isRgrs) return RGRS_FUNNYPLAYING_BUTTON_COLORS;
     if (config.shopMode === 'funnyplaying') return FUNNYPLAYING_BUTTON_COLORS;
     return FUNNYPLAYING_BUTTON_COLORS;
 };
@@ -72,8 +99,7 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
 
   if (isHiLocked) {
     if (next.selectedColor.id.includes('sfc-grey')) {
-       // Lock to SFC Mix
-       const sfcGrey = next.selectedColor; // Just need a ref object
+       const sfcGrey = next.selectedColor;
        next.dpadColor = { ...sfcGrey, id: 'hi-sfc-set-dpad', name: 'SFC Mix', hex: '#6e707c' };
        next.aButtonColor = { ...sfcGrey, id: 'hi-sfc-set-a', name: 'SFC Mix', hex: '#fa5949' };
        next.bButtonColor = { ...sfcGrey, id: 'hi-sfc-set-b', name: 'SFC Mix', hex: '#fbf265' };
@@ -81,11 +107,10 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
        next.rButtonColor = { ...sfcGrey, id: 'hi-sfc-set-r', name: 'SFC Mix', hex: '#4a83df' };
        next.leftBumperColor = { ...sfcGrey, id: 'hi-sfc-set-lbump', name: 'SFC Mix', hex: '#6e707c' };
        next.rightBumperColor = { ...sfcGrey, id: 'hi-sfc-set-rbump', name: 'SFC Mix', hex: '#6e707c' };
-       next.powerSwitchColor = DARK_GREY_BTN; // SPECIFIC EXCEPTION
+       next.powerSwitchColor = DARK_GREY_BTN;
        next.startSelectColor = HISPEEDIDO_DEFAULT_MEM;
        next.isClearButtons = false;
     } else {
-       // Lock to Default: Regular buttons Light Grey, Power Switch Dark Grey
        next.dpadColor = HISPEEDIDO_DEFAULT_BTN;
        next.aButtonColor = HISPEEDIDO_DEFAULT_BTN;
        next.bButtonColor = HISPEEDIDO_DEFAULT_BTN;
@@ -93,36 +118,41 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
        next.rButtonColor = HISPEEDIDO_DEFAULT_BTN;
        next.leftBumperColor = HISPEEDIDO_DEFAULT_BTN;
        next.rightBumperColor = HISPEEDIDO_DEFAULT_BTN;
-       next.powerSwitchColor = DARK_GREY_BTN; // SPECIFIC EXCEPTION
+       next.powerSwitchColor = DARK_GREY_BTN;
        next.startSelectColor = HISPEEDIDO_DEFAULT_MEM;
        next.isClearButtons = false;
     }
   } else if (next.shopMode) {
       // 4. Shop Inventory Validation
       const btnList = getButtonList(next);
-      const isCurrentBtnValid = btnList.some(b => b.id === next.dpadColor.id);
+      const isCurrentBtnValid = (id: string) => btnList.some(b => b.id === id);
       
-      if (!isCurrentBtnValid) {
-          const defaultBtn = btnList.find(c => c.name.toLowerCase() === 'original grey') || btnList[2];
-          next.dpadColor = defaultBtn;
-          next.aButtonColor = defaultBtn;
-          next.bButtonColor = defaultBtn;
-          next.lButtonColor = defaultBtn;
-          next.rButtonColor = defaultBtn;
-          next.leftBumperColor = defaultBtn;
-          next.rightBumperColor = defaultBtn;
-          next.powerSwitchColor = defaultBtn;
-      }
+      const fixButton = (color: ColorOption) => isCurrentBtnValid(color.id) ? color : findClosestColor(color.hex, btnList);
+
+      next.dpadColor = fixButton(next.dpadColor);
+      next.aButtonColor = fixButton(next.aButtonColor);
+      next.bButtonColor = fixButton(next.bButtonColor);
+      next.lButtonColor = fixButton(next.lButtonColor);
+      next.rButtonColor = fixButton(next.rButtonColor);
+      next.leftBumperColor = fixButton(next.leftBumperColor);
+      next.rightBumperColor = fixButton(next.rightBumperColor);
+      next.powerSwitchColor = fixButton(next.powerSwitchColor);
 
       // Check Membranes
       const memList = getMembraneList(next);
       const isCurrentMemValid = memList.some(m => m.id === next.startSelectColor.id);
       
       if (!isCurrentMemValid) {
-          next.startSelectColor = getDefaultMembrane(memList);
+          next.startSelectColor = findClosestColor(next.startSelectColor.hex, memList);
       }
       
       next.isClearButtons = !!next.startSelectColor.forcedClear;
+
+      // Lens validation for Shop Mode (ensure no custom lens colors)
+      const isCurrentLensValid = LENS_COLORS.some(l => l.id === next.lensColor.id);
+      if (!isCurrentLensValid) {
+          next.lensColor = findClosestColor(next.lensColor.hex, LENS_COLORS);
+      }
   }
 
   return next;
@@ -307,7 +337,7 @@ export const useGbaState = (): GbaStateResult => {
                if (match) {
                    updates.startSelectColor = match;
                } else {
-                   updates.startSelectColor = getDefaultMembrane(memList);
+                   updates.startSelectColor = findClosestColor(val.hex, memList);
                }
             }
         }
@@ -331,9 +361,26 @@ export const useGbaState = (): GbaStateResult => {
         else if (val === 'rgrs') targetShells = RGRS_FUNNYPLAYING_SHELL_COLORS;
         else if (val === 'silentmodding') targetShells = SILENTMODDING_HISPEEDIDO_SHELL_COLORS;
 
-        const currentHex = config.selectedColor.hex;
-        const matchingShell = targetShells.find(s => s.hex === currentHex) || targetShells[0];
-        updates.selectedColor = matchingShell;
+        // Smart color matching for shell
+        updates.selectedColor = findClosestColor(config.selectedColor.hex, targetShells);
+
+        // Smart color matching for buttons and membranes if exiting custom mode
+        if (val) {
+            const tempConfig = { ...config, ...updates };
+            const targetBtns = getButtonList(tempConfig);
+            const targetMems = getMembraneList(tempConfig);
+
+            updates.dpadColor = findClosestColor(config.dpadColor.hex, targetBtns);
+            updates.aButtonColor = findClosestColor(config.aButtonColor.hex, targetBtns);
+            updates.bButtonColor = findClosestColor(config.bButtonColor.hex, targetBtns);
+            updates.lButtonColor = findClosestColor(config.lButtonColor.hex, targetBtns);
+            updates.rButtonColor = findClosestColor(config.rButtonColor.hex, targetBtns);
+            updates.leftBumperColor = findClosestColor(config.leftBumperColor.hex, targetBtns);
+            updates.rightBumperColor = findClosestColor(config.rightBumperColor.hex, targetBtns);
+            updates.powerSwitchColor = findClosestColor(config.powerSwitchColor.hex, targetBtns);
+            updates.startSelectColor = findClosestColor(config.startSelectColor.hex, targetMems);
+            updates.lensColor = findClosestColor(config.lensColor.hex, LENS_COLORS);
+        }
 
         updateConfig(updates);
     },
@@ -341,9 +388,7 @@ export const useGbaState = (): GbaStateResult => {
         const updates: Partial<GbaConfig> = { rgrsSubBrand: val };
         
         let targetShells = val === 'hispeedido' ? RGRS_HISPEEDIDO_SHELL_COLORS : RGRS_FUNNYPLAYING_SHELL_COLORS;
-        const currentHex = config.selectedColor.hex;
-        const matchingShell = targetShells.find(s => s.hex === currentHex) || targetShells[0];
-        updates.selectedColor = matchingShell;
+        updates.selectedColor = findClosestColor(config.selectedColor.hex, targetShells);
 
         updateConfig(updates);
     },

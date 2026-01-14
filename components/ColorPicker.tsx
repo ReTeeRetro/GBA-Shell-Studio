@@ -28,7 +28,7 @@ const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   return a.id === b.id;
 };
 
-const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange: (c: ColorOption) => void }) => {
+const HexInput = ({ color, onColorChange, className = "" }: { color: ColorOption, onColorChange: (c: ColorOption) => void, className?: string }) => {
   const [value, setValue] = useState(color.hex);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const HexInput = ({ color, onColorChange }: { color: ColorOption, onColorChange:
       onChange={handleChange}
       onBlur={handleBlur}
       onClick={(e) => e.stopPropagation()}
-      className="w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-slate-600 rounded px-1 py-0.5 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-white dark:bg-slate-800 transition-colors shadow-sm"
+      className={`w-16 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-slate-600 rounded px-1 py-0.5 text-slate-700 dark:text-slate-200 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-white dark:bg-slate-800 transition-colors shadow-sm ${className}`}
       spellCheck={false}
     />
   );
@@ -275,6 +275,8 @@ export const ColorPicker: React.FC = () => {
     setters.setAllButtonsColor(color);
   };
 
+  const isLensCustom = config.lensColor.id === 'custom';
+
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-8 transition-colors">
       
@@ -328,7 +330,7 @@ export const ColorPicker: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-            <span className="w-1 h-6 bg-slate-500 rounded-full inline-block"></span>
+            <span className="w-1 h-6 bg-slate-50 rounded-full inline-block"></span>
             Screen Lens
           </h2>
           <button
@@ -341,7 +343,8 @@ export const ColorPicker: React.FC = () => {
           </button>
         </div>
         
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        {/* Responsive grid for Lens: 3-column row for Shop Mode, 2x2 grid for Default Mode to prevent smushing */}
+        <div className={`grid ${shopMode ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
           {LENS_COLORS.map((color) => {
              const isSelected = config.lensColor.id === color.id;
              return (
@@ -349,18 +352,55 @@ export const ColorPicker: React.FC = () => {
                 key={color.id}
                 onClick={() => setters.setLensColor(color)}
                 className={`
-                  py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-1.5 transition-all duration-200
-                  ${isSelected ? 'border-slate-800 dark:border-slate-100 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10 dark:ring-white/10' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 text-slate-600 dark:text-slate-300'}
+                  py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200
+                  ${isSelected ? 'border-slate-800 dark:border-slate-100 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10 dark:ring-white/10' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-400 text-slate-600 dark:text-slate-300'}
                 `}
               >
                 <span 
-                  className="w-3 h-3 shrink-0 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" 
+                  className="w-5 h-5 shrink-0 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" 
                   style={{ backgroundColor: color.hex }}
                 ></span>
-                <span className="text-[11px] sm:text-sm font-bold truncate">{color.name}</span>
+                <span className="text-xs sm:text-sm font-bold truncate">{color.name}</span>
               </button>
              );
           })}
+          
+          {/* Custom Lens Button - Visible only in Default Mode */}
+          {!shopMode && (
+            <div className="relative group h-full">
+              <button
+                className={`
+                  w-full h-full py-2.5 px-2 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200 relative overflow-hidden
+                  ${isLensCustom ? 'border-slate-800 dark:border-slate-100 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white ring-1 ring-slate-800/10 dark:ring-white/10' : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-400 text-slate-600 dark:text-slate-300'}
+                `}
+                style={isLensCustom ? {} : { background: 'conic-gradient(from 180deg at 50% 50%, #FF0000 0deg, #FF8A00 51.43deg, #FFE500 102.86deg, #00FF00 154.29deg, #00A3FF 205.71deg, #0500FF 257.14deg, #AD00FF 308.57deg, #FF00C7 360deg)' }}
+              >
+                <input 
+                  type="color" 
+                  className="absolute inset-0 w-[150%] h-[150%] -top-1/4 -left-1/4 opacity-0 cursor-pointer"
+                  value={isLensCustom ? config.lensColor.hex : '#ffffff'}
+                  onChange={(e) => setters.setLensColor({ id: 'custom', name: 'Custom', hex: e.target.value })}
+                />
+                
+                <div className="pointer-events-none flex items-center justify-center gap-2 w-full">
+                  {isLensCustom ? (
+                     <>
+                      <span 
+                        className="w-5 h-5 shrink-0 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" 
+                        style={{ backgroundColor: config.lensColor.hex }}
+                      ></span>
+                      <HexInput color={config.lensColor} onColorChange={setters.setLensColor} className="!w-14 !px-0" />
+                     </>
+                  ) : (
+                    <>
+                      <Palette size={18} className="text-white drop-shadow-md shrink-0" strokeWidth={2.5} />
+                      <span className="text-xs sm:text-sm font-bold truncate text-white drop-shadow-sm uppercase">Custom</span>
+                    </>
+                  )}
+                </div>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
