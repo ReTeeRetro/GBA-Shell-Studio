@@ -13,7 +13,7 @@ import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
-import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon, Gamepad2 } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
 const AppContent = () => {
   const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();

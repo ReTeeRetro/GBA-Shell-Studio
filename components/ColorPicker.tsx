@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { ColorOption, ShopMode } from '../types';
 // Fixed: Import useGba from GbaContext instead of hooks/useGbaState
 import { useGba } from '../contexts/GbaContext';
-// Fixed: Added missing Layers icon from lucide-react
+// Fixed: Removed unused icon imports
 import { 
   SHELL_COLORS, 
   GBC_SHELL_COLORS,
@@ -24,7 +25,7 @@ import {
   GBC_BUTTON_GREY
 } from '../constants';
 import { getButtonColorStyle } from '../utils/shopUtils';
-import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info, Move, Monitor, Layers } from 'lucide-react';
+import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   if (a.id === 'custom' || b.id === 'custom') {
@@ -436,7 +437,7 @@ export const ColorPicker: React.FC = () => {
                     // Logic to determine if a preset is selected
                     let isSelected = false;
                     if (color.id === 'gbc-logo-multi') {
-                      isSelected = areColorsEqual(config.gbcLogoGameBoyColor, GBC_LOGO_COLORS[1]) && areColorsEqual(config.gbcLogoColorWordColor, GBC_LOGO_COLORS[0]);
+                      isSelected = areColorsEqual(config.gbcLogoGameBoyColor, GBC_LOGO_COLORS[5]) && areColorsEqual(config.gbcLogoColorWordColor, GBC_LOGO_COLORS[0]);
                     } else {
                       isSelected = areColorsEqual(config.gbcLogoGameBoyColor, color) && areColorsEqual(config.gbcLogoColorWordColor, color);
                     }
