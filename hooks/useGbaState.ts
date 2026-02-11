@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
-import { ColorOption, GbaConfig, ShopMode, RgrsSubBrand } from '../types';
+import { ColorOption, GbaConfig, ShopMode, RgrsSubBrand, ConsoleType } from '../types';
 import { 
   SHELL_COLORS, 
+  GBC_SHELL_COLORS,
   LENS_COLORS, 
+  GBC_LOGO_COLORS,
   FUNNYPLAYING_SHELL_COLORS, 
   FUNNYPLAYING_BUTTON_COLORS, 
   FUNNYPLAYING_MEMBRANE_COLORS, 
@@ -15,13 +17,15 @@ import {
   SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
   HISPEEDIDO_DEFAULT_BTN,
   HISPEEDIDO_DEFAULT_MEM,
-  DARK_GREY_BTN
+  DARK_GREY_BTN,
+  GBC_BUTTON_GREY
 } from '../constants';
 import { deserializeConfig } from '../utils/urlUtils';
 
 // --- COLOR MATCHING HELPERS ---
 
 const hexToRgb = (hex: string) => {
+  if (hex.startsWith('url')) return { r: 128, g: 128, b: 128 }; // Dummy for gradient
   const r = parseInt(hex.slice(1, 3), 16) || 0;
   const g = parseInt(hex.slice(3, 5), 16) || 0;
   const b = parseInt(hex.slice(5, 7), 16) || 0;
@@ -155,6 +159,13 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
       }
   }
 
+  // 5. GBC Rules
+  if (next.consoleType === 'gbc') {
+    // Disable clear options for GBC
+    next.isClearShell = false;
+    next.isClearButtons = false;
+  }
+
   return next;
 };
 
@@ -163,6 +174,7 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
 export interface GbaStateResult {
     config: GbaConfig;
     setters: {
+        setConsoleType: (val: ConsoleType) => void;
         setSelectedColor: (val: ColorOption) => void;
         setDpadColor: (val: ColorOption) => void;
         setAButtonColor: (val: ColorOption) => void;
@@ -175,12 +187,17 @@ export interface GbaStateResult {
         setRightBumperColor: (val: ColorOption) => void;
         setAllButtonsColor: (val: ColorOption) => void;
         setLensColor: (val: ColorOption) => void;
+        setGbcLogoGameBoyColor: (val: ColorOption) => void;
+        setGbcLogoColorWordColor: (val: ColorOption) => void;
+        setGbcLogoColor: (val: ColorOption) => void;
         setIsClearShell: (val: boolean) => void;
         setIsClearButtons: (val: boolean) => void;
         setIsScreenOn: (val: boolean) => void;
         setShopMode: (val: ShopMode) => void;
         setRgrsSubBrand: (val: RgrsSubBrand) => void;
         setUseCustomButtonsInHiMode: (val: boolean) => void;
+        setGbcLensOffset: (val: { x: number; y: number }) => void;
+        setGbcScreenOffset: (val: { x: number; y: number }) => void;
     };
     randomize: () => void;
     reset: () => void;
@@ -195,12 +212,15 @@ export const useGbaState = (): GbaStateResult => {
   const defaultShell = SHELL_COLORS[1]; // Indigo
   const defaultButtons = SHELL_COLORS[4]; // Grey
   const defaultLens = LENS_COLORS[0]; // Black
+  const defaultGbcLogoGameBoy = GBC_LOGO_COLORS[5]; // Standard Grey
+  const defaultGbcLogoColor = GBC_LOGO_COLORS[0]; // Multi
 
   const getInitialConfig = (): GbaConfig => {
     const initialData = typeof window !== 'undefined' ? deserializeConfig(window.location.search) : {};
     const sMode = initialData.shopMode || null;
     
     return deriveValidConfig({
+      consoleType: initialData.consoleType || 'gba',
       selectedColor: initialData.selectedColor || defaultShell,
       dpadColor: initialData.dpadColor || defaultButtons,
       aButtonColor: initialData.aButtonColor || defaultButtons,
@@ -212,12 +232,16 @@ export const useGbaState = (): GbaStateResult => {
       leftBumperColor: initialData.leftBumperColor || defaultButtons,
       rightBumperColor: initialData.rightBumperColor || defaultButtons,
       lensColor: initialData.lensColor || defaultLens,
+      gbcLogoGameBoyColor: initialData.gbcLogoGameBoyColor || defaultGbcLogoGameBoy,
+      gbcLogoColorWordColor: initialData.gbcLogoColorWordColor || defaultGbcLogoColor,
       isClearShell: initialData.isClearShell ?? false,
       isClearButtons: initialData.isClearButtons ?? false,
       shopMode: sMode,
       rgrsSubBrand: (initialData as any).rgrsSubBrand || 'funnyplaying',
       useCustomButtonsInHiMode: initialData.useCustomButtonsInHiMode ?? false,
       isScreenOn: initialData.isScreenOn ?? (sMode ? false : true),
+      gbcLensOffset: (initialData as any).gbcLensOffset || { x: 31, y: 39 },
+      gbcScreenOffset: (initialData as any).gbcScreenOffset || { x: 0, y: 0 },
     });
   };
 
@@ -271,6 +295,28 @@ export const useGbaState = (): GbaStateResult => {
   }, [undo, redo]);
 
   const setters = {
+    setConsoleType: (val: ConsoleType) => {
+        const updates: Partial<GbaConfig> = { 
+            consoleType: val, 
+            shopMode: val === 'gbc' ? null : config.shopMode 
+        };
+        if (val === 'gbc') {
+            // Apply GBC button defaults only if they are the current GBA defaults
+            const isDpadDefault = config.dpadColor.id === defaultButtons.id;
+            if (isDpadDefault) {
+              updates.dpadColor = GBC_BUTTON_GREY;
+              updates.aButtonColor = GBC_BUTTON_GREY;
+              updates.bButtonColor = GBC_BUTTON_GREY;
+              updates.startSelectColor = GBC_BUTTON_GREY;
+            }
+            
+            // Transition shell if it's a standard GBA color
+            if (SHELL_COLORS.some(c => c.id === config.selectedColor.id)) {
+                updates.selectedColor = GBC_SHELL_COLORS[3]; // Kiwi default for GBC
+            }
+        }
+        updateConfig(updates);
+    },
     setSelectedColor: (val: ColorOption) => updateConfig({ selectedColor: val }),
     setDpadColor: (val: ColorOption) => updateConfig({ dpadColor: val }),
     setAButtonColor: (val: ColorOption) => updateConfig({ aButtonColor: val }),
@@ -345,6 +391,21 @@ export const useGbaState = (): GbaStateResult => {
         updateConfig(updates);
     },
     setLensColor: (val: ColorOption) => updateConfig({ lensColor: val }),
+    setGbcLogoGameBoyColor: (val: ColorOption) => updateConfig({ gbcLogoGameBoyColor: val }),
+    setGbcLogoColorWordColor: (val: ColorOption) => updateConfig({ gbcLogoColorWordColor: val }),
+    setGbcLogoColor: (val: ColorOption) => {
+      if (val.id === 'gbc-logo-multi') {
+        updateConfig({
+          gbcLogoGameBoyColor: GBC_LOGO_COLORS[5], // Standard Grey
+          gbcLogoColorWordColor: GBC_LOGO_COLORS[0], // Multi
+        });
+      } else {
+        updateConfig({
+          gbcLogoGameBoyColor: val,
+          gbcLogoColorWordColor: val,
+        });
+      }
+    },
     setIsClearShell: (val: boolean) => updateConfig({ isClearShell: val }),
     setIsClearButtons: (val: boolean) => updateConfig({ isClearButtons: val }),
     setIsScreenOn: (val: boolean) => updateConfig({ isScreenOn: val }),
@@ -392,7 +453,9 @@ export const useGbaState = (): GbaStateResult => {
 
         updateConfig(updates);
     },
-    setUseCustomButtonsInHiMode: (val: boolean) => updateConfig({ useCustomButtonsInHiMode: val })
+    setUseCustomButtonsInHiMode: (val: boolean) => updateConfig({ useCustomButtonsInHiMode: val }),
+    setGbcLensOffset: (val: { x: number; y: number }) => updateConfig({ gbcLensOffset: val }),
+    setGbcScreenOffset: (val: { x: number; y: number }) => updateConfig({ gbcScreenOffset: val }),
   };
 
   const randomize = () => {
@@ -411,7 +474,7 @@ export const useGbaState = (): GbaStateResult => {
     const isRgrsHi = config.shopMode === 'rgrs' && config.rgrsSubBrand === 'hispeedido';
     const isSilent = config.shopMode === 'silentmodding';
     
-    let shellOptions = SHELL_COLORS;
+    let shellOptions = config.consoleType === 'gbc' ? GBC_SHELL_COLORS : SHELL_COLORS;
     if (isDirectFunny) shellOptions = FUNNYPLAYING_SHELL_COLORS;
     else if (isRgrsFp) shellOptions = RGRS_FUNNYPLAYING_SHELL_COLORS;
     else if (isRgrsHi) shellOptions = RGRS_HISPEEDIDO_SHELL_COLORS;
@@ -441,6 +504,8 @@ export const useGbaState = (): GbaStateResult => {
         leftBumperColor: randomBtn,
         rightBumperColor: randomBtn,
         lensColor: LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)],
+        gbcLogoGameBoyColor: getRandomOption(GBC_LOGO_COLORS.filter(c => c.id !== 'gbc-logo-multi')),
+        gbcLogoColorWordColor: GBC_LOGO_COLORS[Math.floor(Math.random() * GBC_LOGO_COLORS.length)],
         isClearShell: randomShell.id !== 'custom' ? !!randomShell.forcedClear : config.isClearShell,
         isClearButtons: randomMem.id !== 'custom' ? !!randomMem.forcedClear : config.isClearButtons,
     };
@@ -460,6 +525,7 @@ export const useGbaState = (): GbaStateResult => {
     }
 
     updateConfig({
+      consoleType: 'gba',
       selectedColor: SHELL_COLORS[1],
       dpadColor: SHELL_COLORS[4],
       aButtonColor: SHELL_COLORS[4],
@@ -471,12 +537,16 @@ export const useGbaState = (): GbaStateResult => {
       leftBumperColor: SHELL_COLORS[4],
       rightBumperColor: SHELL_COLORS[4],
       lensColor: LENS_COLORS[0],
+      gbcLogoGameBoyColor: defaultGbcLogoGameBoy,
+      gbcLogoColorWordColor: defaultGbcLogoColor,
       isClearShell: false,
       isClearButtons: false,
       isScreenOn: true,
       shopMode: null,
       rgrsSubBrand: 'funnyplaying',
       useCustomButtonsInHiMode: false,
+      gbcLensOffset: { x: 31, y: 39 },
+      gbcScreenOffset: { x: 0, y: 0 },
     });
   };
 

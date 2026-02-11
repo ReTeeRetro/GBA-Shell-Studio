@@ -19,11 +19,11 @@ export const InfoCard: React.FC = () => {
         </p>
         
         <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400">
-          <li><strong>Get an idea</strong> on how you might want to mod your GBA.</li>
+          <li><strong>Get an idea</strong> on how you might want to mod your Gameboy.</li>
           <li><strong>Download</strong> your configuration as a high-res PNG.</li>
           <li><strong>Share</strong> the unique URL with others.</li>
           <li><strong>Visualize</strong> your design using advanced AI tools.</li>
-          <li><strong>Shop</strong> for the specific parts to mod your own GBA.</li>
+          <li><strong>Shop</strong> for the specific parts to mod your own Gameboy.</li>
         </ul>
 
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800">

@@ -1,5 +1,5 @@
 {
-  "name": "GBA Shell Studio | Version 2.0.9",
-  "description": "A visualizer for Gameboy Advance shell and button colors.",
+  "name": "GBA Shell Studio | Version 3.0.0",
+  "description": "A visualizer for Gameboy Advance & Color shell and button colors.",
   "requestFramePermissions": []
 }

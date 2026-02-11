@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gba-shell-studio.vercel.app/sitemap.xml
+Sitemap: https://gba-shell-studio.com/sitemap.xml

@@ -1,5 +1,7 @@
+
 import { useRef, useState, useEffect } from 'react';
 import { GbaPreview } from './components/GbaPreview';
+import { GbcPreview } from './components/GbcPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { AiCard } from './components/AiCard';
@@ -11,7 +13,7 @@ import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
-import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
+import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon, Gamepad2 } from 'lucide-react';
 
 const AppContent = () => {
   const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();
@@ -64,10 +66,13 @@ const AppContent = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
+  const PreviewComponent = config.consoleType === 'gbc' ? GbcPreview : GbaPreview;
+
   if (isViewOnly) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-4">
-        <GbaPreview
+        {/* Fix: Added missing GBC logo props to satisfy GbcPreview requirement */}
+        <PreviewComponent
           ref={svgRef}
           selectedColor={config.selectedColor}
           dpadColor={config.dpadColor}
@@ -80,6 +85,8 @@ const AppContent = () => {
           leftBumperColor={config.leftBumperColor}
           rightBumperColor={config.rightBumperColor}
           lensColor={config.lensColor}
+          gbcLogoGameBoyColor={config.gbcLogoGameBoyColor}
+          gbcLogoColorWordColor={config.gbcLogoColorWordColor}
           isClearShell={config.isClearShell}
           isClearButtons={config.isClearButtons}
           isScreenOn={config.isScreenOn}
@@ -109,12 +116,27 @@ const AppContent = () => {
               <HeaderLogo />
             </div>
             <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap truncate">
-              <span className="sm:hidden">GBA Studio</span>
-              <span className="hidden sm:inline">GBA Shell Studio</span>
+              GBA Shell Studio
             </h1>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0 ml-2">
+            {/* Console Toggle */}
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-full border border-slate-200 dark:border-slate-700 mr-2">
+              <button
+                onClick={() => setters.setConsoleType('gba')}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${config.consoleType === 'gba' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                GBA
+              </button>
+              <button
+                onClick={() => setters.setConsoleType('gbc')}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${config.consoleType === 'gbc' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                GBC
+              </button>
+            </div>
+
             {/* Undo/Redo Group */}
             <div className="flex items-center gap-0.5 sm:gap-1 border-r border-slate-200 dark:border-slate-800 pr-1.5 sm:pr-2 mr-0.5 sm:mr-1">
               <button
@@ -184,7 +206,7 @@ const AppContent = () => {
           <div className="lg:col-span-2 space-y-4">
             <div 
               className={`w-full transition-all duration-300 ${isPinned ? 'block lg:hidden' : 'hidden'}`}
-              style={{ aspectRatio: '900/550', marginBottom: '1rem' }}
+              style={{ aspectRatio: config.consoleType === 'gbc' ? '900/930' : '900/550', marginBottom: '1rem' }}
             />
 
             <div className={`
@@ -211,7 +233,8 @@ const AppContent = () => {
                 </button>
               </div>
 
-              <GbaPreview
+              {/* Fix: Added missing GBC logo props to satisfy GbcPreview requirement */}
+              <PreviewComponent
                 ref={svgRef}
                 selectedColor={config.selectedColor}
                 dpadColor={config.dpadColor}
@@ -224,6 +247,8 @@ const AppContent = () => {
                 leftBumperColor={config.leftBumperColor}
                 rightBumperColor={config.rightBumperColor}
                 lensColor={config.lensColor}
+                gbcLogoGameBoyColor={config.gbcLogoGameBoyColor}
+                gbcLogoColorWordColor={config.gbcLogoColorWordColor}
                 isClearShell={config.isClearShell}
                 isClearButtons={config.isClearButtons}
                 isScreenOn={config.isScreenOn}
@@ -233,7 +258,7 @@ const AppContent = () => {
               />
             </div>
 
-            <ShopModeCard />
+            {config.consoleType === 'gba' && <ShopModeCard />}
 
             <AiCard onOpenAi={handleOpenAi} />
             <ExampleAiImages />
@@ -304,8 +329,8 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} GBA Shell Studio by ReTee Retro. Version 2.0.9. Not
-          affiliated with Nintendo.
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.0. Not
+          affiliated with Nintendo. 
         </p>
       </footer>
     </div>

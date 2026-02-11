@@ -3,8 +3,9 @@ import { GbaConfig } from '../types';
 export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaConfig) => {
   if (!svgElement) return;
 
-  const w = 900;
-  const h = 550;
+  const isGbc = config.consoleType === 'gbc';
+  const w = isGbc ? 600 : 900;
+  const h = isGbc ? 900 : 550;
   const scale = 2; // High res scale
   const footerHeight = 220; // Increased for more rows
 
@@ -53,37 +54,50 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
     ctx.textBaseline = 'middle';
     const btnSuffix = config.isClearButtons ? ' (Clear)' : '';
 
-    const triggersMatch = config.lButtonColor.id === config.rButtonColor.id && config.lButtonColor.hex === config.rButtonColor.hex;
-    const bumpersMatch = config.leftBumperColor.id === config.rightBumperColor.id && config.leftBumperColor.hex === config.rightBumperColor.hex;
+    let parts = [];
     
-    let bumperTextPart = [];
-    if (triggersMatch) {
-        bumperTextPart.push({ label: 'L/R Buttons', color: config.lButtonColor, detail: btnSuffix });
+    if (isGbc) {
+      parts = [
+        { label: 'Shell', color: config.selectedColor, detail: config.isClearShell ? '(Clear)' : '' },
+        { label: 'Lens', color: config.lensColor },
+        { label: 'D-Pad', color: config.dpadColor, detail: btnSuffix },
+        { label: 'Btn A', color: config.aButtonColor, detail: btnSuffix },
+        { label: 'Btn B', color: config.bButtonColor, detail: btnSuffix },
+        { label: 'Start/Select', color: config.startSelectColor, detail: btnSuffix },
+      ];
     } else {
-        bumperTextPart.push({ label: 'L Button', color: config.lButtonColor, detail: btnSuffix });
-        bumperTextPart.push({ label: 'R Button', color: config.rButtonColor, detail: btnSuffix });
-    }
+      const triggersMatch = config.lButtonColor.id === config.rButtonColor.id && config.lButtonColor.hex === config.rButtonColor.hex;
+      const bumpersMatch = config.leftBumperColor.id === config.rightBumperColor.id && config.leftBumperColor.hex === config.rightBumperColor.hex;
+      
+      let bumperTextPart = [];
+      if (triggersMatch) {
+          bumperTextPart.push({ label: 'L/R Buttons', color: config.lButtonColor, detail: btnSuffix });
+      } else {
+          bumperTextPart.push({ label: 'L Button', color: config.lButtonColor, detail: btnSuffix });
+          bumperTextPart.push({ label: 'R Button', color: config.rButtonColor, detail: btnSuffix });
+      }
 
-    if (bumpersMatch) {
-        bumperTextPart.push({ label: 'Side Bumpers', color: config.leftBumperColor, detail: btnSuffix });
-    } else {
-        bumperTextPart.push({ label: 'L Side Bumper', color: config.leftBumperColor, detail: btnSuffix });
-        bumperTextPart.push({ label: 'R Side Bumper', color: config.rightBumperColor, detail: btnSuffix });
-    }
+      if (bumpersMatch) {
+          bumperTextPart.push({ label: 'Side Bumpers', color: config.leftBumperColor, detail: btnSuffix });
+      } else {
+          bumperTextPart.push({ label: 'L Side Bumper', color: config.leftBumperColor, detail: btnSuffix });
+          bumperTextPart.push({ label: 'R Side Bumper', color: config.rightBumperColor, detail: btnSuffix });
+      }
 
-    const parts = [
-      { label: 'Shell', color: config.selectedColor, detail: config.isClearShell ? '(Clear)' : '' },
-      { label: 'Lens', color: config.lensColor },
-      { label: 'D-Pad', color: config.dpadColor, detail: btnSuffix },
-      { label: 'Btn A', color: config.aButtonColor, detail: btnSuffix },
-      { label: 'Btn B', color: config.bButtonColor, detail: btnSuffix },
-      { label: 'Power Sw', color: config.powerSwitchColor, detail: btnSuffix },
-      { label: 'Start/Select', color: config.startSelectColor, detail: btnSuffix },
-      ...bumperTextPart
-    ];
+      parts = [
+        { label: 'Shell', color: config.selectedColor, detail: config.isClearShell ? '(Clear)' : '' },
+        { label: 'Lens', color: config.lensColor },
+        { label: 'D-Pad', color: config.dpadColor, detail: btnSuffix },
+        { label: 'Btn A', color: config.aButtonColor, detail: btnSuffix },
+        { label: 'Btn B', color: config.bButtonColor, detail: btnSuffix },
+        { label: 'Power Sw', color: config.powerSwitchColor, detail: btnSuffix },
+        { label: 'Start/Select', color: config.startSelectColor, detail: btnSuffix },
+        ...bumperTextPart
+      ];
+    }
 
     const startX = 60;
-    const colWidth = 530;
+    const colWidth = isGbc ? 420 : 530; // Adjusted for GBC column spacing
     const itemsPerCol = 4;
 
     parts.forEach((part, index) => {
@@ -113,17 +127,17 @@ export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaCo
     ctx.textAlign = 'right';
     ctx.font = 'bold 24px sans-serif';
     ctx.fillStyle = '#cbd5e1';
-    ctx.fillText(`GBA Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, canvas.height - 40);
+    ctx.fillText(`${isGbc ? 'GBC' : 'GBA'} Shell Studio ${new Date().getFullYear()}`, canvas.width - 40, canvas.height - 40);
 
     ctx.textAlign = 'left';
     ctx.font = '24px sans-serif';
     ctx.fillStyle = '#94a3b8';
-    ctx.fillText('https://gba-shell-studio.vercel.app/', startX, canvas.height - 40);
+    ctx.fillText('https://gba-shell-studio.com/', startX, canvas.height - 40);
 
     const pngUrl = canvas.toDataURL('image/png');
     const downloadLink = document.createElement('a');
     downloadLink.href = pngUrl;
-    downloadLink.download = `gba-shell-${config.selectedColor.name.toLowerCase().replace(/\s+/g, '-')}${config.isClearShell ? '-clear' : ''}.png`;
+    downloadLink.download = `${config.consoleType}-shell-${config.selectedColor.name.toLowerCase().replace(/\s+/g, '-')}${config.isClearShell ? '-clear' : ''}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);

@@ -1,3 +1,4 @@
+
 import { forwardRef } from 'react';
 import { ColorOption, ShopMode } from '../types';
 import {
@@ -39,6 +40,9 @@ interface GbaPreviewProps {
   onToggleScreen?: () => void;
   isDarkMode?: boolean;
   shopMode?: ShopMode;
+  // Fix: Added optional logo color props for interface compatibility with GbcPreview
+  gbcLogoGameBoyColor?: ColorOption;
+  gbcLogoColorWordColor?: ColorOption;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(

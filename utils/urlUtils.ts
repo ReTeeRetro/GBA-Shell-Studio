@@ -1,7 +1,9 @@
 import { GbaConfig, ColorOption, ShopMode } from '../types';
-import { SHELL_COLORS, LENS_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_BUTTON_COLORS, RGRS_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_MEMBRANE_COLORS, RGRS_FUNNYPLAYING_MEMBRANE_COLORS, SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS } from '../constants';
+import { SHELL_COLORS, LENS_COLORS, GBC_LOGO_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_BUTTON_COLORS, RGRS_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_MEMBRANE_COLORS, RGRS_FUNNYPLAYING_MEMBRANE_COLORS, SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS } from '../constants';
 
+// Added missing 'gbcLensOffset' to satisfy Record<keyof GbaConfig, string>
 const PARAM_MAP: Record<keyof GbaConfig, string> = {
+  consoleType: 'console',
   selectedColor: 'shell',
   dpadColor: 'dpad',
   aButtonColor: 'btn_a',
@@ -13,12 +15,16 @@ const PARAM_MAP: Record<keyof GbaConfig, string> = {
   leftBumperColor: 'bump_l',
   rightBumperColor: 'bump_r',
   lensColor: 'lens',
+  gbcLogoGameBoyColor: 'logo_gb',
+  gbcLogoColorWordColor: 'logo_c',
   isClearShell: 'clear_shell',
   isClearButtons: 'clear_btns',
   isScreenOn: 'screen_on',
   shopMode: 'shop_mode',
   rgrsSubBrand: 'rgrs_brand',
   useCustomButtonsInHiMode: 'hi_custom_btns',
+  gbcLensOffset: 'gbc_off',
+  gbcScreenOffset: 'gbc_disp',
 };
 
 // Helper to convert a ColorOption to a string for the URL
@@ -66,6 +72,11 @@ export const serializeConfig = (config: GbaConfig): string => {
       if (value) params.set(paramName, value as string);
     } else if (key === 'rgrsSubBrand') {
       if (config.shopMode === 'rgrs') params.set(paramName, value as string);
+    } else if (key === 'consoleType') {
+      params.set(paramName, value as string);
+    } else if (key === 'gbcLensOffset' || key === 'gbcScreenOffset') {
+      const offset = value as { x: number; y: number };
+      params.set(paramName, `${offset.x},${offset.y}`);
     } else {
       // It's a ColorOption
       params.set(paramName, encodeColor(value as ColorOption));
@@ -94,8 +105,15 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
     ...SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
     ...FUNNYPLAYING_MEMBRANE_COLORS,
     ...RGRS_FUNNYPLAYING_MEMBRANE_COLORS,
-    ...SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
+    ...SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
+    ...GBC_LOGO_COLORS
   ];
+
+  // Console Type
+  const cType = params.get(PARAM_MAP.consoleType);
+  if (cType === 'gba' || cType === 'gbc') {
+    config.consoleType = cType;
+  }
 
   // Colors
   config.selectedColor = decodeColor(params.get(PARAM_MAP.selectedColor), allShellPresets);
@@ -110,6 +128,8 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
   config.rightBumperColor = decodeColor(params.get(PARAM_MAP.rightBumperColor), allButtonPresets);
   
   config.lensColor = decodeColor(params.get(PARAM_MAP.lensColor), LENS_COLORS);
+  config.gbcLogoGameBoyColor = decodeColor(params.get(PARAM_MAP.gbcLogoGameBoyColor), GBC_LOGO_COLORS);
+  config.gbcLogoColorWordColor = decodeColor(params.get(PARAM_MAP.gbcLogoColorWordColor), GBC_LOGO_COLORS);
 
   // Booleans
   if (params.has(PARAM_MAP.isClearShell)) {
@@ -134,6 +154,27 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
     const rBrand = params.get(PARAM_MAP.rgrsSubBrand);
     if (rBrand === 'funnyplaying' || rBrand === 'hispeedido') {
       config.rgrsSubBrand = rBrand;
+    }
+  }
+
+  // Handle Offsets
+  const lensOff = params.get(PARAM_MAP.gbcLensOffset);
+  if (lensOff) {
+    const parts = lensOff.split(',');
+    if (parts.length === 2) {
+      const x = parseInt(parts[0], 10);
+      const y = parseInt(parts[1], 10);
+      if (!isNaN(x) && !isNaN(y)) config.gbcLensOffset = { x, y };
+    }
+  }
+  
+  const screenOff = params.get(PARAM_MAP.gbcScreenOffset);
+  if (screenOff) {
+    const parts = screenOff.split(',');
+    if (parts.length === 2) {
+      const x = parseInt(parts[0], 10);
+      const y = parseInt(parts[1], 10);
+      if (!isNaN(x) && !isNaN(y)) config.gbcScreenOffset = { x, y };
     }
   }
 

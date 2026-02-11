@@ -48,6 +48,14 @@ export const SHELL_COLORS: ColorOption[] = [
   },
 ];
 
+export const GBC_SHELL_COLORS: ColorOption[] = [
+  { id: 'gbc-berry', name: 'Berry', hex: '#d33364' },
+  { id: 'gbc-dandelion', name: 'Dandelion', hex: '#ce9c35' },
+  { id: 'gbc-grape', name: 'Grape', hex: '#4c38b0' },
+  { id: 'gbc-kiwi', name: 'Kiwi', hex: '#93b538' },
+  { id: 'gbc-teal', name: 'Teal', hex: '#53b5e2' },
+];
+
 export const LENS_COLORS: ColorOption[] = [
   {
     id: 'black',
@@ -64,6 +72,15 @@ export const LENS_COLORS: ColorOption[] = [
     name: 'Grey',
     hex: '#8B8B8B',
   },
+];
+
+export const GBC_LOGO_COLORS: ColorOption[] = [
+  { id: 'gbc-logo-multi', name: 'Classic Multi', hex: 'url(#multi)' },
+  { id: 'gbc-logo-red', name: 'Bright Red', hex: '#FF0000' },
+  { id: 'gbc-logo-green', name: 'Bright Green', hex: '#00FF00' },
+  { id: 'gbc-logo-blue', name: 'Bright Blue', hex: '#0000FF' },
+  { id: 'gbc-logo-yellow', name: 'Bright Yellow', hex: '#FFFF00' },
+  { id: 'gbc-logo-grey', name: 'Standard Grey', hex: '#57707C' },
 ];
 
 export const FUNNYPLAYING_SHELL_COLORS: ColorOption[] = [
@@ -457,3 +474,4 @@ export const HISPEEDIDO_DEFAULT_MEM: ColorOption = { id: 'hi-locked-mem', name: 
 
 // BASE UI DEFAULTS
 export const DARK_GREY_BTN: ColorOption = { id: 'default-dark-grey', name: 'Dark Grey', hex: '#686972' };
+export const GBC_BUTTON_GREY: ColorOption = { id: 'gbc-very-dark-grey', name: 'Very Dark Grey', hex: '#1A1A1A' };

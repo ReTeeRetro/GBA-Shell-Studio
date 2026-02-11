@@ -14,7 +14,10 @@ export type ShopMode = 'funnyplaying' | 'rgrs' | 'silentmodding' | null;
 
 export type RgrsSubBrand = 'funnyplaying' | 'hispeedido';
 
+export type ConsoleType = 'gba' | 'gbc';
+
 export interface GbaConfig {
+  consoleType: ConsoleType;
   selectedColor: ColorOption;
   dpadColor: ColorOption;
   aButtonColor: ColorOption;
@@ -32,4 +35,8 @@ export interface GbaConfig {
   shopMode: ShopMode;
   rgrsSubBrand: RgrsSubBrand;
   useCustomButtonsInHiMode: boolean;
+  gbcLensOffset: { x: number; y: number };
+  gbcScreenOffset: { x: number; y: number };
+  gbcLogoGameBoyColor: ColorOption;
+  gbcLogoColorWordColor: ColorOption;
 }

@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ColorOption, ShopMode } from '../types';
 // Fixed: Import useGba from GbaContext instead of hooks/useGbaState
 import { useGba } from '../contexts/GbaContext';
+// Fixed: Added missing Layers icon from lucide-react
 import { 
   SHELL_COLORS, 
+  GBC_SHELL_COLORS,
   LENS_COLORS, 
+  GBC_LOGO_COLORS,
   FUNNYPLAYING_SHELL_COLORS, 
   FUNNYPLAYING_BUTTON_COLORS, 
   FUNNYPLAYING_MEMBRANE_COLORS, 
@@ -16,10 +19,12 @@ import {
   SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS,
   SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS,
   HISPEEDIDO_DEFAULT_BTN,
-  HISPEEDIDO_DEFAULT_MEM
+  HISPEEDIDO_DEFAULT_MEM,
+  DARK_GREY_BTN,
+  GBC_BUTTON_GREY
 } from '../constants';
 import { getButtonColorStyle } from '../utils/shopUtils';
-import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
+import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info, Move, Monitor, Layers } from 'lucide-react';
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   if (a.id === 'custom' || b.id === 'custom') {
@@ -141,6 +146,8 @@ const ColorButton: React.FC<ColorButtonProps> = ({
 
   if (!color) return null;
 
+  const style = color.hex.startsWith('url') ? { background: 'conic-gradient(#33268E 0deg 72deg, #09826D 72deg 144deg, #DAB10F 144deg 216deg, #BA0E39 216deg 288deg, #71AA21 288deg 360deg)' } : getButtonColorStyle(color);
+
   return (
     <button
       onClick={() => onSelect(color)}
@@ -152,7 +159,7 @@ const ColorButton: React.FC<ColorButtonProps> = ({
           ${sizeClass} rounded-full shadow-sm flex items-center justify-center transition-all duration-300 relative
           ${isSelected ? 'ring-2 ring-offset-2 ring-slate-800 dark:ring-white scale-110 shadow-md' : 'border border-slate-200 dark:border-slate-600 hover:scale-105 hover:border-slate-300 dark:hover:border-slate-400'}
         `}
-        style={getButtonColorStyle(color)}
+        style={style}
       >
         {color.shopUrl && (
           <div className="absolute -top-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-600 shadow-sm">
@@ -218,23 +225,26 @@ const ColorSection: React.FC<ColorSectionProps> = ({ label, selectedColor, onSel
 export const ColorPicker: React.FC = () => {
   const { config, setters, randomize } = useGba();
   const [showIndividualControls, setShowIndividualControls] = useState(false);
+  const [showLogoControls, setShowLogoControls] = useState(false);
 
-  const { shopMode, rgrsSubBrand, useCustomButtonsInHiMode } = config;
+  const { shopMode, rgrsSubBrand, useCustomButtonsInHiMode, consoleType } = config;
 
   const isDirectFunny = shopMode === 'funnyplaying';
   const isRgrsFunny = shopMode === 'rgrs' && rgrsSubBrand === 'funnyplaying';
   const isRgrsHi = shopMode === 'rgrs' && rgrsSubBrand === 'hispeedido';
   const isSilent = shopMode === 'silentmodding';
 
-  const shellOptions = isDirectFunny 
-    ? FUNNYPLAYING_SHELL_COLORS 
-    : isRgrsFunny 
-      ? RGRS_FUNNYPLAYING_SHELL_COLORS 
-      : isRgrsHi
-        ? RGRS_HISPEEDIDO_SHELL_COLORS
-        : isSilent
-          ? SILENTMODDING_HISPEEDIDO_SHELL_COLORS
-          : SHELL_COLORS;
+  const shellOptions = consoleType === 'gbc' 
+    ? GBC_SHELL_COLORS
+    : isDirectFunny 
+      ? FUNNYPLAYING_SHELL_COLORS 
+      : isRgrsFunny 
+        ? RGRS_FUNNYPLAYING_SHELL_COLORS 
+        : isRgrsHi
+          ? RGRS_HISPEEDIDO_SHELL_COLORS
+          : isSilent
+            ? SILENTMODDING_HISPEEDIDO_SHELL_COLORS
+            : SHELL_COLORS;
 
   const isLockedMode = ((isRgrsHi || isSilent) && !useCustomButtonsInHiMode);
 
@@ -246,7 +256,9 @@ export const ColorPicker: React.FC = () => {
         ? RGRS_FUNNYPLAYING_BUTTON_COLORS 
         : isSilent
           ? SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS
-          : SHELL_COLORS;
+          : consoleType === 'gbc'
+            ? [...SHELL_COLORS, GBC_BUTTON_GREY]
+            : [...SHELL_COLORS, DARK_GREY_BTN];
       
   const membraneOptions = isLockedMode
     ? [HISPEEDIDO_DEFAULT_MEM]
@@ -256,23 +268,25 @@ export const ColorPicker: React.FC = () => {
         ? RGRS_FUNNYPLAYING_MEMBRANE_COLORS 
         : isSilent
           ? SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS
-          : SHELL_COLORS;
+          : consoleType === 'gbc'
+            ? [...SHELL_COLORS, GBC_BUTTON_GREY]
+            : [...SHELL_COLORS, DARK_GREY_BTN];
 
-  // Check if all buttons INCLUDING power switch match
-  const unifiedControlColor = (
-    areColorsEqual(config.dpadColor, config.aButtonColor) &&
-    areColorsEqual(config.aButtonColor, config.bButtonColor) &&
-    areColorsEqual(config.bButtonColor, config.startSelectColor) &&
-    areColorsEqual(config.startSelectColor, config.powerSwitchColor) &&
-    areColorsEqual(config.powerSwitchColor, config.lButtonColor) &&
-    areColorsEqual(config.lButtonColor, config.rButtonColor) &&
-    areColorsEqual(config.rButtonColor, config.leftBumperColor) &&
-    areColorsEqual(config.leftBumperColor, config.rightBumperColor)
-  ) ? config.dpadColor : null;
+  // Check if relevant buttons match for master control
+  const relevantButtons = consoleType === 'gba' 
+    ? [config.dpadColor, config.aButtonColor, config.bButtonColor, config.startSelectColor, config.powerSwitchColor, config.lButtonColor, config.rButtonColor, config.leftBumperColor, config.rightBumperColor]
+    : [config.dpadColor, config.aButtonColor, config.bButtonColor, config.startSelectColor];
+
+  const allRelevantMatch = relevantButtons.every(btn => areColorsEqual(btn, relevantButtons[0]));
+  const unifiedControlColor = allRelevantMatch ? relevantButtons[0] : null;
 
   const handleMasterControlColorSelect = (color: ColorOption) => {
     if (isLockedMode) return;
     setters.setAllButtonsColor(color);
+  };
+
+  const handleMasterLogoPresetSelect = (color: ColorOption) => {
+    setters.setGbcLogoColor(color);
   };
 
   const isLensCustom = config.lensColor.id === 'custom';
@@ -289,9 +303,9 @@ export const ColorPicker: React.FC = () => {
             </h2>
             <button
                 onClick={() => setters.setIsClearShell(!config.isClearShell)}
-                disabled={!!shopMode}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
-                title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
+                disabled={!!shopMode || consoleType === 'gbc'}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${ (shopMode || consoleType === 'gbc') ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
+                title={consoleType === 'gbc' ? "Clear shells not yet available for GBC" : shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
             >
                 {config.isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 Clear Shell
@@ -343,8 +357,8 @@ export const ColorPicker: React.FC = () => {
           </button>
         </div>
         
-        {/* Responsive grid for Lens: 3-column row for Shop Mode, 2x2 grid for Default Mode to prevent smushing */}
-        <div className={`grid ${shopMode ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
+        {/* Responsive grid for Lens */}
+        <div className={`grid ${shopMode ? 'grid-cols-3' : 'grid-cols-2'} gap-3 mb-4`}>
           {LENS_COLORS.map((color) => {
              const isSelected = config.lensColor.id === color.id;
              return (
@@ -402,6 +416,76 @@ export const ColorPicker: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Logo Color Controls - GBC ONLY */}
+        {consoleType === 'gbc' && (
+          <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+            <button 
+              onClick={() => setShowLogoControls(!showLogoControls)}
+              className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium hover:text-slate-800 dark:hover:text-slate-200 transition-colors w-full p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
+            >
+              {showLogoControls ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              <SlidersHorizontal size={14} />
+              <span>Logo color</span>
+            </button>
+
+            {showLogoControls && (
+              <div className="mt-4 pl-4 border-l-2 border-slate-100 dark:border-slate-800 space-y-6 animate-in slide-in-from-top-2 duration-200">
+                <div className={`grid grid-cols-6 gap-3 mb-6`}>
+                  {GBC_LOGO_COLORS.map((color) => {
+                    // Logic to determine if a preset is selected
+                    let isSelected = false;
+                    if (color.id === 'gbc-logo-multi') {
+                      isSelected = areColorsEqual(config.gbcLogoGameBoyColor, GBC_LOGO_COLORS[1]) && areColorsEqual(config.gbcLogoColorWordColor, GBC_LOGO_COLORS[0]);
+                    } else {
+                      isSelected = areColorsEqual(config.gbcLogoGameBoyColor, color) && areColorsEqual(config.gbcLogoColorWordColor, color);
+                    }
+
+                    return (
+                      <ColorButton 
+                        key={`logo-master-preset-${color.id}`}
+                        color={color}
+                        isSelected={isSelected}
+                        onSelect={handleMasterLogoPresetSelect}
+                        sizeClass="w-8 h-8"
+                        className="!gap-0"
+                        showLabel={false}
+                      />
+                    );
+                  })}
+                  {!shopMode && (
+                    <ColorButton 
+                       isCustom
+                       isSelected={config.gbcLogoGameBoyColor.id === 'custom' && areColorsEqual(config.gbcLogoGameBoyColor, config.gbcLogoColorWordColor)}
+                       color={config.gbcLogoGameBoyColor.id === 'custom' ? config.gbcLogoGameBoyColor : { id: 'custom', name: 'Custom', hex: '#000000' }}
+                       onSelect={handleMasterLogoPresetSelect}
+                       sizeClass="w-8 h-8"
+                       className="!gap-0"
+                       showLabel={false}
+                    />
+                  )}
+                </div>
+
+                <ColorSection 
+                  label="GAME BOY" 
+                  selectedColor={config.gbcLogoGameBoyColor} 
+                  onSelect={setters.setGbcLogoGameBoyColor} 
+                  idPrefix="logo-gb" 
+                  options={GBC_LOGO_COLORS.filter(c => c.id !== 'gbc-logo-multi')} 
+                  shopMode={shopMode} 
+                />
+                <ColorSection 
+                  label="COLOR" 
+                  selectedColor={config.gbcLogoColorWordColor} 
+                  onSelect={setters.setGbcLogoColorWordColor} 
+                  idPrefix="logo-c" 
+                  options={GBC_LOGO_COLORS} 
+                  shopMode={shopMode} 
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="h-px bg-slate-100 dark:bg-slate-800 w-full"></div>
@@ -416,9 +500,9 @@ export const ColorPicker: React.FC = () => {
           <div className="flex items-center gap-2">
               <button
                   onClick={() => setters.setIsClearButtons(!config.isClearButtons)}
-                  disabled={!!shopMode && isLockedMode}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
-                  title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
+                  disabled={(!!shopMode && isLockedMode) || consoleType === 'gbc'}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${((shopMode && isLockedMode) || consoleType === 'gbc') ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
+                  title={consoleType === 'gbc' ? "Clear buttons not yet available for GBC" : shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
               >
                   {config.isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                   Clear Buttons
@@ -514,12 +598,17 @@ export const ColorPicker: React.FC = () => {
                 <ColorSection label="D-Pad" selectedColor={config.dpadColor} onSelect={setters.setDpadColor} idPrefix="dpad" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Button A" selectedColor={config.aButtonColor} onSelect={setters.setAButtonColor} idPrefix="btn-a" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
                 <ColorSection label="Button B" selectedColor={config.bButtonColor} onSelect={setters.setBButtonColor} idPrefix="btn-b" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Power Switch" selectedColor={config.powerSwitchColor} onSelect={setters.setPowerSwitchColor} idPrefix="pwr" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                {consoleType === 'gba' && <ColorSection label="Power Switch" selectedColor={config.powerSwitchColor} onSelect={setters.setPowerSwitchColor} idPrefix="pwr" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />}
                 <ColorSection label="Start / Select" selectedColor={config.startSelectColor} onSelect={setters.setStartSelectColor} idPrefix="ss" options={membraneOptions} shopMode={shopMode} />
-                <ColorSection label="L Button (Trigger)" selectedColor={config.lButtonColor} onSelect={setters.setLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="R Button (Trigger)" selectedColor={config.rButtonColor} onSelect={setters.setRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Left Bumper (Side)" selectedColor={config.leftBumperColor} onSelect={setters.setLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
-                <ColorSection label="Right Bumper (Side)" selectedColor={config.rightBumperColor} onSelect={setters.setRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                
+                {consoleType === 'gba' && (
+                  <>
+                    <ColorSection label="L Button (Trigger)" selectedColor={config.lButtonColor} onSelect={setters.setLButtonColor} idPrefix="l-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                    <ColorSection label="R Button (Trigger)" selectedColor={config.rButtonColor} onSelect={setters.setRButtonColor} idPrefix="r-btn" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                    <ColorSection label="Left Bumper (Side)" selectedColor={config.leftBumperColor} onSelect={setters.setLeftBumperColor} idPrefix="l-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                    <ColorSection label="Right Bumper (Side)" selectedColor={config.rightBumperColor} onSelect={setters.setRightBumperColor} idPrefix="r-bump" options={buttonOptions} shopMode={shopMode} disabled={!!shopMode} />
+                  </>
+                )}
               </div>
             )}
           </div>
