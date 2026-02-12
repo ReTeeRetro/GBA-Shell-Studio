@@ -196,9 +196,32 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 transform={`translate(${LOGO_X}, ${LOGO_Y}) scale(${LOGO_SCALE})`} 
               />
 
-              <g transform="translate(38, 168)">
+              <g transform="translate(35, 168)">
                 <circle r="6.75" fill={isScreenOn ? "#ff0000" : "#220000"} filter={isScreenOn ? "url(#gbcLedGlow)" : ""} />
                 {isScreenOn && <circle r="2.25" fill="#ffffff" opacity="0.6" transform="translate(-1.5, -1.5)" />}
+                <text
+                  x="0"
+                  y="18"
+                  textAnchor="start"
+                  fontSize="10"
+                  fontFamily="sans-serif"
+                  fontWeight="300"
+                  fill="#94a3b8"
+                  letterSpacing="0.5"
+                  pointerEvents="none"
+                  transform="translate(-7, 5)"
+                >POWER</text>
+                <text
+                  x="12"
+                  y="3"
+                  textAnchor="start"
+                  fontSize="10"
+                  fontFamily="sans-serif"
+                  fontWeight="300"
+                  fill="#94a3b8"
+                  letterSpacing="1"
+                  pointerEvents="none"
+                >)))</text>
               </g>
             </g>
 
