@@ -208,29 +208,42 @@ export interface GbaStateResult {
 }
 
 export const useGbaState = (): GbaStateResult => {
-  // Defaults
-  const defaultShell = SHELL_COLORS[1]; // Indigo
-  const defaultButtons = SHELL_COLORS[4]; // Grey
+  // GBA Defaults
+  const defaultGbaShell = SHELL_COLORS[1]; // Indigo
+  const defaultGbaButtons = SHELL_COLORS[4]; // Grey
+  
+  // GBC Defaults
+  const defaultGbcShell = GBC_SHELL_COLORS[0]; // Berry
+  const defaultGbcButtons = GBC_BUTTON_GREY; // Dark Dark Grey
+  
   const defaultLens = LENS_COLORS[0]; // Black
   const defaultGbcLogoGameBoy = GBC_LOGO_COLORS[5]; // Standard Grey
   const defaultGbcLogoColor = GBC_LOGO_COLORS[0]; // Multi
 
+  // Internal flag to track if we should apply the "First Switch" signature theme
+  const [hasSeenGbc, setHasSeenGbc] = useState(false);
+
   const getInitialConfig = (): GbaConfig => {
     const initialData = typeof window !== 'undefined' ? deserializeConfig(window.location.search) : {};
     const sMode = initialData.shopMode || null;
+    const cType = initialData.consoleType || 'gba';
     
+    // Choose base defaults based on the initial console type
+    const shellDefault = cType === 'gbc' ? defaultGbcShell : defaultGbaShell;
+    const buttonDefault = cType === 'gbc' ? defaultGbcButtons : defaultGbaButtons;
+
     return deriveValidConfig({
-      consoleType: initialData.consoleType || 'gba',
-      selectedColor: initialData.selectedColor || defaultShell,
-      dpadColor: initialData.dpadColor || defaultButtons,
-      aButtonColor: initialData.aButtonColor || defaultButtons,
-      bButtonColor: initialData.bButtonColor || defaultButtons,
-      startSelectColor: initialData.startSelectColor || defaultButtons,
-      powerSwitchColor: initialData.powerSwitchColor || DARK_GREY_BTN,
-      lButtonColor: initialData.lButtonColor || defaultButtons,
-      rButtonColor: initialData.rButtonColor || defaultButtons,
-      leftBumperColor: initialData.leftBumperColor || defaultButtons,
-      rightBumperColor: initialData.rightBumperColor || defaultButtons,
+      consoleType: cType,
+      selectedColor: initialData.selectedColor || shellDefault,
+      dpadColor: initialData.dpadColor || buttonDefault,
+      aButtonColor: initialData.aButtonColor || buttonDefault,
+      bButtonColor: initialData.bButtonColor || buttonDefault,
+      startSelectColor: initialData.startSelectColor || buttonDefault,
+      powerSwitchColor: initialData.powerSwitchColor || (cType === 'gba' ? DARK_GREY_BTN : defaultGbcButtons),
+      lButtonColor: initialData.lButtonColor || buttonDefault,
+      rButtonColor: initialData.rButtonColor || buttonDefault,
+      leftBumperColor: initialData.leftBumperColor || buttonDefault,
+      rightBumperColor: initialData.rightBumperColor || buttonDefault,
       lensColor: initialData.lensColor || defaultLens,
       gbcLogoGameBoyColor: initialData.gbcLogoGameBoyColor || defaultGbcLogoGameBoy,
       gbcLogoColorWordColor: initialData.gbcLogoColorWordColor || defaultGbcLogoColor,
@@ -248,6 +261,13 @@ export const useGbaState = (): GbaStateResult => {
   const [config, setConfig] = useState<GbaConfig>(getInitialConfig);
   const [past, setPast] = useState<GbaConfig[]>([]);
   const [future, setFuture] = useState<GbaConfig[]>([]);
+
+  // If we start as GBC, we've effectively already "seen" it
+  useEffect(() => {
+    if (config.consoleType === 'gbc' || window.location.search.length > 0) {
+      setHasSeenGbc(true);
+    }
+  }, []);
 
   const updateConfig = useCallback((partialNext: Partial<GbaConfig>) => {
     const proposed = { ...config, ...partialNext };
@@ -300,21 +320,26 @@ export const useGbaState = (): GbaStateResult => {
             consoleType: val, 
             shopMode: val === 'gbc' ? null : config.shopMode 
         };
-        if (val === 'gbc') {
-            // Apply GBC button defaults only if they are the current GBA defaults
-            const isDpadDefault = config.dpadColor.id === defaultButtons.id;
-            if (isDpadDefault) {
-              updates.dpadColor = GBC_BUTTON_GREY;
-              updates.aButtonColor = GBC_BUTTON_GREY;
-              updates.bButtonColor = GBC_BUTTON_GREY;
-              updates.startSelectColor = GBC_BUTTON_GREY;
-            }
+
+        // Signature Start Logic:
+        // If this is the FIRST time switching to GBC, and the colors currently match the GBA defaults
+        // (Indigo/Grey), then switch to the GBC defaults (Berry/DarkDarkGrey).
+        if (val === 'gbc' && !hasSeenGbc) {
+            const isDefaultGbaColors = 
+                config.selectedColor.id === defaultGbaShell.id && 
+                config.dpadColor.id === defaultGbaButtons.id;
             
-            // Transition shell if it's a standard GBA color
-            if (SHELL_COLORS.some(c => c.id === config.selectedColor.id)) {
-                updates.selectedColor = GBC_SHELL_COLORS[3]; // Kiwi default for GBC
+            if (isDefaultGbaColors) {
+                updates.selectedColor = defaultGbcShell;
+                updates.dpadColor = defaultGbcButtons;
+                updates.aButtonColor = defaultGbcButtons;
+                updates.bButtonColor = defaultGbcButtons;
+                updates.startSelectColor = defaultGbcButtons;
+                updates.powerSwitchColor = defaultGbcButtons;
             }
+            setHasSeenGbc(true);
         }
+        
         updateConfig(updates);
     },
     setSelectedColor: (val: ColorOption) => updateConfig({ selectedColor: val }),
@@ -524,18 +549,20 @@ export const useGbaState = (): GbaStateResult => {
       }
     }
 
+    // Default back to GBA state on reset
+    setHasSeenGbc(false); // Allow signature transition again if they reset
     updateConfig({
       consoleType: 'gba',
-      selectedColor: SHELL_COLORS[1],
-      dpadColor: SHELL_COLORS[4],
-      aButtonColor: SHELL_COLORS[4],
-      bButtonColor: SHELL_COLORS[4],
-      startSelectColor: SHELL_COLORS[4],
+      selectedColor: defaultGbaShell,
+      dpadColor: defaultGbaButtons,
+      aButtonColor: defaultGbaButtons,
+      bButtonColor: defaultGbaButtons,
+      startSelectColor: defaultGbaButtons,
       powerSwitchColor: DARK_GREY_BTN,
-      lButtonColor: SHELL_COLORS[4],
-      rButtonColor: SHELL_COLORS[4],
-      leftBumperColor: SHELL_COLORS[4],
-      rightBumperColor: SHELL_COLORS[4],
+      lButtonColor: defaultGbaButtons,
+      rButtonColor: defaultGbaButtons,
+      leftBumperColor: defaultGbaButtons,
+      rightBumperColor: defaultGbaButtons,
       lensColor: LENS_COLORS[0],
       gbcLogoGameBoyColor: defaultGbcLogoGameBoy,
       gbcLogoColorWordColor: defaultGbcLogoColor,
