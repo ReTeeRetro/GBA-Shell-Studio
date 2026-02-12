@@ -59,7 +59,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class'
+        darkMode: 'class',
+        theme: {
+          extend: {
+            screens: {
+              'xs': '400px',
+            },
+            transitionTimingFunction: {
+              'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            }
+          }
+        }
       }
     </script>
     <style>
@@ -87,6 +97,10 @@
       }
       .dark ::-webkit-scrollbar-thumb:hover {
         background: #475569;
+      }
+
+      .ease-spring {
+        transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
     </style>
   <script type="importmap">

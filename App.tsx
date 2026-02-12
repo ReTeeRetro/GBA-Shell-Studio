@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from 'react';
 import { GbaPreview } from './components/GbaPreview';
 import { GbcPreview } from './components/GbcPreview';
@@ -14,6 +13,23 @@ import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
+
+const ConsoleSilhouette = ({ type, isActive }: { type: 'gba' | 'gbc', isActive: boolean }) => {
+  if (type === 'gba') {
+    return (
+      <svg viewBox="0 0 24 16" className={`w-5 h-4 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
+        <rect x="2" y="2" width="20" height="12" rx="3" />
+        <rect x="7" y="5" width="10" height="6" rx="0.5" fill="white" fillOpacity="0.4" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 16 24" className={`w-4 h-5 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
+      <path d="M2 2h12v14l-2 6H4l-2-6V2z" rx="1" />
+      <rect x="4" y="4" width="8" height="8" rx="0.5" fill="white" fillOpacity="0.4" />
+    </svg>
+  );
+};
 
 const AppContent = () => {
   const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();
@@ -71,7 +87,6 @@ const AppContent = () => {
   if (isViewOnly) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center p-4">
-        {/* Fix: Added missing GBC logo props to satisfy GbcPreview requirement */}
         <PreviewComponent
           ref={svgRef}
           selectedColor={config.selectedColor}
@@ -110,40 +125,47 @@ const AppContent = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-slate-300 selection:text-slate-900 transition-colors duration-300">
       {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
             <div className="shrink-0">
               <HeaderLogo />
             </div>
-            <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap truncate">
-              GBA Shell Studio
-            </h1>
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
+                GBA Shell Studio
+              </h1>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0 ml-2">
-            {/* Console Toggle */}
-            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-full border border-slate-200 dark:border-slate-700 mr-2">
+          <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0">
+            {/* Playful Console Toggle */}
+            <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner mr-2">
+              <div 
+                className={`absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-600 rounded-xl shadow-md transition-all duration-300 ease-spring ${config.consoleType === 'gbc' ? 'translate-x-full' : 'translate-x-0'}`}
+              />
               <button
                 onClick={() => setters.setConsoleType('gba')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${config.consoleType === 'gba' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gba' ? 'text-slate-900 dark:text-white' : 'text-slate-400 hover:text-slate-500'}`}
               >
-                GBA
+                <ConsoleSilhouette type="gba" isActive={config.consoleType === 'gba'} />
+                <span className="hidden xs:block">GBA</span>
               </button>
               <button
                 onClick={() => setters.setConsoleType('gbc')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${config.consoleType === 'gbc' ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gbc' ? 'text-slate-900 dark:text-white' : 'text-slate-400 hover:text-slate-500'}`}
               >
-                GBC
+                <ConsoleSilhouette type="gbc" isActive={config.consoleType === 'gbc'} />
+                <span className="hidden xs:block">GBC</span>
               </button>
             </div>
 
-            {/* Undo/Redo Group */}
-            <div className="flex items-center gap-0.5 sm:gap-1 border-r border-slate-200 dark:border-slate-800 pr-1.5 sm:pr-2 mr-0.5 sm:mr-1">
+            {/* Undo/Redo/Reset Group */}
+            <div className="flex items-center gap-0.5 sm:gap-1 border-r border-slate-200 dark:border-slate-800 pr-1.5 sm:pr-2">
               <button
                 onClick={undo}
                 disabled={!canUndo}
-                className={`p-1.5 sm:p-2 rounded-full transition-all ${
-                  canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
+                className={`p-2 rounded-xl transition-all ${
+                  canUndo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-110' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
                 }`}
                 title="Undo (Ctrl+Z)"
               >
@@ -152,49 +174,47 @@ const AppContent = () => {
               <button
                 onClick={redo}
                 disabled={!canRedo}
-                className={`p-1.5 sm:p-2 rounded-full transition-all ${
-                  canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
+                className={`p-2 rounded-xl transition-all ${
+                  canRedo ? 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-110' : 'text-slate-200 dark:text-slate-700 cursor-not-allowed'
                 }`}
                 title="Redo (Ctrl+Y)"
               >
                 <Redo2 size={18} />
               </button>
+              <button
+                onClick={() => setShowResetConfirm(true)}
+                className="p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all hover:scale-110 hover:text-red-500 dark:hover:text-red-400"
+                title="Reset Design"
+              >
+                <RotateCcw size={18} />
+              </button>
             </div>
 
-            <button
-              onClick={() => setIsDark(!isDark)}
-              className="p-1.5 sm:p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl transition-all shadow-sm hover:scale-110"
+                title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {isDark ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
 
-            <button
-              onClick={() => setIsShareModalOpen(true)}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
-              title="Share Design"
-            >
-              <Share2 size={16} />
-              <span className="hidden md:inline">Share</span>
-            </button>
+              <button
+                onClick={() => setIsShareModalOpen(true)}
+                className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl transition-all shadow-sm hover:scale-105 active:scale-95"
+              >
+                <Share2 size={16} />
+                <span className="hidden md:inline font-bold">Share</span>
+              </button>
 
-            <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
-              title="Download PNG"
-            >
-              <Download size={16} />
-              <span className="hidden md:inline">Download</span>
-            </button>
-
-            <button
-              onClick={() => setShowResetConfirm(true)}
-              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-full transition-all shadow-sm hover:border-slate-300 dark:hover:border-slate-500"
-              title="Reset to Default"
-            >
-              <RotateCcw size={16} />
-              <span className="hidden md:inline">Reset</span>
-            </button>
+              <button
+                onClick={handleDownload}
+                className="flex items-center gap-2 px-3 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 rounded-xl transition-all shadow-md hover:scale-105 active:scale-95"
+              >
+                <Download size={16} />
+                <span className="hidden md:inline font-bold">Export</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -212,7 +232,7 @@ const AppContent = () => {
             <div className={`
               transition-all duration-300 ease-in-out
               ${isPinned 
-                ? 'fixed top-16 left-0 right-0 z-40 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-md p-2 lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none lg:backdrop-blur-none lg:static lg:sticky lg:top-24 lg:z-30' 
+                ? 'fixed top-20 left-0 right-0 z-40 bg-gray-50/95 dark:bg-slate-950/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-md p-2 lg:p-0 lg:bg-transparent lg:border-none lg:shadow-none lg:backdrop-blur-none lg:static lg:sticky lg:top-24 lg:z-30' 
                 : 'relative'
               }
             `}>
@@ -233,7 +253,6 @@ const AppContent = () => {
                 </button>
               </div>
 
-              {/* Fix: Added missing GBC logo props to satisfy GbcPreview requirement */}
               <PreviewComponent
                 ref={svgRef}
                 selectedColor={config.selectedColor}
@@ -329,7 +348,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.0. Not
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.1. Not
           affiliated with Nintendo. 
         </p>
       </footer>
