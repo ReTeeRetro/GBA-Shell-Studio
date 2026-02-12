@@ -25,7 +25,8 @@ const ConsoleSilhouette = ({ type, isActive }: { type: 'gba' | 'gbc', isActive: 
   }
   return (
     <svg viewBox="0 0 16 24" className={`w-4 h-5 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
-      <path d="M2 2h12v14l-2 6H4l-2-6V2z" rx="1" />
+      {/* Straight rectangular body with minimal corner rounding */}
+      <rect x="2" y="2" width="12" height="20" rx="1.5" />
       <rect x="4" y="4" width="8" height="8" rx="0.5" fill="white" fillOpacity="0.4" />
     </svg>
   );

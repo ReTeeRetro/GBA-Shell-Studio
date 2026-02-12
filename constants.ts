@@ -474,4 +474,4 @@ export const HISPEEDIDO_DEFAULT_MEM: ColorOption = { id: 'hi-locked-mem', name: 
 
 // BASE UI DEFAULTS
 export const DARK_GREY_BTN: ColorOption = { id: 'default-dark-grey', name: 'Dark Grey', hex: '#686972' };
-export const GBC_BUTTON_GREY: ColorOption = { id: 'gbc-very-dark-grey', name: 'Very Dark Grey', hex: '#1A1A1A' };
+export const GBC_BUTTON_GREY: ColorOption = { id: 'gbc-very-dark-grey', name: 'Very Dark Grey', hex: '#2D2D2D' };
