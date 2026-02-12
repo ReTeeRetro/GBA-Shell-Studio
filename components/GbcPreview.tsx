@@ -7,6 +7,7 @@ import {
   GbcButtonB,
   GbcStartSelectPaths,
   GbcLensLogo,
+  GbcSpeakerHoles,
 } from './GbcSvgPaths';
 import {
   DpadPaths,
@@ -288,6 +289,8 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 </g>
               </g>
             </g>
+
+            <GbcSpeakerHoles />
           </g>
         </svg>
 
