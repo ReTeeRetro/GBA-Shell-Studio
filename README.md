@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.2-purple.svg)](https://vitejs.dev/)
 
-[Live Demo](https://gba-shell-studio.com/) • [Report Bug](https://github.com/yourusername/gba-shell-studio/issues) • [Request Feature](https://github.com/yourusername/gba-shell-studio/issues)
+[Live Demo](https://gba-shell-studio.com/) • [Report Bug](https://github.com/ReTeeRetro/GBA-Shell-Studio/issues) • [Request Feature](https://github.com/ReTeeRetro/GBA-Shell-Studio/issues)
 
 </div>
 
@@ -49,8 +49,8 @@ GBA Shell Studio is a web-based customization tool designed for the retro gaming
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/gba-shell-studio.git
-   cd gba-shell-studio
+   git clone https://github.com/ReTeeRetro/GBA-Shell-Studio.git
+   cd GBA-Shell-Studio
    ```
 
 2. Install dependencies:
@@ -92,7 +92,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## 💖 Acknowledgments
 
 - Inspired by the incredible retro modding community.
-- Special thanks to **FunnyPlaying**, **Retro Game Repair Shop**, and **SilentModding** for providing the inspiration for Shop Mode.
 - Not affiliated with Nintendo. Game Boy is a trademark of Nintendo Co., Ltd.
 
 ---
