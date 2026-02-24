@@ -55,6 +55,9 @@ export const GBC_SHELL_COLORS: ColorOption[] = [
   { id: 'gbc-grape', name: 'Grape', hex: '#4c38b0' },
   { id: 'gbc-kiwi', name: 'Kiwi', hex: '#93b538' },
   { id: 'gbc-teal', name: 'Teal', hex: '#53b5e2' },
+  { id: 'gbc-black', name: 'Matte Black', hex: '#000000' },
+  { id: 'gbc-arctic-white', name: 'Arctic White', hex: '#f8fafc' },
+  { id: 'gbc-grey', name: 'Grey', hex: '#c4bebb' },
 ];
 
 export const LENS_COLORS: ColorOption[] = [
