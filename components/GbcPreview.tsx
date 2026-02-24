@@ -1,6 +1,7 @@
 
 import { forwardRef } from 'react';
 import { ColorOption, ShopMode } from '../types';
+import gbcPcbUrl from './Gbcpcb.svg';
 import {
   GbcShellPaths,
   GbcScreenPath,
@@ -73,6 +74,11 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
     const LOGO_X = 129;
     const LOGO_Y = 396;
     const LOGO_SCALE = 0.28;
+    
+    // PCB layout controls
+    const PCB_X = -5;
+    const PCB_Y = 10;
+    const PCB_SCALE = 1.02;
 
     const DPAD_CIRCLE_X = 209;
     const DPAD_CIRCLE_Y = 665 - 50;
@@ -225,6 +231,15 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 opacity="0.2"
                 filter="url(#gbcFloorShadowBlur)"
               />
+            </g>
+
+            <g
+              id="gbc-pcb-layer"
+              transform={`translate(${PCB_X}, ${PCB_Y}) scale(${PCB_SCALE})`}
+              pointerEvents="none"
+              opacity={0.9}
+            >
+              <image href={gbcPcbUrl} width="591" height="904" />
             </g>
 
             {isClearShell && (
