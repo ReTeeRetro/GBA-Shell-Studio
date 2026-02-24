@@ -14,17 +14,17 @@ import { downloadGbaImage } from './utils/downloadUtils';
 import { openAiTool } from './utils/aiUtils';
 import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
-const ConsoleSilhouette = ({ type, isActive }: { type: 'gba' | 'gbc', isActive: boolean }) => {
+const ConsoleSilhouette = ({ type }: { type: 'gba' | 'gbc' }) => {
   if (type === 'gba') {
     return (
-      <svg viewBox="0 0 24 16" className={`w-5 h-4 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
+      <svg viewBox="0 0 24 16" className="w-5 h-4 transition-colors duration-300 text-indigo-600 dark:text-indigo-400" fill="currentColor">
         <rect x="2" y="2" width="20" height="12" rx="3" />
         <rect x="7" y="5" width="10" height="6" rx="0.5" fill="white" fillOpacity="0.4" />
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 16 24" className={`w-4 h-5 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
+    <svg viewBox="0 0 16 24" className="w-4 h-5 transition-colors duration-300 text-rose-600 dark:text-rose-400" fill="currentColor">
       <rect x="2" y="2" width="12" height="20" rx="1.5" />
       <rect x="4" y="4" width="8" height="8" rx="0.5" fill="white" fillOpacity="0.4" />
     </svg>
@@ -140,16 +140,16 @@ const AppContent = () => {
               />
               <button
                 onClick={() => setters.setConsoleType('gba')}
-                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gba' ? 'text-slate-900 dark:text-white' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gba' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 hover:text-slate-500'}`}
               >
-                <ConsoleSilhouette type="gba" isActive={config.consoleType === 'gba'} />
+                <ConsoleSilhouette type="gba" />
                 <span className="hidden xs:block">GBA</span>
               </button>
               <button
                 onClick={() => setters.setConsoleType('gbc')}
-                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gbc' ? 'text-slate-900 dark:text-white' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gbc' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400 hover:text-slate-500'}`}
               >
-                <ConsoleSilhouette type="gbc" isActive={config.consoleType === 'gbc'} />
+                <ConsoleSilhouette type="gbc" />
                 <span className="hidden xs:block">GBC</span>
               </button>
             </div>
@@ -337,7 +337,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.6. Not
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.7. Not
           affiliated with Nintendo. 
         </p>
       </footer>
