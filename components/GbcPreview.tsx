@@ -1,3 +1,4 @@
+
 import { forwardRef } from 'react';
 import { ColorOption, ShopMode } from '../types';
 import {
@@ -8,6 +9,14 @@ import {
   GbcStartSelectPaths,
   GbcLensLogo,
   GbcSpeakerHoles,
+  GbcStartSelectMembrane,
+  GbcABMembrane,
+  GbcDpadMembrane,
+  GbcDpadCircleUnderlay,
+  GbcBButtonGuidesUnderlay,
+  GbcAButtonGuidesUnderlay,
+  GbcScrewPosts,
+  GbcPowerButton,
 } from './GbcSvgPaths';
 import {
   DpadPaths,
@@ -28,6 +37,7 @@ interface GbcPreviewProps {
   lensColor: ColorOption;
   gbcLogoGameBoyColor: ColorOption;
   gbcLogoColorWordColor: ColorOption;
+  gbcSpeakerOffset?: { x: number; y: number };
   isClearShell?: boolean;
   isClearButtons?: boolean;
   isScreenOn?: boolean;
@@ -45,6 +55,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
       aButtonColor,
       bButtonColor,
       startSelectColor,
+      powerSwitchColor,
       lensColor,
       gbcLogoGameBoyColor,
       gbcLogoColorWordColor,
@@ -59,34 +70,71 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
     const buttonOpacity = isClearButtons ? 0.6 : 1;
 
     // Logo layout controls
-    const LOGO_X = 130;
-    const LOGO_Y = 390;
-    const LOGO_SCALE = 0.27;
+    const LOGO_X = 129;
+    const LOGO_Y = 396;
+    const LOGO_SCALE = 0.28;
 
-    const GBC_BUTTON_A_POS = { x: 487, y: 635 };
-    const GBC_BUTTON_B_POS = { x: 390, y: 665 };
+    const DPAD_CIRCLE_X = 209;
+    const DPAD_CIRCLE_Y = 665 - 50;
+    const DPAD_CIRCLE_SCALE = 0.38;
+    const DPAD_CIRCLE_ROT = 85;
+
+    // --- GBC D-pad membrane (shows ONLY on clear shells) ---
+    const DPAD_MEMBRANE_X = 190;
+    const DPAD_MEMBRANE_Y = 538;
+    const DPAD_MEMBRANE_SCALE = 0.7;
+    const DPAD_MEMBRANE_ROT = 40;
+
+    // --- GBC Power Button (shows ONLY on clear shells) ---
+    const POWER_BUTTON_X = 476;
+    const POWER_BUTTON_Y = 135;
+    const POWER_BUTTON_SCALE = 1.2;
+    const POWER_BUTTON_ROT = 0;
+
+    // --- GBC B-button plastic guides underlay (shows ONLY on clear shells) ---
+    const B_GUIDES_X = 360;
+    const B_GUIDES_Y = 630 - 50;
+    const B_GUIDES_SCALE = 0.4;
+    const B_GUIDES_ROT = 0;
+
+    // --- GBC A-button plastic guides underlay (shows ONLY on clear shells) ---
+    const A_GUIDES_X = 440;
+    const A_GUIDES_Y = 625 - 50;
+    const A_GUIDES_SCALE = 0.4;
+    const A_GUIDES_ROT = -22;
+
+    const GBC_BUTTON_A_POS = { x: 487, y: 635 - 50 };
+    const GBC_BUTTON_B_POS = { x: 390, y: 665 - 50 };
     const GBC_BUTTON_SCALE = 1.0;
 
     const DPAD_X = 70;
-    const DPAD_Y = 588;
+    const DPAD_Y = 588 - 50;
     const DPAD_SCALE = 1.22;
 
     const SELECT_X = 305 - 45;
-    const SELECT_Y = 780 + 30;
+    const SELECT_Y = 780 + 30 - 75;
     const START_X = 305 + 30;
-    const START_Y = 780 + 30;
+    const START_Y = 780 + 30 - 75;
 
-    const LENS_X = 31; 
-    const LENS_Y = 39;
+    const LENS_X = 29; 
+    const LENS_Y = 3;
 
-    const SCREEN_X = -387; 
+    const SCREEN_X = -383; 
     const SCREEN_Y = 35;
 
     const CALIBRATION_X = 351.6;
     const CALIBRATION_Y = -70.2;
 
+    const SPEAKER_X = 460;
+    const SPEAKER_Y = 860 - 75;
+    const SPEAKER_SCALE = 1.75;
+
     const displayTranslateX = LENS_X + CALIBRATION_X + SCREEN_X;
     const displayTranslateY = LENS_Y + CALIBRATION_Y + SCREEN_Y;
+
+    const isDefaultMembrane = aButtonColor.hex === '#2D2D2D' && bButtonColor.hex === '#2D2D2D' && dpadColor.hex === '#2D2D2D';
+    const abMembraneColor = isDefaultMembrane ? '#98fbcb' : startSelectColor.hex;
+    const abMembraneOpacity = isDefaultMembrane ? 0.9 : 0.6;
 
     return (
       <div
@@ -108,6 +156,11 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
             <filter id="gbcPlasticGrain">
               <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch" result="noise" />
               <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise" />
+              <feComponentTransfer in="grayNoise" result="balancedNoise">
+                <feFuncR type="linear" slope="0.3" intercept="0.35" />
+                <feFuncG type="linear" slope="0.3" intercept="0.35" />
+                <feFuncB type="linear" slope="0.3" intercept="0.35" />
+              </feComponentTransfer>
               <feComponentTransfer in="grayNoise" result="balancedNoise">
                 <feFuncR type="linear" slope="0.3" intercept="0.35" />
                 <feFuncG type="linear" slope="0.3" intercept="0.35" />
@@ -174,9 +227,112 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
               />
             </g>
 
+            {isClearShell && (
+              <g 
+                id="gbc-ab-membrane"
+                style={{ color: abMembraneColor, opacity: abMembraneOpacity }}
+                transform={`translate(${GBC_BUTTON_B_POS.x - -170}, ${GBC_BUTTON_B_POS.y - -15}) scale(0.75) rotate(-197)`}
+              >
+                <GbcABMembrane />
+              </g>
+            )}
+
+            {isClearShell && (
+              <g 
+                id="gbc-dpad-membrane"
+                style={{ color: abMembraneColor, opacity: abMembraneOpacity }}
+                transform={`translate(${DPAD_MEMBRANE_X}, ${DPAD_MEMBRANE_Y}) rotate(${DPAD_MEMBRANE_ROT}) scale(${DPAD_MEMBRANE_SCALE}) translate(-163, -5)`}
+              >
+                <GbcDpadMembrane />
+              </g>
+            )}
+
+            {isClearShell && (
+              <g 
+                id="gbc-start-select-membrane"
+                style={{ color: startSelectColor.hex, opacity: 0.4 }}
+                transform={`translate(${SELECT_X - 48}, ${SELECT_Y - 40}) scale(0.7)`}
+              >
+                <GbcStartSelectMembrane />
+              </g>
+            )}
+
+            <g 
+              id="gbc-power-button"
+              style={{ color: powerSwitchColor.hex, opacity: 0.8 }}
+              transform={`translate(${POWER_BUTTON_X}, ${POWER_BUTTON_Y}) rotate(${POWER_BUTTON_ROT}) scale(${POWER_BUTTON_SCALE})`}
+            >
+              <GbcPowerButton />
+            </g>
+
+            {isClearShell && (
+              <g
+                id="gbc-dpad-circle-underlay"
+                style={{
+                  color: dpadColor.hex,
+                  opacity: 0.4,
+                  mixBlendMode: 'multiply' as any,
+                  pointerEvents: 'none',
+                }}
+                transform={`translate(${DPAD_CIRCLE_X}, ${DPAD_CIRCLE_Y}) rotate(${DPAD_CIRCLE_ROT}) scale(${DPAD_CIRCLE_SCALE}) translate(-487, -360)`}
+              >
+                <GbcDpadCircleUnderlay />
+              </g>
+            )}
+
+            {isClearShell && (
+              <g
+                id="gbc-b-button-guides-underlay"
+                style={{
+                  color: bButtonColor.hex,
+                  opacity: 0.4,
+                  mixBlendMode: 'multiply' as any,
+                  pointerEvents: 'none',
+                }}
+                transform={`translate(${B_GUIDES_X}, ${B_GUIDES_Y}) rotate(${B_GUIDES_ROT}) scale(${B_GUIDES_SCALE}) translate(-710, -825)`}
+              >
+                <GbcBButtonGuidesUnderlay />
+              </g>
+            )}
+
+            {isClearShell && (
+              <g
+                id="gbc-a-button-guides-underlay"
+                style={{
+                  color: aButtonColor.hex,
+                  opacity: 0.4,
+                  pointerEvents: 'none',
+                }}
+                transform={`translate(${A_GUIDES_X}, ${A_GUIDES_Y}) rotate(${A_GUIDES_ROT}) scale(${A_GUIDES_SCALE}) translate(-360, -861)`}
+              >
+                <GbcAButtonGuidesUnderlay />
+              </g>
+            )}
+
+            {isClearShell && (
+              <g 
+                id="gbc-internal-speaker-layer" 
+                transform={`translate(${SPEAKER_X}, ${SPEAKER_Y}) scale(${SPEAKER_SCALE})`} 
+                opacity={0.85} 
+                pointerEvents="none"
+              >
+                <circle cx="0" cy="0" r="46" fill="#9ca3af" />
+                <circle cx="0" cy="0" r="40" fill="#4b5563" />
+                <circle cx="0" cy="0" r="26" fill="#374151" opacity="0.5" />
+                <circle cx="0" cy="0" r="14" fill="#6b7280" />
+                <ellipse cx="-5" cy="-5" rx="5" ry="3" fill="white" opacity="0.2" transform="rotate(-45)" />
+              </g>
+            )}
+
             <g id="gbc-shell" style={{ color: selectedColor.hex, opacity: isClearShell ? 0.6 : 1 }}>
               <GbcShellPaths />
             </g>
+
+            {isClearShell && (
+              <g id="gbc-screw-posts" pointerEvents="none" style={{ color: selectedColor.hex }}>
+                <GbcScrewPosts />
+              </g>
+            )}
 
             <g filter="url(#gbcPlasticGrain)" style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} opacity="0.3">
               <GbcShellPaths />
@@ -229,13 +385,13 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
               id="gbc-display-active"
               transform={`translate(${displayTranslateX}, ${displayTranslateY})`}
             >
-              <g transform="translate(300, 240) scale(0.95) translate(-300, -240)">
-                <rect x="100" y="90" width="400" height="300" rx="4" fill="url(#gbcScreenOffGradient)" />
+              <g transform="translate(300, 240) scale(0.82) translate(-300, -240)">
+                <rect x="100" y="90" width="400" height="360" rx="4" fill="url(#gbcScreenOffGradient)" />
                 {isScreenOn && (
                   <g>
-                    <rect x="100" y="90" width="400" height="300" rx="4" fill="url(#gbcScreenOnGradient)" />
+                    <rect x="100" y="90" width="400" height="360" rx="4" fill="url(#gbcScreenOnGradient)" />
                     <text 
-                      x="300" y="230" 
+                      x="300" y="260" 
                       textAnchor="middle" 
                       fontFamily="sans-serif" 
                       fontWeight="900" 
@@ -250,7 +406,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                       GAME BOY
                     </text>
                     <text 
-                      x="300" y="275" 
+                      x="300" y="305" 
                       textAnchor="middle" 
                       fontFamily="sans-serif" 
                       fontWeight="bold" 
@@ -264,7 +420,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 )}
                 
                 <rect 
-                  x="100" y="90" width="400" height="300" 
+                  x="100" y="90" width="400" height="360" 
                   fill="transparent" 
                   style={{ cursor: onToggleScreen ? 'pointer' : 'default' }}
                   onClick={onToggleScreen}

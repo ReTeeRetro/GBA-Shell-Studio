@@ -518,7 +518,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
                 <g
                   id="clear-shell-internals-layer"
-                  style={{ mixBlendMode: 'multiply', pointerEvents: 'none' }}
+                  style={{ mixBlendMode: 'multiply', pointerEvents: 'none', color: selectedColor.hex }}
                   opacity={0.6}
                   pointerEvents="none"
                 >

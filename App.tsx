@@ -25,7 +25,6 @@ const ConsoleSilhouette = ({ type, isActive }: { type: 'gba' | 'gbc', isActive: 
   }
   return (
     <svg viewBox="0 0 16 24" className={`w-4 h-5 transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} fill="currentColor">
-      {/* Straight rectangular body with minimal corner rounding */}
       <rect x="2" y="2" width="12" height="20" rx="1.5" />
       <rect x="4" y="4" width="8" height="8" rx="0.5" fill="white" fillOpacity="0.4" />
     </svg>
@@ -36,7 +35,6 @@ const AppContent = () => {
   const { config, setters, reset, undo, redo, canUndo, canRedo } = useGba();
   const svgRef = useRef<SVGSVGElement>(null);
   
-  // Default to pinned on mobile (<1024px) for better UX
   const [isPinned, setIsPinned] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < 1024;
@@ -54,13 +52,11 @@ const AppContent = () => {
     return false;
   });
 
-  // Check for view-only mode from URL
   const searchParams = new URLSearchParams(window.location.search);
   const isViewOnly = searchParams.get('viewOnly') === '1';
 
   const toggleScreen = () => setters.setIsScreenOn(!config.isScreenOn);
 
-  // Sync theme with document class
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -71,7 +67,6 @@ const AppContent = () => {
     }
   }, [isDark]);
 
-  // Close modal on escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -103,6 +98,7 @@ const AppContent = () => {
           lensColor={config.lensColor}
           gbcLogoGameBoyColor={config.gbcLogoGameBoyColor}
           gbcLogoColorWordColor={config.gbcLogoColorWordColor}
+          gbcSpeakerOffset={config.gbcSpeakerOffset}
           isClearShell={config.isClearShell}
           isClearButtons={config.isClearButtons}
           isScreenOn={config.isScreenOn}
@@ -124,7 +120,6 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-slate-300 selection:text-slate-900 transition-colors duration-300">
-      {/* Header */}
       <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
@@ -139,7 +134,6 @@ const AppContent = () => {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0">
-            {/* Playful Console Toggle */}
             <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner mr-2">
               <div 
                 className={`absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-600 rounded-xl shadow-md transition-all duration-300 ease-spring ${config.consoleType === 'gbc' ? 'translate-x-full' : 'translate-x-0'}`}
@@ -160,7 +154,6 @@ const AppContent = () => {
               </button>
             </div>
 
-            {/* Undo/Redo/Reset Group */}
             <div className="flex items-center gap-0.5 sm:gap-1 border-r border-slate-200 dark:border-slate-800 pr-1.5 sm:pr-2">
               <button
                 onClick={undo}
@@ -220,10 +213,8 @@ const AppContent = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left: Preview Canvas */}
           <div className="lg:col-span-2 space-y-4">
             <div 
               className={`w-full transition-all duration-300 ${isPinned ? 'block lg:hidden' : 'hidden'}`}
@@ -237,7 +228,6 @@ const AppContent = () => {
                 : 'relative'
               }
             `}>
-              {/* Pin Toggle Button */}
               <div className="absolute top-4 left-4 z-20">
                 <button
                   onClick={() => setIsPinned(!isPinned)}
@@ -269,6 +259,7 @@ const AppContent = () => {
                 lensColor={config.lensColor}
                 gbcLogoGameBoyColor={config.gbcLogoGameBoyColor}
                 gbcLogoColorWordColor={config.gbcLogoColorWordColor}
+                gbcSpeakerOffset={config.gbcSpeakerOffset}
                 isClearShell={config.isClearShell}
                 isClearButtons={config.isClearButtons}
                 isScreenOn={config.isScreenOn}
@@ -285,7 +276,6 @@ const AppContent = () => {
             <YoutubePromo />
           </div>
 
-          {/* Right: Controls */}
           <div className="space-y-6">
             <ColorPicker />
             <InfoCard />
@@ -293,14 +283,12 @@ const AppContent = () => {
         </div>
       </main>
 
-      {/* Share Modal */}
       <ShareModal 
         isOpen={isShareModalOpen} 
         onClose={() => setIsShareModalOpen(false)} 
         config={config} 
       />
 
-      {/* Reset Confirmation Modal */}
       {showResetConfirm && (
         <div 
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
@@ -349,7 +337,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.4. Not
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.0.6. Not
           affiliated with Nintendo. 
         </p>
       </footer>

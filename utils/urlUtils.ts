@@ -1,7 +1,6 @@
 import { GbaConfig, ColorOption, ShopMode } from '../types';
 import { SHELL_COLORS, LENS_COLORS, GBC_LOGO_COLORS, FUNNYPLAYING_SHELL_COLORS, RGRS_FUNNYPLAYING_SHELL_COLORS, RGRS_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_HISPEEDIDO_SHELL_COLORS, SILENTMODDING_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_BUTTON_COLORS, RGRS_FUNNYPLAYING_BUTTON_COLORS, FUNNYPLAYING_MEMBRANE_COLORS, RGRS_FUNNYPLAYING_MEMBRANE_COLORS, SILENTMODDING_FUNNYPLAYING_MEMBRANE_COLORS } from '../constants';
 
-// Added missing 'gbcLensOffset' to satisfy Record<keyof GbaConfig, string>
 const PARAM_MAP: Record<keyof GbaConfig, string> = {
   consoleType: 'console',
   selectedColor: 'shell',
@@ -25,6 +24,7 @@ const PARAM_MAP: Record<keyof GbaConfig, string> = {
   useCustomButtonsInHiMode: 'hi_custom_btns',
   gbcLensOffset: 'gbc_off',
   gbcScreenOffset: 'gbc_disp',
+  gbcSpeakerOffset: 'gbc_spk',
 };
 
 // Helper to convert a ColorOption to a string for the URL
@@ -74,7 +74,7 @@ export const serializeConfig = (config: GbaConfig): string => {
       if (config.shopMode === 'rgrs') params.set(paramName, value as string);
     } else if (key === 'consoleType') {
       params.set(paramName, value as string);
-    } else if (key === 'gbcLensOffset' || key === 'gbcScreenOffset') {
+    } else if (key === 'gbcLensOffset' || key === 'gbcScreenOffset' || key === 'gbcSpeakerOffset') {
       const offset = value as { x: number; y: number };
       params.set(paramName, `${offset.x},${offset.y}`);
     } else {
@@ -175,6 +175,16 @@ export const deserializeConfig = (searchString: string): Partial<GbaConfig> => {
       const x = parseInt(parts[0], 10);
       const y = parseInt(parts[1], 10);
       if (!isNaN(x) && !isNaN(y)) config.gbcScreenOffset = { x, y };
+    }
+  }
+
+  const spkOff = params.get(PARAM_MAP.gbcSpeakerOffset);
+  if (spkOff) {
+    const parts = spkOff.split(',');
+    if (parts.length === 2) {
+      const x = parseInt(parts[0], 10);
+      const y = parseInt(parts[1], 10);
+      if (!isNaN(x) && !isNaN(y)) config.gbcSpeakerOffset = { x, y };
     }
   }
 

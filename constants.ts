@@ -49,6 +49,7 @@ export const SHELL_COLORS: ColorOption[] = [
 ];
 
 export const GBC_SHELL_COLORS: ColorOption[] = [
+  { id: 'gbc-atomic-purple', name: 'Atomic Purple', hex: '#4a148c', forcedClear: true },
   { id: 'gbc-berry', name: 'Berry', hex: '#d33364' },
   { id: 'gbc-dandelion', name: 'Dandelion', hex: '#ce9c35' },
   { id: 'gbc-grape', name: 'Grape', hex: '#4c38b0' },

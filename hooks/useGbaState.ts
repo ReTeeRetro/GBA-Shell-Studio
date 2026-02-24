@@ -159,12 +159,7 @@ const deriveValidConfig = (config: GbaConfig): GbaConfig => {
       }
   }
 
-  // 5. GBC Rules
-  if (next.consoleType === 'gbc') {
-    // Disable clear options for GBC
-    next.isClearShell = false;
-    next.isClearButtons = false;
-  }
+  // 5. GBC Rules - Handled implicitly by components/GbcPreview.tsx which supports transparency now.
 
   return next;
 };
@@ -198,6 +193,7 @@ export interface GbaStateResult {
         setUseCustomButtonsInHiMode: (val: boolean) => void;
         setGbcLensOffset: (val: { x: number; y: number }) => void;
         setGbcScreenOffset: (val: { x: number; y: number }) => void;
+        setGbcSpeakerOffset: (val: { x: number; y: number }) => void;
     };
     randomize: () => void;
     reset: () => void;
@@ -213,7 +209,7 @@ export const useGbaState = (): GbaStateResult => {
   const defaultGbaButtons = SHELL_COLORS[4]; // Grey
   
   // GBC Defaults
-  const defaultGbcShell = GBC_SHELL_COLORS[0]; // Berry
+  const defaultGbcShell = GBC_SHELL_COLORS[1]; // Berry
   const defaultGbcButtons = GBC_BUTTON_GREY; // Dark Dark Grey
   
   const defaultLens = LENS_COLORS[0]; // Black
@@ -255,6 +251,7 @@ export const useGbaState = (): GbaStateResult => {
       isScreenOn: initialData.isScreenOn ?? (sMode ? false : true),
       gbcLensOffset: (initialData as any).gbcLensOffset || { x: 31, y: 39 },
       gbcScreenOffset: (initialData as any).gbcScreenOffset || { x: 0, y: 0 },
+      gbcSpeakerOffset: (initialData as any).gbcSpeakerOffset || { x: 485, y: 880 },
     });
   };
 
@@ -481,6 +478,7 @@ export const useGbaState = (): GbaStateResult => {
     setUseCustomButtonsInHiMode: (val: boolean) => updateConfig({ useCustomButtonsInHiMode: val }),
     setGbcLensOffset: (val: { x: number; y: number }) => updateConfig({ gbcLensOffset: val }),
     setGbcScreenOffset: (val: { x: number; y: number }) => updateConfig({ gbcScreenOffset: val }),
+    setGbcSpeakerOffset: (val: { x: number; y: number }) => updateConfig({ gbcSpeakerOffset: val }),
   };
 
   const randomize = () => {
@@ -574,6 +572,7 @@ export const useGbaState = (): GbaStateResult => {
       useCustomButtonsInHiMode: false,
       gbcLensOffset: { x: 31, y: 39 },
       gbcScreenOffset: { x: 0, y: 0 },
+      gbcSpeakerOffset: { x: 485, y: 880 },
     });
   };
 

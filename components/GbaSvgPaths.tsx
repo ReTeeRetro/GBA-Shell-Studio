@@ -507,9 +507,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         y1={0}
         x2={0}
         y2={45}
-        stroke="#cfd3d9"
+        stroke="currentColor"
         strokeWidth={6}
-        opacity={0.85}
+        opacity={0.5}
         strokeLinecap="round"
       />
     </g>
@@ -520,9 +520,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         y1={0}
         x2={0}
         y2={45}
-        stroke="#cfd3d9"
+        stroke="currentColor"
         strokeWidth={6}
-        opacity={0.85}
+        opacity={0.5}
         strokeLinecap="round"
       />
     </g>
@@ -534,9 +534,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         y1={0}
         x2={0}
         y2={30}
-        stroke="#cfd3d9"
+        stroke="currentColor"
         strokeWidth={12}
-        opacity={0.85}
+        opacity={0.5}
         strokeLinecap="round"
       />
     </g>
@@ -548,9 +548,9 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
         y1={0}
         x2={0}
         y2={45}
-        stroke="#cfd3d9"
+        stroke="currentColor"
         strokeWidth={6}
-        opacity={0.85}
+        opacity={0.5}
         strokeLinecap="round"
       />
     </g>
@@ -561,11 +561,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -574,11 +574,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -587,11 +587,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -600,11 +600,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -613,11 +613,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -626,11 +626,11 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
@@ -639,24 +639,24 @@ export const ClearShellInternals = (props: React.SVGProps<SVGGElement>) => (
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 
     {/* Above B+A */}
-    <g transform="translate(640, 120)">
+    <g transform="translate(650, 120)">
       <circle
         cx={0}
         cy={0}
-        r={6}
+        r={7.2}
         fill="none"
-        stroke="#cfd3d9"
-        strokeWidth={5}
-        opacity={0.9}
+        stroke="currentColor"
+        strokeWidth={6}
+        opacity={0.5}
       />
     </g>
 

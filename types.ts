@@ -37,6 +37,7 @@ export interface GbaConfig {
   useCustomButtonsInHiMode: boolean;
   gbcLensOffset: { x: number; y: number };
   gbcScreenOffset: { x: number; y: number };
+  gbcSpeakerOffset: { x: number; y: number };
   gbcLogoGameBoyColor: ColorOption;
   gbcLogoColorWordColor: ColorOption;
 }

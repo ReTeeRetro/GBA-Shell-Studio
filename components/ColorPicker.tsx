@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ColorOption, ShopMode } from '../types';
 // Fixed: Import useGba from GbaContext instead of hooks/useGbaState
@@ -304,9 +303,9 @@ export const ColorPicker: React.FC = () => {
             </h2>
             <button
                 onClick={() => setters.setIsClearShell(!config.isClearShell)}
-                disabled={!!shopMode || consoleType === 'gbc'}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${ (shopMode || consoleType === 'gbc') ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
-                title={consoleType === 'gbc' ? "Clear shells not yet available for GBC" : shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
+                disabled={!!shopMode}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${ !!shopMode ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearShell ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
+                title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Shell"}
             >
                 {config.isClearShell ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 Clear Shell
@@ -501,9 +500,9 @@ export const ColorPicker: React.FC = () => {
           <div className="flex items-center gap-2">
               <button
                   onClick={() => setters.setIsClearButtons(!config.isClearButtons)}
-                  disabled={(!!shopMode && isLockedMode) || consoleType === 'gbc'}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${((shopMode && isLockedMode) || consoleType === 'gbc') ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
-                  title={consoleType === 'gbc' ? "Clear buttons not yet available for GBC" : shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
+                  disabled={(!!shopMode && isLockedMode)}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${(shopMode && isLockedMode) ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${config.isClearButtons ? 'bg-slate-800 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-500'}`}
+                  title={shopMode ? "Transparency is fixed by selection in Shop Mode" : "Toggle Clear/Transparent Buttons"}
               >
                   {config.isClearButtons ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                   Clear Buttons
