@@ -1,15 +1,49 @@
 import { GbaConfig } from '../types';
 
-export const downloadGbaImage = (svgElement: SVGSVGElement | null, config: GbaConfig) => {
+const toDataURL = async (url: string): Promise<string> => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.error('Failed to fetch image for data URL:', url, e);
+    return url;
+  }
+};
+
+export const downloadGbaImage = async (svgElement: SVGSVGElement | null, config: GbaConfig) => {
   if (!svgElement) return;
 
   const isGbc = config.consoleType === 'gbc';
-  const w = isGbc ? 600 : 900;
-  const h = isGbc ? 900 : 550;
+  const w = isGbc ? 900 : 900;
+  const h = isGbc ? 930 : 550;
   const scale = 2; // High res scale
   const footerHeight = 220; // Increased for more rows
 
   const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+  
+  // Inline all images to ensure they appear in the export
+  const images = svgClone.querySelectorAll('image');
+  for (const img of Array.from(images)) {
+    const href = img.getAttribute('href');
+    if (href && !href.startsWith('data:')) {
+      const dataUrl = await toDataURL(href);
+      img.setAttribute('href', dataUrl);
+    }
+  }
+
+  // Ensure viewBox matches the dimensions we expect for the clone
+  if (isGbc) {
+    svgClone.setAttribute('viewBox', '0 0 900 930');
+  } else {
+    svgClone.setAttribute('viewBox', '0 0 900 550');
+  }
+
   svgClone.setAttribute('width', `${w * scale}`);
   svgClone.setAttribute('height', `${h * scale}`);
 
