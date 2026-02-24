@@ -386,10 +386,10 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
               transform={`translate(${displayTranslateX}, ${displayTranslateY})`}
             >
               <g transform="translate(300, 240) scale(0.82) translate(-300, -240)">
-                <rect x="100" y="90" width="400" height="360" rx="4" fill="url(#gbcScreenOffGradient)" />
+                <rect x="80" y="90" width="440" height="360" rx="4" fill="url(#gbcScreenOffGradient)" />
                 {isScreenOn && (
                   <g>
-                    <rect x="100" y="90" width="400" height="360" rx="4" fill="url(#gbcScreenOnGradient)" />
+                    <rect x="80" y="90" width="440" height="360" rx="4" fill="url(#gbcScreenOnGradient)" />
                     <text 
                       x="300" y="260" 
                       textAnchor="middle" 
@@ -420,7 +420,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 )}
                 
                 <rect 
-                  x="100" y="90" width="400" height="360" 
+                  x="80" y="90" width="440" height="360" 
                   fill="transparent" 
                   style={{ cursor: onToggleScreen ? 'pointer' : 'default' }}
                   onClick={onToggleScreen}
