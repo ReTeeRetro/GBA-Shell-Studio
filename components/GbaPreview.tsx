@@ -1,6 +1,7 @@
 
 import { forwardRef } from 'react';
 import { ColorOption, ShopMode } from '../types';
+import gbaPcbUrl from './Gbapcb.svg';
 import {
   ShellPaths,
   DpadPaths,
@@ -108,10 +109,10 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const DPAD_X = 46;
     const DPAD_Y = 133;
 
-    const DPAD_MEMBRANE_X = DPAD_X + 143;
-    const DPAD_MEMBRANE_Y = DPAD_Y + 92;
+    const DPAD_MEMBRANE_X = DPAD_X + 150;
+    const DPAD_MEMBRANE_Y = DPAD_Y + 97;
     const DPAD_MEMBRANE_ROTATION = 155;
-    const DPAD_MEMBRANE_SCALE = 0.93;
+    const DPAD_MEMBRANE_SCALE = 1;
 
     const SELECT_BUTTON_X = 141;
     const SELECT_BUTTON_Y = 331;
@@ -130,6 +131,11 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
     const POWER_SWITCH_BTN_Y = isScreenOn ? 215 : 208;
     const POWER_SWITCH_BTN_SCALE = 0.62;
     const POWER_SWITCH_BTN_ROTATION = 20;
+
+    // PCB positioning logic
+    const PCB_X = 15;
+    const PCB_Y = 5;
+    const PCB_SCALE = 1.17;
 
     const showTexture = true;
     const showShading = true;
@@ -446,12 +452,18 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
           <g id="main-console" transform={`translate(${SHELL_OFFSET_X}, ${SHELL_OFFSET_Y})`}>
             <g
+              id="pcb-layer"
+              transform={`translate(${PCB_X}, ${PCB_Y}) scale(${PCB_SCALE})`}
+            >
+              <image href={gbaPcbUrl} width="660" height="378" />
+            </g>
+
+            <g
               transform={`
                 translate(${DPAD_MEMBRANE_X}, ${DPAD_MEMBRANE_Y})
                 rotate(${DPAD_MEMBRANE_ROTATION})
                 scale(${DPAD_MEMBRANE_SCALE})
               `}
-              style={{ opacity: buttonOpacity }}
             >
               <DpadMembraneBase fill={startSelectColor.hex} />
               {showTexture && (
@@ -464,7 +476,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               )}
             </g>
 
-            <g transform={`translate(${DPAD_X}, ${DPAD_Y})`} style={{ opacity: buttonOpacity }}>
+            <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
               <circle cx="53" cy="54" r="55" fill={dpadColor.hex} />
               {showTexture && (
                 <circle
@@ -546,7 +558,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             </g>
 
 
-            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.55 : 1, pointerEvents: 'none' }}>
+            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.7 : 1, pointerEvents: 'none' }}>
               <ShellPaths />
 
               <g
