@@ -75,6 +75,27 @@ npm run deploy
 
 Alternatively, it can be deployed to Vercel or Netlify by simply connecting your repository.
 
+## 🗺️ Roadmap & Future Plans
+
+I have many ideas for where to take this studio next! Here is what's on my radar for future updates:
+
+### 🎨 Visual & Realism Improvements
+- [ ] **Better Clear Materials**: Enhance the shaders for clear/transparent buttons to make them more visually interesting.
+- [ ] **Shell Details**: Add missing markings like the Nintendo logo, Start/Select text, and an improved Power LED/switch marking.
+- [ ] **Enhanced Shop Mode**: Add supplier-specific logos to lenses and parts, rather than just disabling them.
+- [ ] **Photorealism Exploration**: Investigating if the render should move towards a more photorealistic style or keep the clean "vector" look.
+
+### 🕹️ Customization & Hardware
+- [ ] **Flip the Console**: Add the ability to view the back of the GBA (battery cover, stickers, etc.).
+- [ ] **Alternative Materials**: Support for buttons in metal, resin, and other custom materials.
+- [ ] **Visual Effects**: Add support for UV-printed shells and advanced textures (Glow in the dark, Sparkle).
+- [ ] **Mod Visualizers**: Add "Button LED mods" to see how different colors look with internal lighting.
+
+### ⚡ User Experience (UX)
+- [ ] **Direct Click Interaction**: Allow users to click directly on a part of the GBA to open its color picker.
+
+Have a suggestion or want to help? Feel free to open a [Feature Request](https://github.com/ReTeeRetro/GBA-Shell-Studio/issues)!
+
 ## 🤝 Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
