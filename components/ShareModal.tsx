@@ -36,7 +36,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, config 
   };
 
   const handleSocialClick = (platform: string) => {
-    const text = "Check out my custom GBA design! #gbashellstudio";
+    const consoleName = config.consoleType === 'gbc' ? 'GBC' : 'GBA';
+    const text = `Check out my custom ${consoleName} design! #gbashellstudio`;
     const encodedUrl = encodeURIComponent(generatedUrl);
     const encodedText = encodeURIComponent(text);
 
