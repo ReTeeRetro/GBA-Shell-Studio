@@ -278,6 +278,9 @@ const AppContent = () => {
 
           <div className="space-y-6">
             <ColorPicker />
+            <div className="text-center text-sm text-slate-500 dark:text-slate-400">
+              <p>This project is open source! <a href="https://github.com/ReTeeRetro/GBA-Shell-Studio" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">View on GitHub</a></p>
+            </div>
             <InfoCard />
           </div>
         </div>
