@@ -17,16 +17,16 @@ import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, 
 const ConsoleSilhouette = ({ type }: { type: 'gba' | 'gbc' }) => {
   if (type === 'gba') {
     return (
-      <svg viewBox="0 0 24 16" className="w-5 h-4 transition-colors duration-300 text-indigo-600 dark:text-indigo-400" fill="currentColor">
+      <svg viewBox="0 0 24 16" className="w-5 h-4 transition-colors duration-300 text-indigo-700 dark:text-indigo-500" fill="currentColor">
         <rect x="2" y="2" width="20" height="12" rx="3" />
-        <rect x="7" y="5" width="10" height="6" rx="0.5" fill="white" fillOpacity="0.4" />
+        <rect x="7" y="5" width="10" height="6" rx="0.5" fill="#94a3b8" />
       </svg>
     );
   }
   return (
-    <svg viewBox="0 0 16 24" className="w-4 h-5 transition-colors duration-300 text-rose-600 dark:text-rose-400" fill="currentColor">
+    <svg viewBox="0 0 16 24" className="w-4 h-5 transition-colors duration-300 text-rose-700 dark:text-rose-500" fill="currentColor">
       <rect x="2" y="2" width="12" height="20" rx="1.5" />
-      <rect x="4" y="4" width="8" height="8" rx="0.5" fill="white" fillOpacity="0.4" />
+      <rect x="4" y="4" width="8" height="8" rx="0.5" fill="#94a3b8" />
     </svg>
   );
 };
@@ -134,20 +134,20 @@ const AppContent = () => {
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-3 text-sm font-medium text-slate-500 shrink-0">
-            <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner mr-2">
+            <div className="relative flex items-center bg-slate-200 dark:bg-slate-900 p-1 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-inner mr-2">
               <div 
                 className={`absolute h-[calc(100%-8px)] w-[calc(50%-4px)] bg-white dark:bg-slate-600 rounded-xl shadow-md transition-all duration-300 ease-spring ${config.consoleType === 'gbc' ? 'translate-x-full' : 'translate-x-0'}`}
               />
               <button
                 onClick={() => setters.setConsoleType('gba')}
-                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gba' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gba' ? 'text-indigo-700 dark:text-indigo-500' : 'text-slate-400 hover:text-slate-500'}`}
               >
                 <ConsoleSilhouette type="gba" />
                 <span className="hidden xs:block">GBA</span>
               </button>
               <button
                 onClick={() => setters.setConsoleType('gbc')}
-                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gbc' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400 hover:text-slate-500'}`}
+                className={`relative z-10 flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black transition-all hover:scale-105 active:scale-95 ${config.consoleType === 'gbc' ? 'text-rose-700 dark:text-rose-500' : 'text-slate-400 hover:text-slate-500'}`}
               >
                 <ConsoleSilhouette type="gbc" />
                 <span className="hidden xs:block">GBC</span>
