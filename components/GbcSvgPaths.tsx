@@ -130,6 +130,8 @@ export const GbcDpadMembrane = () => (
 
 export const GbcPowerButton = () => (
   <g>
+    {/* Invisible bounding box to increase clickable area */}
+    <rect x="-20" y="-20" width="80" height="150" fill="transparent" />
     <path d="M0 0 C2.64 0 5.28 0 8 0 C8 6.6 8 13.2 8 20 C11.63 20 15.26 20 19 20 C19 29.9 19 39.8 19 50 C22.3 50 25.6 50 29 50 C29 55.61 29 61.22 29 67 C25.7 67 22.4 67 19 67 C19 76.57 19 86.14 19 96 C15.37 96 11.74 96 8 96 C8 102.6 8 109.2 8 116 C5.36 116 2.72 116 0 116 C0 77.72 0 39.44 0 0 Z " fill="currentColor" transform="translate(48,46)"/>
   </g>
 );

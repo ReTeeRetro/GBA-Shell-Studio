@@ -93,7 +93,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
 
     // --- GBC Power Button (shows ONLY on clear shells) ---
     const POWER_BUTTON_X = 476;
-    const POWER_BUTTON_Y = 135;
+    const POWER_BUTTON_Y = isScreenOn ? 135 : 150;
     const POWER_BUTTON_SCALE = 1.2;
     const POWER_BUTTON_ROT = 0;
 
@@ -274,9 +274,16 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
 
             <g 
               id="gbc-power-button"
-              style={{ color: powerSwitchColor.hex, opacity: 0.8 }}
+              style={{ 
+                color: powerSwitchColor.hex, 
+                opacity: 0.8,
+                cursor: onToggleScreen ? 'pointer' : 'default',
+                transition: 'transform 0.2s ease-in-out'
+              }}
               transform={`translate(${POWER_BUTTON_X}, ${POWER_BUTTON_Y}) rotate(${POWER_BUTTON_ROT}) scale(${POWER_BUTTON_SCALE})`}
+              onClick={onToggleScreen}
             >
+              <title>Toggle Power</title>
               <GbcPowerButton />
             </g>
 
