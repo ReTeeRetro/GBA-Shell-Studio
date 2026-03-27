@@ -8,6 +8,7 @@ import { ShopModeCard } from './components/ShopModeCard';
 import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
+import { ItchPromo } from './components/ItchPromo';
 import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
@@ -274,6 +275,7 @@ const AppContent = () => {
             <AiCard onOpenAi={handleOpenAi} />
             <ExampleAiImages />
             <YoutubePromo />
+            <ItchPromo />
           </div>
 
           <div className="space-y-6">

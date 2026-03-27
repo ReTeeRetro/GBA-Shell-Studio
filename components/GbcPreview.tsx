@@ -46,6 +46,7 @@ interface GbcPreviewProps {
   isDarkMode?: boolean;
   shopMode?: ShopMode;
   showGrid?: boolean;
+  onPartClick?: (partId: string, event: React.MouseEvent) => void;
 }
 
 export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
@@ -64,6 +65,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
       isClearButtons = false,
       isScreenOn = false,
       onToggleScreen,
+      onPartClick,
     },
     ref
   ) => {
@@ -451,7 +453,13 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
             </g>
 
             <g id="gbc-buttons" style={{ opacity: buttonOpacity }}>
-              <g transform={`translate(${DPAD_X}, ${DPAD_Y}) scale(${DPAD_SCALE})`} filter="url(#gbcBtnShadowRight)">
+              <g 
+                transform={`translate(${DPAD_X}, ${DPAD_Y}) scale(${DPAD_SCALE})`} 
+                filter="url(#gbcBtnShadowRight)"
+                onClick={(e) => onPartClick?.('dpad', e)}
+                style={{ cursor: onPartClick ? 'pointer' : 'default' }}
+              >
+                <title>Change D-Pad Color</title>
                 <g id="gbc-dpad-layer">
                   <DpadPaths />
                 </g>

@@ -44,6 +44,7 @@ interface GbaPreviewProps {
   // Fix: Added optional logo color props for interface compatibility with GbcPreview
   gbcLogoGameBoyColor?: ColorOption;
   gbcLogoColorWordColor?: ColorOption;
+  onPartClick?: (partId: string, event: React.MouseEvent) => void;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -65,6 +66,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       isClearButtons = false,
       isScreenOn = false,
       onToggleScreen,
+      onPartClick,
       shopMode,
     },
     ref
@@ -672,12 +674,17 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               </rect>
             </g>
 
-            <g transform={`translate(${DPAD_X}, ${DPAD_Y})`}>
+            <g 
+              transform={`translate(${DPAD_X}, ${DPAD_Y})`}
+              onClick={(e) => onPartClick?.('dpad', e)}
+              style={{ cursor: onPartClick ? 'pointer' : 'default' }}
+            >
               <g
                 id="dpad-base-layer"
                 filter="url(#btnShadowRight)"
                 style={{ opacity: buttonOpacity }}
               >
+                <title>Change D-Pad Color</title>
                 <DpadPaths />
               </g>
 

@@ -4,6 +4,7 @@ export interface ColorOption {
   hex: string;
   shopUrl?: string;
   forcedClear?: boolean;
+  isTranslucent?: boolean;
 }
 
 export type ViewMode = 'front-off' | 'front-on' | 'back';
