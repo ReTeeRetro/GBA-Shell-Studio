@@ -3,16 +3,13 @@ import { GbaPreview } from './components/GbaPreview';
 import { GbcPreview } from './components/GbcPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
-import { AiCard } from './components/AiCard';
 import { ShopModeCard } from './components/ShopModeCard';
-import { ExampleAiImages } from './components/ExampleAiImages';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
 import { ItchPromo } from './components/ItchPromo';
 import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
-import { openAiTool } from './utils/aiUtils';
 import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
 
 const ConsoleSilhouette = ({ type }: { type: 'gba' | 'gbc' }) => {
@@ -112,7 +109,6 @@ const AppContent = () => {
   }
 
   const handleDownload = () => downloadGbaImage(svgRef.current, config);
-  const handleOpenAi = (tool: 'chatgpt' | 'gemini') => openAiTool(tool, config);
 
   const confirmReset = () => {
     reset();
@@ -272,8 +268,6 @@ const AppContent = () => {
 
             {config.consoleType === 'gba' && <ShopModeCard />}
 
-            <AiCard onOpenAi={handleOpenAi} />
-            <ExampleAiImages />
             <YoutubePromo />
             <ItchPromo />
           </div>
@@ -342,7 +336,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.1.5. Not
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.1.6. Not
           affiliated with Nintendo. 
         </p>
       </footer>

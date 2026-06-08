@@ -22,7 +22,6 @@ export const InfoCard: React.FC = () => {
           <li><strong>Get an idea</strong> on how you might want to mod your Gameboy.</li>
           <li><strong>Download</strong> your configuration as a high-res PNG.</li>
           <li><strong>Share</strong> the unique URL with others.</li>
-          <li><strong>Visualize</strong> your design using advanced AI tools.</li>
           <li><strong>Shop</strong> for the specific parts to mod your own Gameboy.</li>
         </ul>
 
