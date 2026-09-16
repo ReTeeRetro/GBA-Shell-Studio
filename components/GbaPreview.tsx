@@ -574,9 +574,9 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
               <g
                 transform={`translate(${LED_X}, ${LED_Y})`}
-                fill={isScreenOn ? "#4ade80" : "#ffffff"}
+                fill={isScreenOn ? "#4ade80" : "#f8fafc"}
                 filter={isScreenOn ? "url(#ledGlow)" : undefined}
-                opacity={isScreenOn ? 1 : 0.4}
+                opacity={isScreenOn ? 1 : 0.9}
               >
                 <PowerLedPath />
               </g>
