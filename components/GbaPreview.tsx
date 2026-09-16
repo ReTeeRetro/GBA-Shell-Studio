@@ -614,15 +614,16 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               >
                 <SpeakerGrillPath />
               </g>
+            </g>
 
-              <g
-                transform={`translate(${LED_X}, ${LED_Y})`}
-                fill={isScreenOn ? "#4ade80" : "#f8fafc"}
-                filter={isScreenOn ? "url(#ledGlow)" : undefined}
-                opacity={isScreenOn ? 1 : 0.9}
-              >
-                <PowerLedPath />
-              </g>
+            <g
+              transform={`translate(${LED_X}, ${LED_Y})`}
+              fill={isScreenOn ? "#4ade80" : "#f8fafc"}
+              filter={isScreenOn ? "url(#ledGlow)" : undefined}
+              opacity={isScreenOn ? 1 : 1}
+              pointerEvents="none"
+            >
+              <PowerLedPath />
             </g>
 
             <g pointerEvents="none">
