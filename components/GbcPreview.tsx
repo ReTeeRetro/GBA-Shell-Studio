@@ -12,6 +12,15 @@ const isLightColor = (hex: string) => {
   return luma > 210;
 };
 
+const isDarkColor = (hex: string) => {
+  const cleanHex = hex.replace('#', '');
+  const r = parseInt(cleanHex.substring(0, 2), 16) || 0;
+  const g = parseInt(cleanHex.substring(2, 4), 16) || 0;
+  const b = parseInt(cleanHex.substring(4, 6), 16) || 0;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luma < 45;
+};
+
 import {
   GbcShellPaths,
   GbcScreenPath,
@@ -156,8 +165,21 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
     const abMembraneOpacity = isDefaultMembrane ? 0.9 : 0.6;
 
     const isLightShell = isLightColor(selectedColor.hex);
-    const bgColor = isLightShell ? (isDarkMode ? '#0f172a' : '#94a3b8') : (isDarkMode ? '#0f172a' : '#e2e8f0');
-    const bgDotColor = isLightShell ? (isDarkMode ? '#1e293b' : '#64748b') : (isDarkMode ? '#1e293b' : '#cbd5e1');
+    const needsDarkBg = !isDarkMode && isLightShell;
+
+    const isDarkShell = isDarkColor(selectedColor.hex);
+    const needsLightBg = isDarkMode && isDarkShell;
+
+    let bgColor = isDarkMode ? '#0f172a' : '#e2e8f0';
+    let bgDotColor = isDarkMode ? '#1e293b' : '#cbd5e1';
+
+    if (needsDarkBg) {
+      bgColor = '#94a3b8';
+      bgDotColor = '#64748b';
+    } else if (needsLightBg) {
+      bgColor = '#1e293b';
+      bgDotColor = '#334155';
+    }
 
     return (
       <div
