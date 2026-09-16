@@ -2,6 +2,15 @@
 import { forwardRef } from 'react';
 import { ColorOption, ShopMode } from '../types';
 import gbaPcbUrl from './Gbapcb.svg';
+
+const isLightColor = (hex: string) => {
+  const cleanHex = hex.replace('#', '');
+  const r = parseInt(cleanHex.substring(0, 2), 16) || 0;
+  const g = parseInt(cleanHex.substring(2, 4), 16) || 0;
+  const b = parseInt(cleanHex.substring(4, 6), 16) || 0;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luma > 210;
+};
 import {
   ShellPaths,
   DpadPaths,
@@ -68,6 +77,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       onToggleScreen,
       onPartClick,
       shopMode,
+      isDarkMode = false,
     },
     ref
   ) => {
@@ -204,13 +214,23 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       </g>
     );
 
+    const isLightShell = isLightColor(selectedColor.hex);
+    const isLightL = isLightColor(lButtonColor.hex);
+    const isLightR = isLightColor(rButtonColor.hex);
+    const isLightLeftBumper = isLightColor(leftBumperColor.hex);
+    const isLightRightBumper = isLightColor(rightBumperColor.hex);
+
+    const needsDarkBg = isLightShell || isLightL || isLightR || isLightLeftBumper || isLightRightBumper;
+
+    const bgColor = needsDarkBg ? (isDarkMode ? '#0f172a' : '#94a3b8') : (isDarkMode ? '#0f172a' : '#e2e8f0');
+    const bgDotColor = needsDarkBg ? (isDarkMode ? '#1e293b' : '#64748b') : (isDarkMode ? '#1e293b' : '#cbd5e1');
+
     return (
       <div
         className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"
         style={{
-          backgroundColor: '#e2e8f0',
-          // Fixed CSS syntax: radial-gradient must be a string value
-          backgroundImage: 'radial-gradient(#cbd5e1 1.5px, transparent 1.5px)',
+          backgroundColor: bgColor,
+          backgroundImage: `radial-gradient(${bgDotColor} 1.5px, transparent 1.5px)`,
           backgroundSize: '20px 20px',
         }}
       >
