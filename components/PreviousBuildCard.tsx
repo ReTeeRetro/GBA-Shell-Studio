@@ -209,11 +209,6 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
             ) : (
               <span className="text-[10px] opacity-60 font-normal">(Empty)</span>
             )}
-            {currentConsole === 'gba' && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-medium">
-                In Studio
-              </span>
-            )}
           </button>
 
           {/* GBC Tab */}
@@ -234,11 +229,6 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
               <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-xs" title="GBC build saved" />
             ) : (
               <span className="text-[10px] opacity-60 font-normal">(Empty)</span>
-            )}
-            {currentConsole === 'gbc' && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-medium">
-                In Studio
-              </span>
             )}
           </button>
         </div>
