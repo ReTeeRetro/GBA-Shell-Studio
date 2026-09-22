@@ -140,14 +140,10 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
       {/* Header Bar */}
       <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
-            <History className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight">
-              Previous Builds
-            </h3>
-          </div>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wide flex items-center gap-2">
+            <History size={16} className="text-slate-900 dark:text-slate-100" />
+            Previous Builds
+          </h3>
         </div>
 
         {/* Clear/Delete button for the currently selected tab */}
