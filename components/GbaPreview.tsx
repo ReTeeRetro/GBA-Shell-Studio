@@ -63,6 +63,8 @@ interface GbaPreviewProps {
   gbcLogoGameBoyColor?: ColorOption;
   gbcLogoColorWordColor?: ColorOption;
   onPartClick?: (partId: string, event: React.MouseEvent) => void;
+  className?: string;
+  idPrefix?: string;
 }
 
 export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
@@ -87,6 +89,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
       onPartClick,
       shopMode,
       isDarkMode = false,
+      className,
+      idPrefix = 'gba-main',
     },
     ref
   ) => {
@@ -250,7 +254,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
     return (
       <div
-        className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"
+        className={className || "relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"}
         style={{
           backgroundColor: bgColor,
           backgroundImage: `radial-gradient(${bgDotColor} 1.5px, transparent 1.5px)`,
@@ -326,7 +330,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               <feGaussianBlur stdDeviation="12" result="blur" />
             </filter>
 
-            <linearGradient id="sheenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id={`${idPrefix}-sheenGradient`} x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="0.1" />
               <stop offset="30%" stopColor="#ffffff" stopOpacity="0.25" />
               <stop offset="50%" stopColor="#ffffff" stopOpacity="0.05" />
@@ -370,34 +374,34 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
           <style>
             {`
-              #base-color-layer path {
+              #${idPrefix}-base-color-layer path {
                 fill: ${selectedColor.hex} !important;
               }
-              #dpad-base-layer path {
+              #${idPrefix}-dpad-base-layer path {
                 fill: ${dpadColor.hex} !important;
               }
-              #btn-a-base path {
+              #${idPrefix}-btn-a-base path {
                 fill: ${aButtonColor.hex} !important;
               }
-              #btn-b-base path {
+              #${idPrefix}-btn-b-base path {
                 fill: ${bButtonColor.hex} !important;
               }
-              #left-bumper-path path {
+              #${idPrefix}-left-bumper-path path {
                 fill: ${leftBumperColor.hex} !important;
               }
-              #right-bumper-path path {
+              #${idPrefix}-right-bumper-path path {
                 fill: ${rightBumperColor.hex} !important;
               }
-              #l-button-path path {
+              #${idPrefix}-l-button-path path {
                 fill: ${lButtonColor.hex} !important;
               }
-              #r-button-path path {
+              #${idPrefix}-r-button-path path {
                 fill: ${rButtonColor.hex} !important;
               }
-              .sheen-fill path, .sheen-fill circle {
-                 fill: url(#sheenGradient) !important;
+              .${idPrefix}-sheen-fill path, .${idPrefix}-sheen-fill circle {
+                 fill: url(#${idPrefix}-sheenGradient) !important;
               }
-              #power-switch-button {
+              #${idPrefix}-power-switch-button {
                 transition: transform 0.3s ease-in-out;
               }
             `}
@@ -422,7 +426,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             <g style={{ opacity: buttonOpacity }}>
               <g id="bumpers-base">
                 <g
-                  id="left-bumper-path"
+                  id={`${idPrefix}-left-bumper-path`}
                   transform={`
                     translate(${LEFT_BUMPER_OFFSET_X}, ${LEFT_BUMPER_OFFSET_Y})
                     rotate(${LEFT_BUMPER_ROTATION})
@@ -433,7 +437,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
 
                 <g
-                  id="right-bumper-path"
+                  id={`${idPrefix}-right-bumper-path`}
                   transform={`
                     translate(${RIGHT_BUMPER_OFFSET_X}, ${RIGHT_BUMPER_OFFSET_Y})
                     rotate(${RIGHT_BUMPER_ROTATION})
@@ -446,7 +450,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
 
               <g id="bumper-buttons-layer">
                 <g
-                  id="l-button-path"
+                  id={`${idPrefix}-l-button-path`}
                   transform={`
                     translate(${L_BUTTON_OFFSET_X}, ${L_BUTTON_OFFSET_Y})
                     rotate(${L_BUTTON_ROTATION})
@@ -457,7 +461,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
 
                 <g
-                  id="r-button-path"
+                  id={`${idPrefix}-r-button-path`}
                   transform={`
                     translate(${R_BUTTON_OFFSET_X}, ${R_BUTTON_OFFSET_Y})
                     rotate(${R_BUTTON_ROTATION})
@@ -585,7 +589,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             )}
 
             <g
-              id="power-switch-button"
+              id={`${idPrefix}-power-switch-button`}
               transform={`
                 translate(${POWER_SWITCH_BTN_X}, ${POWER_SWITCH_BTN_Y})
                 rotate(${POWER_SWITCH_BTN_ROTATION})
@@ -603,7 +607,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
             </g>
 
 
-            <g id="base-color-layer" style={{ opacity: isClearShell ? 0.7 : 1, pointerEvents: 'none' }}>
+            <g id={`${idPrefix}-base-color-layer`} style={{ opacity: isClearShell ? 0.7 : 1, pointerEvents: 'none' }}>
               <ShellPaths />
 
               <g
@@ -633,7 +637,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 </g>
               )}
               {showTexture && (
-                <g className="sheen-fill" style={{ mixBlendMode: 'screen' }} opacity="0.4">
+                <g className={`${idPrefix}-sheen-fill`} style={{ mixBlendMode: 'screen' }} opacity="0.4">
                   <ShellPaths />
                 </g>
               )}
@@ -724,7 +728,7 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
               style={{ cursor: onPartClick ? 'pointer' : 'default' }}
             >
               <g
-                id="dpad-base-layer"
+                id={`${idPrefix}-dpad-base-layer`}
                 filter="url(#btnShadowRight)"
                 style={{ opacity: buttonOpacity }}
               >
@@ -757,8 +761,8 @@ export const GbaPreview = forwardRef<SVGSVGElement, GbaPreviewProps>(
                 filter="url(#btnShadowLeft)"
                 style={{ opacity: buttonOpacity }}
               >
-                <g id="btn-a-base">{A_BUTTON_SHAPE}</g>
-                <g id="btn-b-base">{B_BUTTON_SHAPE}</g>
+                <g id={`${idPrefix}-btn-a-base`}>{A_BUTTON_SHAPE}</g>
+                <g id={`${idPrefix}-btn-b-base`}>{B_BUTTON_SHAPE}</g>
                 {BUTTON_LABELS}
               </g>
 

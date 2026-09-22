@@ -4,6 +4,7 @@ import { GbcPreview } from './components/GbcPreview';
 import { ColorPicker } from './components/ColorPicker';
 import { HeaderLogo } from './components/HeaderLogo';
 import { ShopModeCard } from './components/ShopModeCard';
+import { PreviousBuildCard } from './components/PreviousBuildCard';
 import { InfoCard } from './components/InfoCard';
 import { YoutubePromo } from './components/YoutubePromo';
 import { ItchPromo } from './components/ItchPromo';
@@ -267,6 +268,8 @@ const AppContent = () => {
             </div>
 
             {config.consoleType === 'gba' && <ShopModeCard />}
+
+            <PreviousBuildCard isDarkMode={isDark} />
 
             <YoutubePromo />
             <ItchPromo />

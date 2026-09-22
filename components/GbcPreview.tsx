@@ -66,6 +66,8 @@ interface GbcPreviewProps {
   shopMode?: ShopMode;
   showGrid?: boolean;
   onPartClick?: (partId: string, event: React.MouseEvent) => void;
+  className?: string;
+  idPrefix?: string;
 }
 
 export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
@@ -86,6 +88,8 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
       onToggleScreen,
       onPartClick,
       isDarkMode = false,
+      className,
+      idPrefix = 'gbc-main',
     },
     ref
   ) => {
@@ -183,7 +187,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
 
     return (
       <div
-        className="relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"
+        className={className || "relative w-full max-w-4xl mx-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group transition-colors duration-300 bg-slate-200"}
         style={{
           backgroundColor: bgColor,
           backgroundImage: `radial-gradient(${bgDotColor} 1.5px, transparent 1.5px)`,
@@ -253,7 +257,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
 
           <style>
             {`
-              #gbc-dpad-layer path {
+              #${idPrefix}-dpad-layer path {
                 fill: ${dpadColor.hex} !important;
               }
             `}
@@ -497,7 +501,7 @@ export const GbcPreview = forwardRef<SVGSVGElement, GbcPreviewProps>(
                 style={{ cursor: onPartClick ? 'pointer' : 'default' }}
               >
                 <title>Change D-Pad Color</title>
-                <g id="gbc-dpad-layer">
+                <g id={`${idPrefix}-dpad-layer`}>
                   <DpadPaths />
                 </g>
                 <DpadEngraving />

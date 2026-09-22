@@ -195,6 +195,7 @@ export interface GbaStateResult {
         setGbcScreenOffset: (val: { x: number; y: number }) => void;
         setGbcSpeakerOffset: (val: { x: number; y: number }) => void;
     };
+    loadConfig: (val: GbaConfig) => void;
     randomize: () => void;
     reset: () => void;
     undo: () => void;
@@ -536,6 +537,16 @@ export const useGbaState = (): GbaStateResult => {
     updateConfig(updates);
   };
 
+  const loadConfig = useCallback((newConfig: GbaConfig) => {
+    const validated = deriveValidConfig(newConfig);
+    setPast((p) => [...p.slice(-49), config]);
+    setFuture([]);
+    setConfig(validated);
+    if (validated.consoleType === 'gbc') {
+      setHasSeenGbc(true);
+    }
+  }, [config]);
+
   const reset = () => {
     if (typeof window !== 'undefined') {
       try {
@@ -579,6 +590,7 @@ export const useGbaState = (): GbaStateResult => {
   return {
     config,
     setters,
+    loadConfig,
     randomize,
     reset,
     undo,
