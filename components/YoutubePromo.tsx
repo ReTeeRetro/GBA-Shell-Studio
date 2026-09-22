@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Youtube, ExternalLink } from 'lucide-react';
+import { IconBrandYoutube as Youtube, IconExternalLink as ExternalLink } from '@tabler/icons-react';
 
 export const YoutubePromo: React.FC = () => {
   return (

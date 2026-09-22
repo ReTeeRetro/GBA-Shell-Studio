@@ -11,16 +11,16 @@ import {
   SavedBuildData,
 } from '../utils/storageUtils';
 import {
-  History,
-  RotateCcw,
-  Trash2,
-  ArrowUpRight,
-  Check,
-  Clock,
-  Save,
-  Gamepad2,
-  ShieldCheck,
-} from 'lucide-react';
+  IconHistory as History,
+  IconRotate2 as RotateCcw,
+  IconTrash as Trash2,
+  IconArrowUpRight as ArrowUpRight,
+  IconCheck as Check,
+  IconClock as Clock,
+  IconDeviceFloppy as Save,
+  IconDeviceGamepad2 as Gamepad2,
+  IconShieldCheck as ShieldCheck,
+} from '@tabler/icons-react';
 
 interface PreviousBuildCardProps {
   isDarkMode?: boolean;

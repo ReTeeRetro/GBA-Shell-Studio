@@ -11,7 +11,18 @@ import { ItchPromo } from './components/ItchPromo';
 import { ShareModal } from './components/ShareModal';
 import { GbaProvider, useGba } from './contexts/GbaContext';
 import { downloadGbaImage } from './utils/downloadUtils';
-import { Download, RotateCcw, Pin, Share2, Undo2, Redo2, AlertTriangle, X, Sun, Moon } from 'lucide-react';
+import {
+  IconDownload as Download,
+  IconRotate2 as RotateCcw,
+  IconPin as Pin,
+  IconShare as Share2,
+  IconArrowBackUp as Undo2,
+  IconArrowForwardUp as Redo2,
+  IconAlertTriangle as AlertTriangle,
+  IconX as X,
+  IconSun as Sun,
+  IconMoon as Moon,
+} from '@tabler/icons-react';
 
 const ConsoleSilhouette = ({ type }: { type: 'gba' | 'gbc' }) => {
   if (type === 'gba') {
@@ -339,7 +350,7 @@ const AppContent = () => {
 
       <footer className="border-t border-slate-200 dark:border-slate-800 mt-12 py-8 text-center text-slate-400 dark:text-slate-500 text-sm bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors">
         <p>
-          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.1.8. Not
+          &copy; {new Date().getFullYear()} <a href="https://www.gba-shell-studio.com">GBA Shell Studio</a> by ReTee Retro. Version 3.1.9. Not
           affiliated with Nintendo. 
         </p>
       </footer>

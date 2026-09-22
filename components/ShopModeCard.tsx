@@ -1,5 +1,14 @@
 import React from 'react';
-import { ShoppingBag, Info, CheckCircle2, Monitor, Layers, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
+import {
+  IconShoppingBag as ShoppingBag,
+  IconInfoCircle as Info,
+  IconCircleCheck as CheckCircle2,
+  IconDeviceDesktop as Monitor,
+  IconLayersSubtract as Layers,
+  IconExternalLink as ExternalLink,
+  IconToggleLeft as ToggleLeft,
+  IconToggleRight as ToggleRight,
+} from '@tabler/icons-react';
 import { useGba } from '../contexts/GbaContext';
 import { getPartUrl, getButtonLabel, getScreenLabel, getButtonColorStyle } from '../utils/shopUtils';
 

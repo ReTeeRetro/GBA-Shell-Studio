@@ -24,7 +24,19 @@ import {
   GBC_BUTTON_GREY
 } from '../constants';
 import { getButtonColorStyle } from '../utils/shopUtils';
-import { ChevronDown, ChevronRight, SlidersHorizontal, Palette, Shuffle, ToggleLeft, ToggleRight, ShoppingBag, Lock, Unlock, Info } from 'lucide-react';
+import {
+  IconChevronDown as ChevronDown,
+  IconChevronRight as ChevronRight,
+  IconAdjustmentsHorizontal as SlidersHorizontal,
+  IconPalette as Palette,
+  IconArrowsShuffle as Shuffle,
+  IconToggleLeft as ToggleLeft,
+  IconToggleRight as ToggleRight,
+  IconShoppingBag as ShoppingBag,
+  IconLock as Lock,
+  IconLockOpen as Unlock,
+  IconInfoCircle as Info,
+} from '@tabler/icons-react';
 
 const areColorsEqual = (a: ColorOption, b: ColorOption) => {
   if (a.id === 'custom' || b.id === 'custom') {

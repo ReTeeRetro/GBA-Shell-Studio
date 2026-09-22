@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Link as LinkIcon, Check, Copy } from 'lucide-react';
+import { IconX as X, IconLink as LinkIcon, IconCheck as Check, IconCopy as Copy } from '@tabler/icons-react';
 import { GbaConfig } from '../types';
 import { serializeConfig } from '../utils/urlUtils';
 

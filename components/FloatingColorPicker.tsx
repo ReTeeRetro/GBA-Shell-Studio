@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ColorOption } from '../types';
 import { getButtonColorStyle } from '../utils/shopUtils';
-import { Palette } from 'lucide-react';
+import { IconPalette as Palette } from '@tabler/icons-react';
 
 const HexInput = ({ color, onColorChange, className = "" }: { color: ColorOption, onColorChange: (c: ColorOption) => void, className?: string }) => {
   const [value, setValue] = React.useState(color.hex);
