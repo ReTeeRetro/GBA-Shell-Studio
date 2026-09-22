@@ -5,7 +5,13 @@ export interface SavedBuildData {
   savedAt: number;
 }
 
-export const STORAGE_KEY = 'gba_shell_studio_saved_build';
+export const STORAGE_KEY_GBA = 'gba_shell_studio_saved_build_gba';
+export const STORAGE_KEY_GBC = 'gba_shell_studio_saved_build_gbc';
+export const LEGACY_STORAGE_KEY = 'gba_shell_studio_saved_build';
+
+export const getStorageKey = (consoleType: 'gba' | 'gbc'): string => {
+  return consoleType === 'gbc' ? STORAGE_KEY_GBC : STORAGE_KEY_GBA;
+};
 
 export const isSameConfig = (a?: GbaConfig | null, b?: GbaConfig | null): boolean => {
   if (!a || !b) return false;
@@ -30,16 +36,36 @@ export const isSameConfig = (a?: GbaConfig | null, b?: GbaConfig | null): boolea
   );
 };
 
-export const getSavedBuild = (): SavedBuildData | null => {
+export const getSavedBuild = (consoleType: 'gba' | 'gbc'): SavedBuildData | null => {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const key = getStorageKey(consoleType);
+    let raw = localStorage.getItem(key);
+
+    // If no build found under this console's specific key, check if legacy storage has one
+    if (!raw) {
+      const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacyRaw) {
+        try {
+          const legacyParsed = JSON.parse(legacyRaw);
+          const legacyType: 'gba' | 'gbc' = legacyParsed?.config?.consoleType === 'gbc' ? 'gbc' : 'gba';
+          if (legacyType === consoleType && legacyParsed?.config?.selectedColor) {
+            // Migrate into specific key
+            localStorage.setItem(key, legacyRaw);
+            raw = legacyRaw;
+          }
+        } catch {
+          // ignore parsing error
+        }
+      }
+    }
+
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || !parsed.config || !parsed.config.selectedColor) return null;
     return parsed as SavedBuildData;
   } catch (err) {
-    console.warn('Failed to load saved build from localStorage:', err);
+    console.warn(`Failed to load saved ${consoleType} build from localStorage:`, err);
     return null;
   }
 };
@@ -47,24 +73,41 @@ export const getSavedBuild = (): SavedBuildData | null => {
 export const saveBuildToStorage = (config: GbaConfig): SavedBuildData | null => {
   if (typeof window === 'undefined') return null;
   try {
+    const consoleType: 'gba' | 'gbc' = config.consoleType === 'gbc' ? 'gbc' : 'gba';
+    const key = getStorageKey(consoleType);
     const data: SavedBuildData = {
       config,
       savedAt: Date.now(),
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data));
     return data;
   } catch (err) {
-    console.warn('Failed to save build to localStorage:', err);
+    console.warn(`Failed to save ${config.consoleType} build to localStorage:`, err);
     return null;
   }
 };
 
-export const clearSavedBuildFromStorage = (): void => {
+export const clearSavedBuildFromStorage = (consoleType: 'gba' | 'gbc'): void => {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    const key = getStorageKey(consoleType);
+    localStorage.removeItem(key);
+
+    // Also remove legacy key if it matched this console type
+    const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacyRaw) {
+      try {
+        const legacyParsed = JSON.parse(legacyRaw);
+        const legacyType = legacyParsed?.config?.consoleType === 'gbc' ? 'gbc' : 'gba';
+        if (legacyType === consoleType) {
+          localStorage.removeItem(LEGACY_STORAGE_KEY);
+        }
+      } catch {
+        // ignore
+      }
+    }
   } catch (err) {
-    console.warn('Failed to clear saved build from localStorage:', err);
+    console.warn(`Failed to clear saved ${consoleType} build from localStorage:`, err);
   }
 };
 
