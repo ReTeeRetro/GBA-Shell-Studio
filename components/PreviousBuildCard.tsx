@@ -8,6 +8,8 @@ import {
   clearSavedBuildFromStorage,
   formatSavedTime,
   isSameConfig,
+  getAutoSaveEnabled,
+  setAutoSaveEnabledInStorage,
   SavedBuildData,
 } from '../utils/storageUtils';
 import {
@@ -20,6 +22,8 @@ import {
   IconDeviceFloppy as Save,
   IconDeviceGamepad2 as Gamepad2,
   IconShieldCheck as ShieldCheck,
+  IconToggleLeft as ToggleLeft,
+  IconToggleRight as ToggleRight,
 } from '@tabler/icons-react';
 
 interface PreviousBuildCardProps {
@@ -34,6 +38,9 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
   const [savedGbaBuild, setSavedGbaBuild] = useState<SavedBuildData | null>(() => getSavedBuild('gba'));
   const [savedGbcBuild, setSavedGbcBuild] = useState<SavedBuildData | null>(() => getSavedBuild('gbc'));
 
+  // User toggle for enabling / disabling auto-save feature
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState<boolean>(() => getAutoSaveEnabled());
+
   // Which console's saved build is currently being inspected in the card tabs
   const [selectedTab, setSelectedTab] = useState<'gba' | 'gbc'>(() => currentConsole);
 
@@ -44,6 +51,13 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
   const [justLoaded, setJustLoaded] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Toggle handler for auto-save
+  const handleToggleAutoSave = () => {
+    const nextVal = !autoSaveEnabled;
+    setAutoSaveEnabled(nextVal);
+    setAutoSaveEnabledInStorage(nextVal);
+  };
 
   // Sync tab with top-level console switch
   useEffect(() => {
@@ -62,8 +76,9 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
     }
   }, [resetCount, currentConsole]);
 
-  // Auto-save ONLY for the active console if it was explicitly continued or saved in this session
+  // Auto-save ONLY if enabled AND for the active console if it was explicitly continued or saved in this session
   useEffect(() => {
+    if (!autoSaveEnabled) return;
     const isAutoSaving = currentConsole === 'gbc' ? isEditingSavedGbc : isEditingSavedGba;
     if (!isAutoSaving) return;
 
@@ -79,7 +94,7 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
     }, 800);
 
     return () => clearTimeout(timer);
-  }, [config, currentConsole, isEditingSavedGba, isEditingSavedGbc]);
+  }, [config, currentConsole, isEditingSavedGba, isEditingSavedGbc, autoSaveEnabled]);
 
   const activeSavedBuild = selectedTab === 'gbc' ? savedGbcBuild : savedGbaBuild;
   const isEditingCurrentTab = selectedTab === 'gbc' ? isEditingSavedGbc : isEditingSavedGba;
@@ -146,41 +161,62 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
           </h3>
         </div>
 
-        {/* Clear/Delete button for the currently selected tab */}
-        {activeSavedBuild && (
-          <div className="relative">
-            {showDeleteConfirm ? (
-              <div className="flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-1 rounded-lg border border-rose-200 dark:border-rose-900/60">
-                <span className="text-[11px] font-medium text-rose-700 dark:text-rose-300 px-1">
-                  Delete {selectedTab === 'gbc' ? 'GBC' : 'GBA'} save?
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleClear(selectedTab)}
-                  className="px-2 py-1 text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded transition-colors"
-                >
-                  Confirm
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
+        <div className="flex items-center gap-3">
+          {/* Auto-save Toggle */}
+          <button
+            type="button"
+            onClick={handleToggleAutoSave}
+            title={autoSaveEnabled ? "Auto-save is ON (click to disable)" : "Auto-save is OFF (click to enable)"}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium transition-all ${
+              autoSaveEnabled
+                ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-900 shadow-xs'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}
+          >
+            <span>Auto-save</span>
+            {autoSaveEnabled ? (
+              <ToggleRight size={18} className="shrink-0 text-emerald-400 dark:text-emerald-600" />
             ) : (
-              <button
-                type="button"
-                onClick={() => setShowDeleteConfirm(true)}
-                title={`Clear saved ${selectedTab === 'gbc' ? 'Game Boy Color' : 'Game Boy Advance'} build`}
-                className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <ToggleLeft size={18} className="shrink-0 text-slate-400 dark:text-slate-500" />
             )}
-          </div>
-        )}
+          </button>
+
+          {/* Clear/Delete button for the currently selected tab */}
+          {activeSavedBuild && (
+            <div className="relative">
+              {showDeleteConfirm ? (
+                <div className="flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-1 rounded-lg border border-rose-200 dark:border-rose-900/60">
+                  <span className="text-[11px] font-medium text-rose-700 dark:text-rose-300 px-1">
+                    Delete {selectedTab === 'gbc' ? 'GBC' : 'GBA'} save?
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleClear(selectedTab)}
+                    className="px-2 py-1 text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded transition-colors"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  title={`Clear saved ${selectedTab === 'gbc' ? 'Game Boy Color' : 'Game Boy Advance'} build`}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Console Tab Selector */}
@@ -285,7 +321,7 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
                     </span>
                   </div>
 
-                  {isTabActiveInStudio && isEditingCurrentTab ? (
+                  {isTabActiveInStudio && isEditingCurrentTab && autoSaveEnabled ? (
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       Auto-saving

@@ -8,6 +8,27 @@ export interface SavedBuildData {
 export const STORAGE_KEY_GBA = 'gba_shell_studio_saved_build_gba';
 export const STORAGE_KEY_GBC = 'gba_shell_studio_saved_build_gbc';
 export const LEGACY_STORAGE_KEY = 'gba_shell_studio_saved_build';
+export const AUTOSAVE_PREF_KEY = 'gba_shell_studio_autosave_enabled';
+
+export const getAutoSaveEnabled = (): boolean => {
+  if (typeof window === 'undefined') return true;
+  try {
+    const raw = localStorage.getItem(AUTOSAVE_PREF_KEY);
+    if (raw === null) return true; // Enabled by default
+    return raw === 'true';
+  } catch {
+    return true;
+  }
+};
+
+export const setAutoSaveEnabledInStorage = (enabled: boolean): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(AUTOSAVE_PREF_KEY, String(enabled));
+  } catch (err) {
+    console.warn('Failed to save autosave preference:', err);
+  }
+};
 
 export const getStorageKey = (consoleType: 'gba' | 'gbc'): string => {
   return consoleType === 'gbc' ? STORAGE_KEY_GBC : STORAGE_KEY_GBA;
