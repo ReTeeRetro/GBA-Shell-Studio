@@ -144,17 +144,9 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
             <History className="w-4 h-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight">
-                Previous Builds
-              </h3>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
-                Independent Saves
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Separate browser saves for GBA and GBC — customizing one never overwrites the other.
-            </p>
+            <h3 className="font-semibold text-slate-900 dark:text-white text-base leading-tight">
+              Previous Builds
+            </h3>
           </div>
         </div>
 
@@ -310,7 +302,7 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
                   {isTabActiveInStudio && isEditingCurrentTab ? (
                     <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Active in Studio (Auto-saving)
+                      Auto-saving
                     </span>
                   ) : (
                     <span
@@ -318,7 +310,7 @@ export const PreviousBuildCard: React.FC<PreviousBuildCardProps> = ({ isDarkMode
                       title="Customizing the base console will not overwrite this save"
                     >
                       <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
-                      Preserved (Auto-save Paused)
+                      Auto-save Paused
                     </span>
                   )}
                 </div>
