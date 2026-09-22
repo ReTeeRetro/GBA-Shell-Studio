@@ -7,6 +7,29 @@ export interface SavedBuildData {
 
 export const STORAGE_KEY = 'gba_shell_studio_saved_build';
 
+export const isSameConfig = (a?: GbaConfig | null, b?: GbaConfig | null): boolean => {
+  if (!a || !b) return false;
+  return (
+    a.consoleType === b.consoleType &&
+    a.selectedColor?.hex === b.selectedColor?.hex &&
+    a.aButtonColor?.hex === b.aButtonColor?.hex &&
+    a.bButtonColor?.hex === b.bButtonColor?.hex &&
+    a.dpadColor?.hex === b.dpadColor?.hex &&
+    a.lensColor?.hex === b.lensColor?.hex &&
+    a.startSelectColor?.hex === b.startSelectColor?.hex &&
+    a.powerSwitchColor?.hex === b.powerSwitchColor?.hex &&
+    a.leftBumperColor?.hex === b.leftBumperColor?.hex &&
+    a.rightBumperColor?.hex === b.rightBumperColor?.hex &&
+    Boolean(a.isClearShell) === Boolean(b.isClearShell) &&
+    Boolean(a.isClearButtons) === Boolean(b.isClearButtons) &&
+    a.shopMode === b.shopMode &&
+    (a.consoleType !== 'gbc' || (
+      a.gbcLogoGameBoyColor?.hex === b.gbcLogoGameBoyColor?.hex &&
+      a.gbcLogoColorWordColor?.hex === b.gbcLogoColorWordColor?.hex
+    ))
+  );
+};
+
 export const getSavedBuild = (): SavedBuildData | null => {
   if (typeof window === 'undefined') return null;
   try {

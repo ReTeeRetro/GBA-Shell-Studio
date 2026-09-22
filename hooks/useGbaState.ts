@@ -202,6 +202,7 @@ export interface GbaStateResult {
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
+    resetCount: number;
 }
 
 export const useGbaState = (): GbaStateResult => {
@@ -259,6 +260,7 @@ export const useGbaState = (): GbaStateResult => {
   const [config, setConfig] = useState<GbaConfig>(getInitialConfig);
   const [past, setPast] = useState<GbaConfig[]>([]);
   const [future, setFuture] = useState<GbaConfig[]>([]);
+  const [resetCount, setResetCount] = useState<number>(0);
 
   // If we start as GBC, we've effectively already "seen" it
   useEffect(() => {
@@ -548,6 +550,7 @@ export const useGbaState = (): GbaStateResult => {
   }, [config]);
 
   const reset = () => {
+    setResetCount((c) => c + 1);
     if (typeof window !== 'undefined') {
       try {
         const url = new URL(window.location.href);
@@ -597,5 +600,6 @@ export const useGbaState = (): GbaStateResult => {
     redo,
     canUndo: past.length > 0,
     canRedo: future.length > 0,
+    resetCount,
   };
 };
