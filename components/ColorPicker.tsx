@@ -238,6 +238,54 @@ export const ColorPicker: React.FC = () => {
   const { config, setters, randomize } = useGba();
   const [showIndividualControls, setShowIndividualControls] = useState(false);
   const [showLogoControls, setShowLogoControls] = useState(false);
+  const [randomizeLocks, setRandomizeLocks] = useState<{ shell: boolean; lens: boolean; buttons: boolean }>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('gba_randomize_locks');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            shell: !!parsed.shell,
+            lens: !!parsed.lens,
+            buttons: !!parsed.buttons,
+          };
+        }
+      } catch {
+        // fallback to defaults
+      }
+    }
+    return { shell: false, lens: false, buttons: false };
+  });
+
+  const toggleLock = (key: 'shell' | 'lens' | 'buttons') => {
+    setRandomizeLocks((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      try {
+        localStorage.setItem('gba_randomize_locks', JSON.stringify(next));
+      } catch {
+        // ignore storage error
+      }
+      return next;
+    });
+  };
+
+  const resetLocks = () => {
+    const defaultLocks = { shell: false, lens: false, buttons: false };
+    setRandomizeLocks(defaultLocks);
+    try {
+      localStorage.setItem('gba_randomize_locks', JSON.stringify(defaultLocks));
+    } catch {
+      // ignore
+    }
+  };
+
+  const allLocked = randomizeLocks.shell && randomizeLocks.lens && randomizeLocks.buttons;
+  const hasAnyLocked = randomizeLocks.shell || randomizeLocks.lens || randomizeLocks.buttons;
+
+  const handleRandomize = () => {
+    if (allLocked) return;
+    randomize(randomizeLocks);
+  };
 
   const { shopMode, rgrsSubBrand, useCustomButtonsInHiMode, consoleType } = config;
 
@@ -627,14 +675,103 @@ export const ColorPicker: React.FC = () => {
         )}
       </div>
 
-      <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
+      <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 space-y-3">
         <button
-          onClick={randomize}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-all duration-200 group shadow-md hover:shadow-lg border border-transparent dark:shadow-orange-900/20"
+          type="button"
+          onClick={handleRandomize}
+          disabled={allLocked}
+          className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold rounded-xl transition-all duration-200 group shadow-md border border-transparent ${
+            allLocked
+              ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none'
+              : 'bg-orange-600 hover:bg-orange-700 text-white hover:shadow-lg dark:shadow-orange-900/20 active:scale-[0.99]'
+          }`}
+          title={allLocked ? "Unlock at least one part to randomize colors" : "Randomize colors for unlocked parts"}
         >
-          <Shuffle size={18} className="transition-transform group-hover:rotate-180" />
-          Randomize Colors
+          <Shuffle size={18} className={`transition-transform ${allLocked ? '' : 'group-hover:rotate-180'}`} />
+          {allLocked ? 'All Colors Locked' : 'Randomize Colors'}
         </button>
+
+        {/* Lock options for randomizer */}
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200/70 dark:border-slate-800">
+          <div className="flex items-center justify-between mb-2 px-0.5">
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Lock size={12} className="text-slate-400 dark:text-slate-500" />
+              Lock for Randomizer
+            </span>
+            {hasAnyLocked && (
+              <button
+                type="button"
+                onClick={resetLocks}
+                className="text-[10px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 underline decoration-dotted transition-colors"
+                title="Unlock all options"
+              >
+                Reset locks
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            {/* Shell Lock */}
+            <button
+              type="button"
+              onClick={() => toggleLock('shell')}
+              aria-pressed={randomizeLocks.shell}
+              className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg border text-xs font-semibold transition-all duration-150 ${
+                randomizeLocks.shell
+                  ? 'bg-amber-500/15 border-amber-400/80 text-amber-800 dark:text-amber-200 dark:bg-amber-950/40 dark:border-amber-600/70 shadow-xs'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title={randomizeLocks.shell ? 'Shell color is locked for randomizer' : 'Click to lock Shell color'}
+            >
+              {randomizeLocks.shell ? (
+                <Lock size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              ) : (
+                <Unlock size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
+              )}
+              <span>Shell</span>
+            </button>
+
+            {/* Lens Lock */}
+            <button
+              type="button"
+              onClick={() => toggleLock('lens')}
+              aria-pressed={randomizeLocks.lens}
+              className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg border text-xs font-semibold transition-all duration-150 ${
+                randomizeLocks.lens
+                  ? 'bg-amber-500/15 border-amber-400/80 text-amber-800 dark:text-amber-200 dark:bg-amber-950/40 dark:border-amber-600/70 shadow-xs'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title={randomizeLocks.lens ? 'Lens color is locked for randomizer' : 'Click to lock Lens color'}
+            >
+              {randomizeLocks.lens ? (
+                <Lock size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              ) : (
+                <Unlock size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
+              )}
+              <span>Lens</span>
+            </button>
+
+            {/* Buttons Lock */}
+            <button
+              type="button"
+              onClick={() => toggleLock('buttons')}
+              aria-pressed={randomizeLocks.buttons}
+              className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg border text-xs font-semibold transition-all duration-150 ${
+                randomizeLocks.buttons
+                  ? 'bg-amber-500/15 border-amber-400/80 text-amber-800 dark:text-amber-200 dark:bg-amber-950/40 dark:border-amber-600/70 shadow-xs'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white'
+              }`}
+              title={randomizeLocks.buttons ? 'Buttons color is locked for randomizer' : 'Click to lock Buttons color'}
+            >
+              {randomizeLocks.buttons ? (
+                <Lock size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              ) : (
+                <Unlock size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
+              )}
+              <span>Buttons</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

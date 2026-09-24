@@ -17,6 +17,12 @@ export type RgrsSubBrand = 'funnyplaying' | 'hispeedido';
 
 export type ConsoleType = 'gba' | 'gbc';
 
+export interface RandomizeLocks {
+  shell?: boolean;
+  lens?: boolean;
+  buttons?: boolean;
+}
+
 export interface GbaConfig {
   consoleType: ConsoleType;
   selectedColor: ColorOption;

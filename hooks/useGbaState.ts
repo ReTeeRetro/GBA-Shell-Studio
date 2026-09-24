@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { ColorOption, GbaConfig, ShopMode, RgrsSubBrand, ConsoleType } from '../types';
+import { ColorOption, GbaConfig, ShopMode, RgrsSubBrand, ConsoleType, RandomizeLocks } from '../types';
 import { 
   SHELL_COLORS, 
   GBC_SHELL_COLORS,
@@ -196,7 +196,7 @@ export interface GbaStateResult {
         setGbcSpeakerOffset: (val: { x: number; y: number }) => void;
     };
     loadConfig: (val: GbaConfig) => void;
-    randomize: () => void;
+    randomize: (locks?: RandomizeLocks) => void;
     reset: () => void;
     undo: () => void;
     redo: () => void;
@@ -484,7 +484,7 @@ export const useGbaState = (): GbaStateResult => {
     setGbcSpeakerOffset: (val: { x: number; y: number }) => updateConfig({ gbcSpeakerOffset: val }),
   };
 
-  const randomize = () => {
+  const randomize = (locks?: RandomizeLocks) => {
     const getRandomHex = () =>
       '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
 
@@ -514,29 +514,40 @@ export const useGbaState = (): GbaStateResult => {
         memOptions = SHELL_COLORS;
     }
 
-    const randomShell = getRandomOption(shellOptions);
-    const randomBtn = getRandomOption(btnOptions);
-    const randomMem = getRandomOption(memOptions);
-    
-    const updates: Partial<GbaConfig> = {
-        selectedColor: randomShell,
-        dpadColor: randomBtn,
-        aButtonColor: randomBtn,
-        bButtonColor: randomBtn,
-        powerSwitchColor: randomBtn,
-        startSelectColor: randomMem,
-        lButtonColor: randomBtn,
-        rButtonColor: randomBtn,
-        leftBumperColor: randomBtn,
-        rightBumperColor: randomBtn,
-        lensColor: LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)],
-        gbcLogoGameBoyColor: getRandomOption(GBC_LOGO_COLORS.filter(c => c.id !== 'gbc-logo-multi')),
-        gbcLogoColorWordColor: GBC_LOGO_COLORS[Math.floor(Math.random() * GBC_LOGO_COLORS.length)],
-        isClearShell: randomShell.id !== 'custom' ? !!randomShell.forcedClear : config.isClearShell,
-        isClearButtons: randomMem.id !== 'custom' ? !!randomMem.forcedClear : config.isClearButtons,
-    };
+    const updates: Partial<GbaConfig> = {};
 
-    updateConfig(updates);
+    if (!locks?.shell) {
+      const randomShell = getRandomOption(shellOptions);
+      updates.selectedColor = randomShell;
+      updates.isClearShell = randomShell.id !== 'custom' ? !!randomShell.forcedClear : config.isClearShell;
+    }
+
+    if (!locks?.buttons) {
+      const randomBtn = getRandomOption(btnOptions);
+      const randomMem = getRandomOption(memOptions);
+      updates.dpadColor = randomBtn;
+      updates.aButtonColor = randomBtn;
+      updates.bButtonColor = randomBtn;
+      updates.powerSwitchColor = randomBtn;
+      updates.startSelectColor = randomMem;
+      updates.lButtonColor = randomBtn;
+      updates.rButtonColor = randomBtn;
+      updates.leftBumperColor = randomBtn;
+      updates.rightBumperColor = randomBtn;
+      updates.isClearButtons = randomMem.id !== 'custom' ? !!randomMem.forcedClear : config.isClearButtons;
+    }
+
+    if (!locks?.lens) {
+      updates.lensColor = LENS_COLORS[Math.floor(Math.random() * LENS_COLORS.length)];
+      if (config.consoleType === 'gbc') {
+        updates.gbcLogoGameBoyColor = getRandomOption(GBC_LOGO_COLORS.filter(c => c.id !== 'gbc-logo-multi'));
+        updates.gbcLogoColorWordColor = GBC_LOGO_COLORS[Math.floor(Math.random() * GBC_LOGO_COLORS.length)];
+      }
+    }
+
+    if (Object.keys(updates).length > 0) {
+      updateConfig(updates);
+    }
   };
 
   const loadConfig = useCallback((newConfig: GbaConfig) => {
