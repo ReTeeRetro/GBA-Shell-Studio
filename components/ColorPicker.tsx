@@ -238,45 +238,29 @@ export const ColorPicker: React.FC = () => {
   const { config, setters, randomize } = useGba();
   const [showIndividualControls, setShowIndividualControls] = useState(false);
   const [showLogoControls, setShowLogoControls] = useState(false);
-  const [randomizeLocks, setRandomizeLocks] = useState<{ shell: boolean; lens: boolean; buttons: boolean }>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('gba_randomize_locks');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          return {
-            shell: !!parsed.shell,
-            lens: !!parsed.lens,
-            buttons: !!parsed.buttons,
-          };
-        }
-      } catch {
-        // fallback to defaults
-      }
-    }
-    return { shell: false, lens: false, buttons: false };
+  const [randomizeLocks, setRandomizeLocks] = useState<{ shell: boolean; lens: boolean; buttons: boolean }>({
+    shell: false,
+    lens: false,
+    buttons: false,
   });
 
-  const toggleLock = (key: 'shell' | 'lens' | 'buttons') => {
-    setRandomizeLocks((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
+  // Clean up any previously stored lock settings from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem('gba_randomize_locks', JSON.stringify(next));
+        localStorage.removeItem('gba_randomize_locks');
       } catch {
-        // ignore storage error
+        // ignore
       }
-      return next;
-    });
+    }
+  }, []);
+
+  const toggleLock = (key: 'shell' | 'lens' | 'buttons') => {
+    setRandomizeLocks((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const resetLocks = () => {
-    const defaultLocks = { shell: false, lens: false, buttons: false };
-    setRandomizeLocks(defaultLocks);
-    try {
-      localStorage.setItem('gba_randomize_locks', JSON.stringify(defaultLocks));
-    } catch {
-      // ignore
-    }
+    setRandomizeLocks({ shell: false, lens: false, buttons: false });
   };
 
   const allLocked = randomizeLocks.shell && randomizeLocks.lens && randomizeLocks.buttons;
